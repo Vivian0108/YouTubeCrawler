@@ -11,6 +11,7 @@ import subprocess
 import psycopg2
 import atexit
 import multiprocessing
+from definitions import CONFIG_PATH
 
 from apiclient.discovery import build
 from apiclient.discovery import HttpError
@@ -388,6 +389,7 @@ atexit.register(stop)
 if __name__ == '__main__':
     #SEARCH_TERM_FILE = '/home/edmundtemp/sqa/crawler/search_terms.txt'
     SEARCH_TERM_FILE = 'search_terms.txt'
+    DOWNLOAD_PATH = 'downloaded_videos/'
     conn = None
     try:
     #    conn = psycopg2.connect(
@@ -420,14 +422,23 @@ if __name__ == '__main__':
         elif sys.argv[1] == 'download':
             cur.execute("SELECT video_id FROM youtube_data WHERE download_time is NULL;")
             video_ids = [e[0] for e in cur.fetchall()]
-            download_data = [
-                (os.path.join(os.path.join('/media/bighdd5/sqa/', 'downloads'),
-                 video_id),
-                video_id) for video_id in video_ids
-            ]
+#            download_data = [
+#                (os.path.join(os.path.join('/media/bighdd5/sqa/', 'downloads'),
+#                 video_id),
+#                video_id) for video_id in video_ids
+#            ]
+            download_data = [(os.path.join(os.path.join((CONFIG_PATH), 'downloaded_videos'),video_id),video_id) for video_id in video_ids]
+            print (len(download_data))
+            num_download = len(download_data)
+            #Code to restrict number downloaded, if you want
+            if (len(sys.argv) == 3):
+                num_download = int(sys.argv[2])
+            download_data = download_data[0:num_download]
+            print (len(download_data))
             with multiprocessing.Pool(4) as p:
                 p.map(download, download_data)
-
+                #I added this to stop executing, do we want this? Wasn't here before
+                sys.exit()
         elif sys.argv[1] == 'face_detect':
             cur.execute("""
                     SELECT video_id, download_path FROM youtube_data WHERE
