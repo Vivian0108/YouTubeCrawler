@@ -74,7 +74,12 @@ def query(term):
             pageToken=nextPageToken,
         ).execute()
         cur_.execute("SELECT video_id FROM youtube_data;")
-        video_ids = [e[0] for e in cur.fetchall()]
+        #Note, used to be cur.fetchall(), why?
+        #video_ids = [e[0] for e in cur.fetchall()]
+        video_ids = [e[0] for e in cur_.fetchall()]
+        print ("Video ids: " + str(video_ids))
+        #Send search results to postgresql server and get the next page to be seached (nextPageToken)
+        #Continues until we can't find another page
         nextPageToken = process_search_response(
                 video_ids, term, search_response
             )
@@ -406,9 +411,11 @@ if __name__ == '__main__':
             with open(SEARCH_TERM_FILE, 'r') as f:
                 for term in f:
                     term = term.strip()
+                    #Make sure not repeating queries
                     cur.execute("SELECT DISTINCT search_term FROM youtube_data;")
                     terms = [e[0] for e in cur.fetchall()]
                     if term not in terms:
+                        print ("Querying " + term)
                         query(term)
         elif sys.argv[1] == 'download':
             cur.execute("SELECT video_id FROM youtube_data WHERE download_time is NULL;")
