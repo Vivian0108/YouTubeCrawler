@@ -2,12 +2,18 @@
 -- PostgreSQL database dump
 --
 
+-- Dumped from database version 10.3
+-- Dumped by pg_dump version 10.3
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
 
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
@@ -23,30 +29,30 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
-SET search_path = public, pg_catalog;
-
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- Name: crawler_data; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: crawler_data; Type: TABLE; Schema: public; Owner: alexschneidman
 --
 
-CREATE TABLE crawler_data (
+CREATE TABLE public.crawler_data (
     id integer NOT NULL,
-    "time" timestamp with time zone DEFAULT now() NOT NULL,
-    status boolean
+    column1 text,
+    column2 text,
+    column3 text
 );
 
 
-ALTER TABLE public.crawler_data OWNER TO postgres;
+ALTER TABLE public.crawler_data OWNER TO alexschneidman;
 
 --
--- Name: crawler_data_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: crawler_data_id_seq; Type: SEQUENCE; Schema: public; Owner: alexschneidman
 --
 
-CREATE SEQUENCE crawler_data_id_seq
+CREATE SEQUENCE public.crawler_data_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -54,20 +60,20 @@ CREATE SEQUENCE crawler_data_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.crawler_data_id_seq OWNER TO postgres;
+ALTER TABLE public.crawler_data_id_seq OWNER TO alexschneidman;
 
 --
--- Name: crawler_data_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: crawler_data_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alexschneidman
 --
 
-ALTER SEQUENCE crawler_data_id_seq OWNED BY crawler_data.id;
+ALTER SEQUENCE public.crawler_data_id_seq OWNED BY public.crawler_data.id;
 
 
 --
--- Name: video_segment_data; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: video_segment_data; Type: TABLE; Schema: public; Owner: sqa_downloader
 --
 
-CREATE TABLE video_segment_data (
+CREATE TABLE public.video_segment_data (
     video_id character varying(100) NOT NULL,
     first_word_secs real,
     last_word_secs real,
@@ -78,13 +84,13 @@ CREATE TABLE video_segment_data (
 );
 
 
-ALTER TABLE public.video_segment_data OWNER TO postgres;
+ALTER TABLE public.video_segment_data OWNER TO sqa_downloader;
 
 --
--- Name: youtube_data; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: youtube_data; Type: TABLE; Schema: public; Owner: sqa_downloader
 --
 
-CREATE TABLE youtube_data (
+CREATE TABLE public.youtube_data (
     video_id character varying(15) NOT NULL,
     search_term character varying(100) NOT NULL,
     channel_id character varying(100) NOT NULL,
@@ -104,91 +110,56 @@ CREATE TABLE youtube_data (
     punctuation_check_success boolean,
     manual_check boolean,
     trim_duration real,
-    length character varying(10)
+    length character varying(10),
+    mturk_transcription character varying
 );
 
 
-ALTER TABLE public.youtube_data OWNER TO postgres;
+ALTER TABLE public.youtube_data OWNER TO sqa_downloader;
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: crawler_data id; Type: DEFAULT; Schema: public; Owner: alexschneidman
 --
 
-ALTER TABLE ONLY crawler_data ALTER COLUMN id SET DEFAULT nextval('crawler_data_id_seq'::regclass);
+ALTER TABLE ONLY public.crawler_data ALTER COLUMN id SET DEFAULT nextval('public.crawler_data_id_seq'::regclass);
 
 
 --
--- Name: crawler_data_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: crawler_data crawler_data_pkey; Type: CONSTRAINT; Schema: public; Owner: alexschneidman
 --
 
-ALTER TABLE ONLY crawler_data
+ALTER TABLE ONLY public.crawler_data
     ADD CONSTRAINT crawler_data_pkey PRIMARY KEY (id);
 
 
 --
--- Name: video_segment_data_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: video_segment_data video_segment_data_pkey; Type: CONSTRAINT; Schema: public; Owner: sqa_downloader
 --
 
-ALTER TABLE ONLY video_segment_data
+ALTER TABLE ONLY public.video_segment_data
     ADD CONSTRAINT video_segment_data_pkey PRIMARY KEY (video_id);
 
 
 --
--- Name: youtube_data_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: youtube_data youtube_data_pkey; Type: CONSTRAINT; Schema: public; Owner: sqa_downloader
 --
 
-ALTER TABLE ONLY youtube_data
+ALTER TABLE ONLY public.youtube_data
     ADD CONSTRAINT youtube_data_pkey PRIMARY KEY (video_id);
 
 
 --
--- Name: public; Type: ACL; Schema: -; Owner: postgres
+-- Name: TABLE crawler_data; Type: ACL; Schema: public; Owner: alexschneidman
 --
 
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
+GRANT ALL ON TABLE public.crawler_data TO sqa_downloader;
 
 
 --
--- Name: crawler_data; Type: ACL; Schema: public; Owner: postgres
+-- Name: SEQUENCE crawler_data_id_seq; Type: ACL; Schema: public; Owner: alexschneidman
 --
 
-REVOKE ALL ON TABLE crawler_data FROM PUBLIC;
-REVOKE ALL ON TABLE crawler_data FROM postgres;
-GRANT ALL ON TABLE crawler_data TO postgres;
-GRANT ALL ON TABLE crawler_data TO sqa_downloader;
-
-
---
--- Name: crawler_data_id_seq; Type: ACL; Schema: public; Owner: postgres
---
-
-REVOKE ALL ON SEQUENCE crawler_data_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE crawler_data_id_seq FROM postgres;
-GRANT ALL ON SEQUENCE crawler_data_id_seq TO postgres;
-GRANT SELECT,USAGE ON SEQUENCE crawler_data_id_seq TO sqa_downloader;
-
-
---
--- Name: video_segment_data; Type: ACL; Schema: public; Owner: postgres
---
-
-REVOKE ALL ON TABLE video_segment_data FROM PUBLIC;
-REVOKE ALL ON TABLE video_segment_data FROM postgres;
-GRANT ALL ON TABLE video_segment_data TO postgres;
-GRANT ALL ON TABLE video_segment_data TO sqa_downloader;
-
-
---
--- Name: youtube_data; Type: ACL; Schema: public; Owner: postgres
---
-
-REVOKE ALL ON TABLE youtube_data FROM PUBLIC;
-REVOKE ALL ON TABLE youtube_data FROM postgres;
-GRANT ALL ON TABLE youtube_data TO postgres;
-GRANT ALL ON TABLE youtube_data TO sqa_downloader;
+GRANT SELECT,USAGE ON SEQUENCE public.crawler_data_id_seq TO sqa_downloader;
 
 
 --

@@ -388,7 +388,7 @@ def stop():
 atexit.register(stop)
 if __name__ == '__main__':
     #SEARCH_TERM_FILE = '/home/edmundtemp/sqa/crawler/search_terms.txt'
-    SEARCH_TERM_FILE = 'search_terms.txt'
+    SEARCH_TERM_FILE = 'search_terms2.txt'
     DOWNLOAD_PATH = 'downloaded_videos/'
     conn = None
     try:
