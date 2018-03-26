@@ -3,7 +3,7 @@ from . import views
 from django.conf.urls import include,url
 
 urlpatterns = [
-    path('', views.form, name='form'),
+    path('', views.home, name='home'),
     # ex: /jobs/
     path('', views.index, name='index'),
     # ex: /jobs/5/

@@ -12,7 +12,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 
-def form(request):
+def home(request):
   return HttpResponse("Hello World!")
 
 def detail(request, job_id):
@@ -49,7 +49,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect('home')
+            return redirect(home)
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
