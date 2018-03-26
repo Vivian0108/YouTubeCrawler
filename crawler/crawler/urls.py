@@ -15,8 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf.urls import url
+from crawlerapp import views as views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('crawlerapp/',include('crawlerapp.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    url(r'^signup/$', views.signup, name='signup'),
 ]
