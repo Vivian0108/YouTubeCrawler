@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls import url
 from crawlerapp import views as views
+from material.frontend import urls as frontend_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +25,5 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     url(r'^signup/$', views.signup, name='signup'),
     url(r'^$', views.home, name='home'),
+    url(r'', include(frontend_urls)),
 ]
