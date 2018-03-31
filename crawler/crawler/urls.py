@@ -20,7 +20,7 @@ from crawlerapp import views as views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('crawlerapp/',include('crawlerapp.urls')),
+    path('crawlerapp/', include('crawlerapp.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     url(r'^signup/$', views.signup, name='signup'),
     url(r'^$', views.home, name='home'),

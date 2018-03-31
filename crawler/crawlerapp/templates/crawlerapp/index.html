@@ -1,8 +1,33 @@
+<html>
+<head>
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/smoothness/jquery-ui.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--Import jQuery before materialize.js-->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='materialize.min.js') }}"></script>
+
+</head>
 <ul>
-{% for job in jobs %}
-<li> <a href="/jobs/{{ job.id }}/">{{ job.name }}</a></li>
-{% endfor %}
+  {% for job in jobs %}
+  <li> <a href="/jobs/{{ job.id }}/">{{ job.name }}</a></li>
+  {% endfor %}
 </ul>
 {% else %}
-    <p>No jobs are available.</p>
+<p>No jobs are available.</p>
 {% endif %}
+
+</html>

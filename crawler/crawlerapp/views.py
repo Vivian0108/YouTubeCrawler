@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect 
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import *
 from django.views import generic
@@ -11,12 +11,12 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 
 
-
 def home(request):
-  return HttpResponse("Hello World!")
+    return HttpResponse("Hello World!")
+
 
 def detail(request, job_id):
-  return HttpResponse("You're looking at job %s." % job_id)
+    return HttpResponse("You're looking at job %s." % job_id)
 
 
 def index(request):
@@ -24,20 +24,21 @@ def index(request):
     context = {'jobs': jobs}
     return render(request, 'crawlerapp/index.html', context)
 
-def job_create(request):
-  if request.method == "POST":
-    form = CreateJobForm(request.POST)
-    if form.is_valid():
-      job = Job()
-      job.language = form.cleaned_data['language']
-      job.name = form.cleaned_data['name']
-      job.num_vids = form.cleaned_data['num_vids']
-      job.save()
-      #return render('crawlerapp/detail.html',job.id)
-  else:
-    form = CreateJobForm()
 
-  return render(request,'crawlerapp/job_create.html',{'form': form})
+def job_create(request):
+    if request.method == "POST":
+        form = CreateJobForm(request.POST)
+        if form.is_valid():
+            job = Job()
+            job.language = form.cleaned_data['language']
+            job.name = form.cleaned_data['name']
+            job.num_vids = form.cleaned_data['num_vids']
+            job.save()
+            # return render('crawlerapp/detail.html',job.id)
+    else:
+        form = CreateJobForm()
+
+    return render(request, 'crawlerapp/job_create.html', {'form': form})
 
 
 def signup(request):
@@ -53,5 +54,3 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
-
-

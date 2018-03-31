@@ -55,7 +55,7 @@ ROOT_URLCONF = 'crawler.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['./templates',],
+        'DIRS': ['./templates', ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -77,10 +77,10 @@ WSGI_APPLICATION = 'crawler.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME' : 'testdb',
-        'USER' : 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': '',
+        'NAME': 'crawler_db',
+        'USER': 'crawler_usr',
+        'PASSWORD': 'rdGBOx7KSQJmIt6C',
+        'HOST': 'localhost',
         'PORT': '',
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
@@ -128,5 +128,5 @@ STATIC_URL = '/static/'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/'
 
-#FOR TESTING PURPOSES
+# FOR TESTING PURPOSES
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
