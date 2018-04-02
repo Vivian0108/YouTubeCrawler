@@ -1,8 +1,5 @@
-{% load static %} {% include 'material/includes/material_css.html' %}
-<script src="{% static 'material/js/jquery.js' %}"></script>
-{% include 'material/includes/material_js.html' %} {% load material_form %} {% block content %}
-<div class="container">
-  <div class="section">
+{% extends 'base.html' %}
+{% block pagecontent %}
     <h2>Sign up</h2>
     <form method="post">
       {% csrf_token %} {% for field in form %}
@@ -15,6 +12,4 @@
       {% endfor %}
       <button type="submit">Sign up</button>
     </form>
-  </div>
-</div>
 {% endblock %}

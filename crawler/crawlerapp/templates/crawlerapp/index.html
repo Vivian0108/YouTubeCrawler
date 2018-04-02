@@ -1,7 +1,5 @@
-{% load static %}
-{% include 'material/includes/material_css.html' %}
-<script src="{% static 'material/js/jquery.js' %}"></script>
-{% include 'material/includes/material_js.html' %}
+{% extends '../base.html' %}
+{% block pagecontent %}
 <ul>
   {% for job in jobs %}
   <li> <a href="/jobs/{{ job.id }}/">{{ job.name }}</a></li>
@@ -10,3 +8,4 @@
 {% else %}
 <p>No jobs are available.</p>
 {% endif %}
+{% endblock %}
