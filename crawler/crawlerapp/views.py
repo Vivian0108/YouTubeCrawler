@@ -12,7 +12,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 def home(request):
-    return HttpResponse("Hello World!")
+    return render(request, 'crawlerapp/landing.html')
 
 
 def detail(request, job_id):
@@ -34,7 +34,8 @@ def job_create(request):
             job.name = form.cleaned_data['name']
             job.num_vids = form.cleaned_data['num_vids']
             job.save()
-            # return render('crawlerapp/detail.html',job.id)
+            
+            #return render('crawlerapp/detail.html',job.id)
     else:
         form = CreateJobForm()
 

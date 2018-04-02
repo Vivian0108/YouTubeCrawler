@@ -1,5 +1,5 @@
 {% extends '../base.html' %}
-{% block pagecontent %}
+{% block content %}
 <ul>
   {% for job in jobs %}
   <li> <a href="/jobs/{{ job.id }}/">{{ job.name }}</a></li>
