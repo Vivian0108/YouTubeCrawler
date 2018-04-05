@@ -9,7 +9,7 @@ import datetime
 from .forms import *
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
-
+from crawlerapp.exec_job import ex
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -38,14 +38,12 @@ def job_create(request):
             job.location_radius = form.cleaned_data['location_radius']
             job.ordering = form.cleaned_data['ordering']
             job.safe_search = form.cleaned_data['safe_search']
-            if (form.cleaned_data['cc'] == "closedCaption"):
-                job.cc_enabled = True
-            else:
-                job.cc_enabled = False
+            job.cc_enabled = form.cleaned_data['cc']
             job.video_def = form.cleaned_data['video_def']
             job.video_duration = form.cleaned_data['video_duration']
             job.save()
-
+            print(job.id)
+            ex(download_path='downloaded_videos/', job_id=str(job.id))
             #return render('crawlerapp/detail.html',job.id)
     else:
         form = CreateJobForm()
