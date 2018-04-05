@@ -33,8 +33,19 @@ def job_create(request):
             job.language = form.cleaned_data['language']
             job.name = form.cleaned_data['name']
             job.num_vids = form.cleaned_data['num_vids']
+            job.channel_id = form.cleaned_data['channel_id']
+            job.query = form.cleaned_data['query']
+            job.location_radius = form.cleaned_data['location_radius']
+            job.ordering = form.cleaned_data['ordering']
+            job.safe_search = form.cleaned_data['safe_search']
+            if (form.cleaned_data['cc'] == "closedCaption"):
+                job.cc_enabled = True
+            else:
+                job.cc_enabled = False
+            job.video_def = form.cleaned_data['video_def']
+            job.video_duration = form.cleaned_data['video_duration']
             job.save()
-            
+
             #return render('crawlerapp/detail.html',job.id)
     else:
         form = CreateJobForm()

@@ -10,7 +10,8 @@ class Job(models.Model):
     # videos should be video ids seperated by commas
     videos = models.TextField(default="")
     # channels should be channel ids seperated by commas
-    channels = models.TextField(default="")
+    found_channels = models.TextField(default="")
+    channel_id = models.CharField(max_length=15,default="")
     name = models.TextField(default="")
     query = models.TextField(default="")
     created_date = models.DateTimeField(default=None, blank=True, null=True)
@@ -19,6 +20,11 @@ class Job(models.Model):
     filters = models.TextField(default="")
     cc_enabled = models.NullBooleanField()
     youtube_params = JSONField(default=list)
+    video_def = models.CharField(max_length=15,default="")
+    video_duration = models.CharField(max_length=15,default="")
+    safe_search = models.CharField(max_length=15,default="")
+    ordering = models.CharField(max_length=15,default="")
+
 class Video(models.Model):
     id = models.CharField(max_length=15, default="", primary_key=True)
     channel_id = models.CharField(max_length=15,default="")
