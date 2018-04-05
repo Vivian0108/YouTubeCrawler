@@ -43,7 +43,8 @@ def job_create(request):
             job.video_duration = form.cleaned_data['video_duration']
             job.save()
             print(job.id)
-            ex(download_path='downloaded_videos/', job_id=str(job.id))
+            job.executed = ex(download_path='downloaded_videos/', job_id=str(job.id))
+
             #return render('crawlerapp/detail.html',job.id)
     else:
         form = CreateJobForm()
