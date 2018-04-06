@@ -9,6 +9,7 @@ import psycopg2
 import atexit
 import multiprocessing
 import pprint
+import json
 
 from apiclient.discovery import build
 from apiclient.discovery import HttpError
@@ -94,10 +95,10 @@ def process_search_response(job_id, job_name, query, search_response,client):
                 pass
 
             try:
-                cur.execute("INSERT INTO crawlerapp_video" +
-                             "(id,channel_id,query,cc_enabled,language,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,youtube_params)" +
-                             "VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');" %
-                             (video_id,channel_id,query,captions,default_lang,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date))
+                cur.execute('''INSERT INTO crawlerapp_video''' +
+                             '''(id,channel_id,query,cc_enabled,language,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,youtube_params)''' +
+                             '''VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');''' %
+                             (video_id,channel_id,query,captions,default_lang,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,(json.dumps(vid)).replace("'", "''")))
             except psycopg2.IntegrityError:
                 pass
         try:

@@ -38,7 +38,7 @@ class Video(models.Model):
     download_path = models.TextField(default="",null=True)
     download_success = models.NullBooleanField()
     mturk_description = models.TextField(default="",null=True)
-    youtube_params = JSONField(default=list,null=True)
+    youtube_params = JSONField(default=list)
     query = models.TextField(default="",null=True)
     job_name = models.CharField(max_length=50,default="",null=True)
     job_id = models.CharField(max_length=15,default="",null=True)
