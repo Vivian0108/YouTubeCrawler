@@ -96,9 +96,9 @@ def process_search_response(job_id, job_name, query, search_response,client):
 
             try:
                 cur.execute('''INSERT INTO crawlerapp_video''' +
-                             '''(id,channel_id,query,cc_enabled,language,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,youtube_params)''' +
-                             '''VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');''' %
-                             (video_id,channel_id,query,captions,default_lang,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,(json.dumps(vid)).replace("'", "''")))
+                             '''(id,channel_id,query,cc_enabled,language,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,search_time,youtube_params)''' +
+                             '''VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');''' %
+                             (video_id,channel_id,query,captions,default_lang,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,datetime.datetime.now(),(json.dumps(vid)).replace("'", "''")))
             except psycopg2.IntegrityError:
                 pass
         try:
@@ -106,7 +106,7 @@ def process_search_response(job_id, job_name, query, search_response,client):
         except KeyError:
             return None
 
-def query(terms):
+def query(terms,job_id):
     conn = psycopg2.connect(
             dbname="crawler_db",
             user="crawler_usr",
@@ -127,9 +127,9 @@ def query(terms):
     video_duration = ""
     safe_search = ""
     ordering = ""
-    location_radius = ""
     job_id = ""
     job_name = ""
+    channel_id = ""
 
     for (col, data) in terms:
         if col == 'language':
@@ -152,26 +152,46 @@ def query(terms):
             job_id = data
         elif col == 'name':
             job_name = data
-
+        elif col == 'channel_id':
+            channel_id = data
     video_count = 0
     while (nextPageToken or initial):
         if (video_count == int(num_vids)):
             break
         initial = False
-        search_response = youtube.search().list(
-            q=query,
-            relevanceLanguage=language,
-            safeSearch=safe_search,
-            videoCaption=cc_enabled,
-            videoDefinition=video_def,
-            videoDuration=video_duration,
-            type="video",
-            part="id, snippet",
-            order=ordering,
-            # 50 is the maximum allowable value
-            maxResults=50,
-            pageToken=nextPageToken,
-        ).execute()
+        search_response = None
+        if (len(channel_id) == 0):
+            search_response = youtube.search().list(
+                q=query,
+                relevanceLanguage=language,
+                safeSearch=safe_search,
+                videoCaption=cc_enabled,
+                videoDefinition=video_def,
+                videoDuration=video_duration,
+                type="video",
+                part="id, snippet",
+                order=ordering,
+                # 50 is the maximum allowable value
+                maxResults=50,
+                pageToken=nextPageToken,
+            ).execute()
+        else:
+            search_response = youtube.search().list(
+                q=query,
+                relevanceLanguage=language,
+                safeSearch=safe_search,
+                videoCaption=cc_enabled,
+                videoDefinition=video_def,
+                videoDuration=video_duration,
+                type="video",
+                part="id, snippet",
+                order=ordering,
+                channelId=channel_id,
+                # 50 is the maximum allowable value
+                maxResults=50,
+                pageToken=nextPageToken,
+            ).execute()
+        cur.execute('''UPDATE crawlerapp_job SET youtube_params = '%s' WHERE id = %s;''' % ((json.dumps(search_response)).replace("'", "''"), job_id))
         nextPageToken = process_search_response(job_id, job_name, query, search_response,youtube)
         if nextPageToken:
             video_count += 1
@@ -194,7 +214,7 @@ def ex(download_path, job_id):
     )
     column_names = [i[0] for i in cur.fetchall()]
     zipped_row_data = list(zip(column_names, terms_list))
-    query(zipped_row_data)
+    query(zipped_row_data,job_id)
     return True
 if __name__ == '__main__':
     ex(download_path='downloaded_videos/', job_id="2")

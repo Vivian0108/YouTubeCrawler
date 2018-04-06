@@ -31,7 +31,6 @@ class CreateJobForm(forms.Form):
     num_vids = forms.IntegerField(help_text="How many videos do you want to crawl?")
     query = forms.CharField(help_text="What you want youtube to search for")
     channel_id = forms.CharField(help_text="Only crawl this channel ID", required=False)
-    location_radius = forms.CharField(help_text="(longitude,latitude,radius (km)), max radius is 1000km",required=False)
     ordering = forms.ChoiceField(choices=[("date","date"),("rating","rating"),("relevance","relevance"),("title","title"),("videoCount","video count"),("viewCount","view count")],
                                 help_text="Select the ordering of the videos")
     ordering.widget.attrs.update({'class': 'browser-default'})
