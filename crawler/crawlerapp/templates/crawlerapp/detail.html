@@ -2,15 +2,37 @@
 <center>
 
   <h4>Job data for job {{ job_name }}</h4>
-  <center>
-    <div class="row">
-      <div class="col s12 m5">
-        <div class="card-panel teal">
-          <span class="white-text">Number of videos found: {{ job_num_vids }}</span>
-        </div>
-      </div>
-    </div>
-  </center>
+  <table>
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>Job Name</td>
+        <td>{{ job_name }}</td>
+      </tr>
+      <tr>
+        <td>Number of videos stored</td>
+        <td>{{ job_num_vids }}</td>
+      </tr>
+      <tr>
+        <td>Query</td>
+        <td>{{ job_query }}</td>
+      </tr>
+      <tr>
+        <td>Time of job creation</td>
+        <td>{{ job_created_date }}</td>
+      </tr>
+      <tr>
+        <td>Finished Execution</td>
+        <td>{{  executed  }}</td>
+      </tr>
+    </tbody>
+  </table>
 
 </center>
 {% endblock %}
