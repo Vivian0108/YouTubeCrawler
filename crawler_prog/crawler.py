@@ -17,6 +17,7 @@ from apiclient.discovery import build
 from apiclient.discovery import HttpError
 from oauth2client.tools import argparser
 
+
 def process_search_response(video_ids, term, search_response):
     try:
         conn_ = psycopg2.connect(
@@ -43,6 +44,7 @@ def process_search_response(video_ids, term, search_response):
         return search_response['nextPageToken']
     except KeyError:
         return None
+
 
 def query(term):
     try:
@@ -75,15 +77,16 @@ def query(term):
             pageToken=nextPageToken,
         ).execute()
         cur_.execute("SELECT video_id FROM youtube_data;")
-        #Note, used to be cur.fetchall(), why?
+        # Note, used to be cur.fetchall(), why?
         #video_ids = [e[0] for e in cur.fetchall()]
         video_ids = [e[0] for e in cur_.fetchall()]
-        print ("Video ids: " + str(video_ids))
-        #Send search results to postgresql server and get the next page to be seached (nextPageToken)
-        #Continues until we can't find another page
+        print("Video ids: " + str(video_ids))
+        # Send search results to postgresql server and get the next page to be seached (nextPageToken)
+        # Continues until we can't find another page
         nextPageToken = process_search_response(
-                video_ids, term, search_response
-            )
+            video_ids, term, search_response
+        )
+
 
 def download(download_data):
     (download_to_path, video_id) = download_data
@@ -117,12 +120,12 @@ def download(download_data):
                              download_path='%s'
                          WHERE video_id='%s';
                          """ % (
-                                 datetime.datetime.now(),
-                                 False,
-                                 download_to_path,
-                                 video_id
-                             )
-                        )
+                datetime.datetime.now(),
+                False,
+                download_to_path,
+                video_id
+            )
+            )
             return
     paths = os.listdir(download_to_path)
     subs_and_vid = [False, False]
@@ -143,12 +146,12 @@ def download(download_data):
                          download_path='%s'
                      WHERE video_id='%s';
                      """ % (
-                             datetime.datetime.now(),
-                             False,
-                             download_to_path,
-                             video_id
-                         )
-                    )
+            datetime.datetime.now(),
+            False,
+            download_to_path,
+            video_id
+        )
+        )
     else:
         cur_.execute("""
                      UPDATE youtube_data
@@ -157,12 +160,13 @@ def download(download_data):
                          download_path='%s'
                      WHERE video_id='%s';
                      """ % (
-                             datetime.datetime.now(),
-                             True,
-                             download_to_path,
-                             video_id
-                         )
-                     )
+            datetime.datetime.now(),
+            True,
+            download_to_path,
+            video_id
+        )
+        )
+
 
 def face_detect_video(face_detect_data):
     try:
@@ -179,9 +183,9 @@ def face_detect_video(face_detect_data):
     (download_path, video_id) = face_detect_data
     try:
         out = subprocess.check_output(
-                './face_detector %s sqa 0 0 24' % (
-                    download_path + '.mp4'
-                ), shell=True)
+            './face_detector %s sqa 0 0 24' % (
+                download_path + '.mp4'
+            ), shell=True)
     except subprocess.CalledProcessError:
         cur_.execute("""
                      UPDATE youtube_data
@@ -190,12 +194,12 @@ def face_detect_video(face_detect_data):
                          face_detect_success='%s'
                      WHERE video_id='%s';
                      """ % (
-                             datetime.datetime.now(),
-                             -1,
-                             False,
-                             video_id
-                         )
-                     )
+            datetime.datetime.now(),
+            -1,
+            False,
+            video_id
+        )
+        )
         return
     percentage = int(out)
     if percentage < PERCENT_THRESHOLD:
@@ -210,21 +214,22 @@ def face_detect_video(face_detect_data):
                      face_detect_success='%s'
                  WHERE video_id='%s';
                  """ % (
-                         datetime.datetime.now(),
-                         percentage,
-                         percentage >= PERCENT_THRESHOLD,
-                         video_id
-                     )
-                 )
+        datetime.datetime.now(),
+        percentage,
+        percentage >= PERCENT_THRESHOLD,
+        video_id
+    )
+    )
+
 
 def align_video(align_data):
     (download_path, video_id) = align_data
     path = download_path
     try:
-    #    conn_ = psycopg2.connect(
-    #        "dbname='sqa_data'" +
-    #        "user='sqa_downloader' host='localhost' password='" +
-    #        secrets.DB_PW + "'")
+        #    conn_ = psycopg2.connect(
+        #        "dbname='sqa_data'" +
+        #        "user='sqa_downloader' host='localhost' password='" +
+        #        secrets.DB_PW + "'")
         conn_ = psycopg2.connect(
             dbname="sqa_data",
             user="sqa_downloader",
@@ -240,23 +245,23 @@ def align_video(align_data):
                  SET p2fa_attempt_time='%s'
                  WHERE video_id='%s';
                  """ % (
-                         datetime.datetime.now(),
-                         video_id
-                     )
-                 )
+        datetime.datetime.now(),
+        video_id
+    )
+    )
     subprocess.call('ffmpeg -y -loglevel quiet -i %s %s' %
-            (path + '.mp4', path + '.wav'),
-            shell=True)
+                    (path + '.mp4', path + '.wav'),
+                    shell=True)
 
     lines = []
     with open(path + '.en.vtt', 'r') as f:
         for line in f:
             remove_cond = (
-                    'WEBVTT' in line or
-                    'Kind: captions' in line or
-                    'Language: en' in line or
-                    '-->' in line
-                )
+                'WEBVTT' in line or
+                'Kind: captions' in line or
+                'Language: en' in line or
+                '-->' in line
+            )
             if not remove_cond:
                 lines.append(line.strip())
 
@@ -264,8 +269,8 @@ def align_video(align_data):
         f.write(' '.join(lines))
 
     subprocess.call('/home/edmundtemp/sqa/crawler/AZP2FA/p2fa/align.py %s %s %s'
-        % (path + '.wav', path + '.plaintext', path + '.pratt'),
-        shell=True)
+                    % (path + '.wav', path + '.plaintext', path + '.pratt'),
+                    shell=True)
 
     if check_pratt(path + '.pratt'):
         cur_.execute("""
@@ -273,20 +278,21 @@ def align_video(align_data):
                      SET p2fa_success='%s'
                      WHERE video_id='%s';
                      """ % (
-                             True,
-                             video_id
-                         )
-                     )
+            True,
+            video_id
+        )
+        )
     else:
         cur_.execute("""
                      UPDATE youtube_data
                      SET p2fa_success='%s'
                      WHERE video_id='%s';
                      """ % (
-                             False,
-                             video_id
-                         )
-                     )
+            False,
+            video_id
+        )
+        )
+
 
 def check_pratt(pratt_file):
     if not os.path.isfile(pratt_file):
@@ -322,6 +328,7 @@ def check_pratt(pratt_file):
             return False
     return True
 
+
 def punctuation_check(punc_data):
     (download_path, video_id) = punc_data
     path = download_path
@@ -340,10 +347,10 @@ def punctuation_check(punc_data):
                  SET punctuation_check_attempt_time='%s'
                  WHERE video_id='%s';
                  """ % (
-                         datetime.datetime.now(),
-                         video_id
-                     )
-                 )
+        datetime.datetime.now(),
+        video_id
+    )
+    )
     with open(path + '.plaintext', 'r') as f:
         for c in f.read():
             if c == ',' or c == '!' or c == '.' or c == '?' or c == ';':
@@ -352,23 +359,25 @@ def punctuation_check(punc_data):
                              SET punctuation_check_success='%s'
                              WHERE video_id='%s';
                              """ % (
-                                     True,
-                                     video_id
-                                 )
-                             )
+                    True,
+                    video_id
+                )
+                )
                 return True
     cur_.execute("""
                  UPDATE youtube_data
                  SET punctuation_check_success='%s'
                  WHERE video_id='%s';
                  """ % (
-                         False,
-                         video_id
-                     )
-                 )
+        False,
+        video_id
+    )
+    )
+
 
 def random_cut(video_id, length):
     print("hi")
+
 
 def stop():
     conn = None
@@ -376,7 +385,7 @@ def stop():
         conn = psycopg2.connect(
             "dbname='sqa_data'" +
             "user='sqa_downloader' host='localhost' password='" +
-            secrets.DB_PW + "'");
+            secrets.DB_PW + "'")
     except psycopg2.OperationalError as e:
         print('Unable to connect!\n{0}').format(e)
         sys.exit(1)
@@ -385,6 +394,7 @@ def stop():
     cur.execute("INSERT INTO crawler_data VALUES (DEFAULT, DEFAULT, false);")
     cur.close()
 
+
 atexit.register(stop)
 if __name__ == '__main__':
     #SEARCH_TERM_FILE = '/home/edmundtemp/sqa/crawler/search_terms.txt'
@@ -392,10 +402,10 @@ if __name__ == '__main__':
     DOWNLOAD_PATH = 'downloaded_videos/'
     conn = None
     try:
-    #    conn = psycopg2.connect(
-    #        "dbname='sqa_data'" +
-    #        "user='sqa_downloader' host='localhost' password='temp'" +
-    #        secrets.DB_PW + "'")
+        #    conn = psycopg2.connect(
+        #        "dbname='sqa_data'" +
+        #        "user='sqa_downloader' host='localhost' password='temp'" +
+        #        secrets.DB_PW + "'")
         conn = psycopg2.connect(
             dbname="sqa_data",
             user="sqa_downloader",
@@ -413,31 +423,34 @@ if __name__ == '__main__':
             with open(SEARCH_TERM_FILE, 'r') as f:
                 for term in f:
                     term = term.strip()
-                    #Make sure not repeating queries
-                    cur.execute("SELECT DISTINCT search_term FROM youtube_data;")
+                    # Make sure not repeating queries
+                    cur.execute(
+                        "SELECT DISTINCT search_term FROM youtube_data;")
                     terms = [e[0] for e in cur.fetchall()]
                     if term not in terms:
-                        print ("Querying " + term)
+                        print("Querying " + term)
                         query(term)
         elif sys.argv[1] == 'download':
-            cur.execute("SELECT video_id FROM youtube_data WHERE download_time is NULL;")
+            cur.execute(
+                "SELECT video_id FROM youtube_data WHERE download_time is NULL;")
             video_ids = [e[0] for e in cur.fetchall()]
 #            download_data = [
 #                (os.path.join(os.path.join('/media/bighdd5/sqa/', 'downloads'),
 #                 video_id),
 #                video_id) for video_id in video_ids
 #            ]
-            download_data = [(os.path.join(os.path.join((CONFIG_PATH), 'downloaded_videos'),video_id),video_id) for video_id in video_ids]
-            print (len(download_data))
+            download_data = [(os.path.join(os.path.join(
+                (CONFIG_PATH), 'downloaded_videos'), video_id), video_id) for video_id in video_ids]
+            print(len(download_data))
             num_download = len(download_data)
-            #Code to restrict number downloaded, if you want
+            # Code to restrict number downloaded, if you want
             if (len(sys.argv) == 3):
                 num_download = int(sys.argv[2])
             download_data = download_data[0:num_download]
-            print (len(download_data))
+            print(len(download_data))
             with multiprocessing.Pool(4) as p:
                 p.map(download, download_data)
-                #I added this to stop executing, do we want this? Wasn't here before
+                # I added this to stop executing, do we want this? Wasn't here before
                 sys.exit()
         elif sys.argv[1] == 'face_detect':
             cur.execute("""
@@ -451,10 +464,10 @@ if __name__ == '__main__':
                             SET face_detect_queue_time='%s'
                             WHERE video_id='%s';
                             """ % (
-                                    datetime.datetime.now(),
-                                    video_id
-                                )
-                            )
+                    datetime.datetime.now(),
+                    video_id
+                )
+                )
             face_detect_data = [
                 (
                     os.path.join(download_path, video_id),
@@ -478,10 +491,10 @@ if __name__ == '__main__':
                              SET p2fa_queue_time='%s'
                              WHERE video_id='%s';
                              """ % (
-                                     datetime.datetime.now(),
-                                     video_id
-                                 )
-                             )
+                    datetime.datetime.now(),
+                    video_id
+                )
+                )
             align_data = [
                 (
                     os.path.join(download_path, video_id),
@@ -505,10 +518,10 @@ if __name__ == '__main__':
                              SET punctuation_check_queue_time='%s'
                              WHERE video_id='%s';
                              """ % (
-                                     datetime.datetime.now(),
-                                     video_id
-                                 )
-                             )
+                    datetime.datetime.now(),
+                    video_id
+                )
+                )
             punc_data = [
                 (
                     os.path.join(download_path, video_id),
