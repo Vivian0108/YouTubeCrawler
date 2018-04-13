@@ -2,6 +2,7 @@ secrets.py
 secrets.pyc
 .DS_Store
 generate_models.py
+
 # exclude everything
 downloaded_videos/*
 

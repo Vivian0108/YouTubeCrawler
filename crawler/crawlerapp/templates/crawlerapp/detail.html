@@ -45,7 +45,7 @@
   </row>
   <row>
     <form method="post">
-      {% csrf_token %} {% if executed == True or download_started == True %}
+      {% csrf_token %} {% if executed == False or download_started == True %}
       <button class="btn-large disabled">Download</button> {% else %}
       <button class="btn-large waves-effect waves-light" type="submit" value="download" name="download">Download</button> {% endif %}
     </form>
