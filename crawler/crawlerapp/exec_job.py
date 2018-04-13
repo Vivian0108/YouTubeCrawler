@@ -8,7 +8,6 @@ import subprocess
 import psycopg2
 import atexit
 import multiprocessing
-import pprint
 import json
 
 from apiclient.discovery import build
@@ -35,12 +34,11 @@ def process_search_response(job_id, job_name, query, search_response,client):
         sys.exit(1)
     cur = conn.cursor()
     conn.autocommit = True
-    pp = pprint.PrettyPrinter(indent=2)
+    inserted = 0
     for item in search_response['items']:
         video_id = item['id']['videoId']
         video_data = videos_list_by_id(client,part='snippet,contentDetails,statistics',id=video_id)
         for vid in video_data['items']:
-            pp.pprint(vid)
             channel_id = vid['snippet']['channelId']
             default_lang = None
             published_date = None
@@ -56,55 +54,62 @@ def process_search_response(job_id, job_name, query, search_response,client):
             try:
                 default_lang = vid['snippet']['defaultLanguage']
             except:
-                pass
+                print("Couldn't find defaultLang")
             try:
                 published_date = vid['snippet']['publishedAt']
             except:
-                pass
+                print("Couldn't find published date")
             try:
                 comment_count = vid['statistics']['commentCount']
             except:
-                pass
+                print("Couldn't find comment count")
             try:
                 dislike_count = vid['statistics']['dislikeCount']
             except:
-                pass
+                print("Couldn't find dislike count")
             try:
                 favorite_count = vid['statistics']['favoriteCount']
             except:
-                pass
+                print("Couldn't find favorite count")
             try:
                 like_count = vid['statistics']['likeCount']
             except:
-                pass
+                print("Couldn't find like count")
             try:
                 view_count = vid['statistics']['viewCount']
             except:
-                pass
+                print("Couldn't find view count")
             try:
                 captions = vid['contentDetails']['caption']
             except:
-                pass
+                print("Couldn't find captions")
             try:
                 video_def = vid['contentDetails']['definition']
             except:
-                pass
+                print("Couldn't find definition")
             try:
                 video_duration = vid['contentDetails']['duration']
             except:
-                pass
+                print("Couldn't find duration")
 
             try:
                 cur.execute('''INSERT INTO crawlerapp_video''' +
-                             '''(id,channel_id,query,cc_enabled,language,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,search_time,youtube_params)''' +
-                             '''VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');''' %
-                             (video_id,channel_id,query,captions,default_lang,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,datetime.datetime.now(),(json.dumps(vid)).replace("'", "''")))
-            except psycopg2.IntegrityError:
-                pass
-        try:
-            return search_response['nextPageToken']
-        except KeyError:
-            return None
+                            '''(id,channel_id,query,cc_enabled,language,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,search_time,youtube_params)''' +
+                            '''VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');''' %
+                            (video_id,channel_id,query,captions,default_lang,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,datetime.datetime.now(),(json.dumps(vid)).replace("'", "''")))
+                conn.commit()
+                inserted += 1
+            except:
+                print("Probably found the same video twice")
+
+    try:
+        cur.close()
+        conn.close()
+        return (search_response['nextPageToken'], inserted)
+    except KeyError:
+        cur.close()
+        conn.close()
+        return None
 
 def query(terms,job_id):
     conn = psycopg2.connect(
@@ -133,8 +138,11 @@ def query(terms,job_id):
 
     for (col, data) in terms:
         if col == 'language':
-            language = data
-        elif col == 'num_vids':
+            if data == '':
+                language = 'en'
+            else:
+                language = data
+        elif col == 'num_pages':
             num_vids = data
         elif col == 'query':
             query = data
@@ -154,9 +162,12 @@ def query(terms,job_id):
             job_name = data
         elif col == 'channel_id':
             channel_id = data
-    video_count = 0
+    page_count = 0
+    found_count = 0
+    print(num_vids)
     while (nextPageToken or initial):
-        if (video_count == int(num_vids)):
+        print(page_count)
+        if (page_count == int(num_vids)):
             break
         initial = False
         search_response = None
@@ -192,9 +203,16 @@ def query(terms,job_id):
                 pageToken=nextPageToken,
             ).execute()
         cur.execute('''UPDATE crawlerapp_job SET youtube_params = '%s' WHERE id = %s;''' % ((json.dumps(search_response)).replace("'", "''"), job_id))
-        nextPageToken = process_search_response(job_id, job_name, query, search_response,youtube)
+        
+        (nextPageToken,found) = process_search_response(job_id, job_name, query, search_response,youtube)
+        found_count += found
+        cur.execute('''UPDATE crawlerapp_job SET num_vids = '%s' WHERE id = %s;''' % (found_count, job_id))
         if nextPageToken:
-            video_count += 1
+            page_count += 1
+    conn.commit()
+    cur.close()
+    conn.close()
+    return found_count
 
 def ex(download_path, job_id):
     conn = psycopg2.connect(
@@ -214,7 +232,14 @@ def ex(download_path, job_id):
     )
     column_names = [i[0] for i in cur.fetchall()]
     zipped_row_data = list(zip(column_names, terms_list))
-    query(zipped_row_data,job_id)
-    return True
+    found_count = 0
+    found_count = query(zipped_row_data,job_id)
+    print(found_count)
+    cur.execute('''UPDATE crawlerapp_job SET num_vids = '%s' WHERE id = %s;''' % (found_count, job_id))
+    cur.execute('''UPDATE crawlerapp_job SET executed = '%s' WHERE id = %s;''' % (True, job_id))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return found_count
 if __name__ == '__main__':
     ex(download_path='downloaded_videos/', job_id="2")

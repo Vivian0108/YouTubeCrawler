@@ -10,14 +10,37 @@ from .forms import *
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from crawlerapp.exec_job import ex
+from crawlerapp.download import ex_download
+import threading
 import datetime
+
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
 
 
 def detail(request, job_id):
-    return HttpResponse("You're looking at job %s." % job_id)
+    job = Job.objects.filter(id=job_id).get()
+    context = {'job_name': job.name,
+               'job_num_vids': job.num_vids,
+               'job_videos': job.videos,
+               'job_language': job.language,
+               'job_channels': job.found_channels,
+               'job_query': job.query,
+               'job_created_date': job.created_date,
+               'job_user_id': job.user_id,
+               'job_filters': job.filters,
+               'cc': job.cc_enabled,
+               'executed': job.executed}
+    if request.method == "POST":
+        form = DownloadForm(request.POST)
+        print("Start download")
+        download_thread = threading.Thread(
+            target=ex_download, args=[job_id])
+        download_thread.start()
+    else:
+        form = DownloadForm()
+    return render(request, 'crawlerapp/detail.html', context)
 
 
 def index(request):
@@ -33,7 +56,6 @@ def job_create(request):
             job = Job()
             job.language = form.cleaned_data['language']
             job.name = form.cleaned_data['name']
-            job.num_vids = form.cleaned_data['num_vids']
             job.channel_id = form.cleaned_data['channel_id']
             job.query = form.cleaned_data['query']
             job.ordering = form.cleaned_data['ordering']
@@ -42,10 +64,17 @@ def job_create(request):
             job.video_def = form.cleaned_data['video_def']
             job.video_duration = form.cleaned_data['video_duration']
             job.created_date = datetime.datetime.now()
+            job.num_pages = form.cleaned_data['num_vids']
+            job.num_vids = 0
             job.save()
-            job.executed = ex(download_path='downloaded_videos/', job_id=str(job.id))
-
-            #return render('crawlerapp/detail.html',job.id)
+            #vid_count = ex(download_path='downloaded_videos/', job_id=str(job.id))
+            #job.num_vids = vid_count
+            #job.executed = True
+            # job.save()
+            job_thread = threading.Thread(
+                target=ex, args=('downloaded_videos/', str(job.id)))
+            job_thread.start()
+            return redirect('detail', job.id)
     else:
         form = CreateJobForm()
 

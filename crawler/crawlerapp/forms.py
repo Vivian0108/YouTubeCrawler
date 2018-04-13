@@ -28,7 +28,7 @@ class CreateJobForm(forms.Form):
     yt_rawlangs = [('','any')] + yt_rawlangs
     language = forms.ChoiceField(choices=yt_rawlangs,required=False)
     language.widget.attrs.update({'class': 'browser-default'})
-    num_vids = forms.IntegerField(help_text="How many videos do you want to crawl?")
+    num_vids = forms.IntegerField(help_text="What is the max number of videos you want to crawl (in multiples of 50)?")
     query = forms.CharField(help_text="What you want youtube to search for")
     channel_id = forms.CharField(help_text="Only crawl this channel ID", required=False)
     ordering = forms.ChoiceField(choices=[("date","date"),("rating","rating"),("relevance","relevance"),("title","title"),("videoCount","video count"),("viewCount","view count")],
@@ -50,3 +50,6 @@ class CreateJobForm(forms.Form):
                 _('Invalid number of videos - crawl at least 1 video!'))
         return data
     name = forms.CharField(help_text="Name your job")
+
+class DownloadForm(forms.Form):
+    download_path = "downloaded_videos/"

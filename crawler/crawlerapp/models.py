@@ -7,6 +7,7 @@ from django.db import models
 class Job(models.Model):
     language = models.CharField(max_length=50)
     num_vids = models.IntegerField(default=10)
+    num_pages = models.IntegerField(default=10)
     # videos should be video ids seperated by commas
     videos = models.TextField(default="")
     # channels should be channel ids seperated by commas
@@ -19,7 +20,7 @@ class Job(models.Model):
     # filters should be filter ids seperated by commas
     filters = models.TextField(default="")
     cc_enabled = models.CharField(default="",max_length=50)
-    youtube_params = JSONField(default=list)
+    youtube_params = JSONField(default=list,null=True)
     video_def = models.CharField(max_length=15,default="")
     video_duration = models.CharField(max_length=15,default="")
     safe_search = models.CharField(max_length=15,default="")
@@ -38,7 +39,7 @@ class Video(models.Model):
     download_path = models.TextField(default="",null=True)
     download_success = models.NullBooleanField()
     mturk_description = models.TextField(default="",null=True)
-    youtube_params = JSONField(default=list)
+    youtube_params = JSONField(default=list,null=True)
     query = models.TextField(default="",null=True)
     job_name = models.CharField(max_length=50,default="",null=True)
     job_id = models.CharField(max_length=15,default="",null=True)
@@ -54,11 +55,11 @@ class Channel(models.Model):
     videos = models.TextField(default="")
     search_time = models.DateTimeField(default=None, blank=True, null=True)
     owner = models.TextField(default="")
-    youtube_params = JSONField(default=list)
+    youtube_params = JSONField(default=list,null=True)
 class PlayList(models.Model):
     id = models.CharField(max_length=15,default="",primary_key=True)
     search_time = models.DateTimeField(default=None, blank=True, null=True)
     # videos should be video ids seperated by commas
     videos = models.TextField(default="")
     owner = models.TextField(default="")
-    youtube_params = JSONField(default=list)
+    youtube_params = JSONField(default=list,null=True)
