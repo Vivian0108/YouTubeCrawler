@@ -31,10 +31,12 @@ def detail(request, job_id):
                'job_user_id': job.user_id,
                'job_filters': job.filters,
                'cc': job.cc_enabled,
-               'executed': job.executed}
+               'executed': job.executed,
+               'download_started': "False"}
     if request.method == "POST":
         form = DownloadForm(request.POST)
         print("Start download")
+        context['download_started'] = "True"
         download_thread = threading.Thread(
             target=ex_download, args=[job_id])
         download_thread.start()
