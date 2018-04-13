@@ -41,7 +41,7 @@ def download(download_data):
             ydl.download([YOUTUBE_BASE_URL + video_id])
         except:
             cur_.execute("""
-                         UPDATE youtube_data
+                         UPDATE crawlerapp_video
                          SET download_time='%s',
                              download_success='%s',
                              download_path='%s'
@@ -126,6 +126,10 @@ def ex_download(job_id):
     for data in download_data:
         print("Downloading: " + str(data))
         download(data)
+    cur.execute('''UPDATE crawlerapp_job SET download_finished = '%s' WHERE id = '%s' ''' % (True, job_id))
+    conn.commit()
+    cur.close()
+    conn.close()
     #with multiprocessing.Pool(1) as p:
     #    p.map(download, download_data)
         # I added this to stop executing, do we want this? Wasn't here before

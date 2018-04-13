@@ -26,6 +26,8 @@ class Job(models.Model):
     safe_search = models.CharField(max_length=15,default="")
     ordering = models.CharField(max_length=15,default="")
     executed = models.BooleanField(default=False)
+    download_finished = models.BooleanField(default=False)
+    download_started = models.BooleanField(default=False)
 class Video(models.Model):
     id = models.CharField(max_length=50, default="", primary_key=True)
     channel_id = models.CharField(max_length=50,default="",null=True)

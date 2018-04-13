@@ -21,6 +21,7 @@ def home(request):
 
 def detail(request, job_id):
     job = Job.objects.filter(id=job_id).get()
+    print(job.download_started)
     context = {'job_name': job.name,
                'job_num_vids': job.num_vids,
                'job_videos': job.videos,
@@ -32,17 +33,22 @@ def detail(request, job_id):
                'job_filters': job.filters,
                'cc': job.cc_enabled,
                'executed': job.executed,
-               'download_started': "False"}
+               'download_started': job.download_started,
+               'download_finished': job.download_finished,
+               'job_id': job.id}
     if request.method == "POST":
         form = DownloadForm(request.POST)
         print("Start download")
-        context['download_started'] = "True"
+        job.download_started = True
+        job.save()
+        context['download_started'] = True
         download_thread = threading.Thread(
             target=ex_download, args=[job_id])
         download_thread.start()
+        return redirect('detail', job.id)
     else:
         form = DownloadForm()
-    return render(request, 'crawlerapp/detail.html', context)
+        return render(request, 'crawlerapp/detail.html', context)
 
 
 def index(request):

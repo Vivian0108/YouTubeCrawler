@@ -1,0 +1,346 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:01.300 --> 00:00:05.520
+Hello, it is time for training and today's video is on System Testing.
+
+00:00:06.670 --> 00:00:11.189
+System testing means testing the complete system with respect to the requirements.
+
+00:00:11.889 --> 00:00:13.889
+If you are a software developer,
+
+00:00:14.139 --> 00:00:21.028
+system testing is the last test you will do before handing over the system to the users for acceptance testing.
+
+00:00:21.760 --> 00:00:29.399
+If you are a tester, the bulk of your testing activities will happen in the system testing level. That is why system testing is very
+
+00:00:29.619 --> 00:00:31.619
+important.
+
+00:00:31.779 --> 00:00:37.979
+I have seen a lot of material on system testing on the internet and a lot of it is
+
+00:00:38.829 --> 00:00:44.039
+incorrect and there is a lot of confusion on this system testing topic.
+
+00:00:44.379 --> 00:00:47.219
+So, let us see the System Testing in detail.
+
+00:00:48.940 --> 00:00:55.020
+Now, if you look at the levels of testing, you will see that we have unit testing, integration testing,
+
+00:00:55.449 --> 00:00:58.019
+system testing and acceptance testing.
+
+00:00:58.840 --> 00:01:01.379
+If you are following the waterfall SDLC
+
+00:01:02.020 --> 00:01:04.020
+(the software development life cycle),
+
+00:01:04.960 --> 00:01:06.490
+then these
+
+00:01:06.490 --> 00:01:09.689
+testing levels are conducted sequentially.
+
+00:01:10.540 --> 00:01:15.569
+If it is the Agile software development life cycle that you follow,
+
+00:01:15.880 --> 00:01:20.549
+then these testing levels can be in parallel for different parts of the software.
+
+00:01:22.600 --> 00:01:28.019
+So first of all, what is done is unit testing? Unit testing means
+
+00:01:28.600 --> 00:01:31.259
+testing the unit or the element of the software and
+
+00:01:33.009 --> 00:01:40.319
+the developer tests the unit by writing unit tests on it to check for things like
+
+00:01:42.040 --> 00:01:46.919
+statement coverage, branch coverage, condition coverage etc.
+
+00:01:48.159 --> 00:01:54.389
+Then the next level is the Integration Testing. Integration Testing is when the developers combine the different
+
+00:01:55.390 --> 00:02:01.229
+tested units and see if their integration points are working correctly or not?
+
+00:02:02.229 --> 00:02:08.368
+Whether they pass data from one unit to another and back correctly or not?
+
+00:02:09.610 --> 00:02:11.669
+System testing is done after
+
+00:02:12.580 --> 00:02:14.580
+integration testing is complete and
+
+00:02:15.080 --> 00:02:19.509
+system testing Involves testing the functional and the non-functional requirements.
+
+00:02:20.150 --> 00:02:22.420
+And once system testing is complete,
+
+00:02:23.240 --> 00:02:26.529
+acceptance testing is done either by the end users or
+
+00:02:27.350 --> 00:02:29.679
+people who represent the end users.
+
+00:02:31.610 --> 00:02:39.160
+Now, one thing to notice here is that unit testing and integration testing are white box testing.
+
+00:02:40.130 --> 00:02:47.139
+Because unit testing and integration testing involves having a knowledge about the software internals.
+
+00:02:48.440 --> 00:02:54.009
+System testing and acceptance testing are a combination of black box testing and white box testing.
+
+00:02:55.880 --> 00:03:03.039
+Majority of the system testing and acceptance testing can be done in a black box fashion (without knowing details about the internals).
+
+00:03:03.040 --> 00:03:07.209
+But there are some types of testing done in system testing like
+
+00:03:08.330 --> 00:03:11.169
+performance testing and security testing, which do require
+
+00:03:12.410 --> 00:03:16.600
+knowledge about the internal of the software.
+
+00:03:18.320 --> 00:03:21.820
+But overall, we can say that unit testing and integration testing are
+
+00:03:22.549 --> 00:03:28.569
+majorly white box testing. And system testing and acceptance testing are majorly black box testing.
+
+00:03:30.560 --> 00:03:38.229
+Now, let us look at system testing from a different angle. Now system testing involves testing of the requirements.
+
+00:03:39.170 --> 00:03:41.170
+There are two
+
+00:03:41.209 --> 00:03:44.828
+sets of requirements. One is the requirement specifications.
+
+00:03:45.560 --> 00:03:53.470
+Now, requirement specifications can be in the form of functional requirement specifications or user stories.
+
+00:03:54.140 --> 00:03:56.440
+Then there are system specifications.
+
+00:03:56.959 --> 00:04:00.849
+System specifications are the design specifications. So these
+
+00:04:01.370 --> 00:04:04.299
+exist in design documents. So in system testing,
+
+00:04:05.239 --> 00:04:06.859
+both these
+
+00:04:06.859 --> 00:04:09.249
+sets of requirements have to be tested.
+
+00:04:10.880 --> 00:04:12.880
+Now,
+
+00:04:13.459 --> 00:04:14.780
+the
+
+00:04:14.780 --> 00:04:16.310
+requirements specifications
+
+00:04:16.310 --> 00:04:21.669
+basically indicate what is the behavior (expected behavior) of the system and
+
+00:04:23.180 --> 00:04:29.590
+the system specifications indicate what is the design of the system. So both these things are tested in system testing.
+
+00:04:31.550 --> 00:04:38.440
+Another way to look at system testing is the types of testing that can be done in within the system testing level.
+
+00:04:39.080 --> 00:04:42.879
+So first of all, is the sanity testing. Sanity testing means
+
+00:04:44.240 --> 00:04:49.690
+testing whether the system provided to the tester for testing is
+
+00:04:50.840 --> 00:04:53.889
+basically correct or not?
+
+00:04:54.319 --> 00:04:59.319
+So, if it works correctly at a higher level or not? That means it is possible to
+
+00:05:00.650 --> 00:05:02.650
+maybe, login to the system
+
+00:05:03.050 --> 00:05:05.050
+after starting the application,
+
+00:05:05.479 --> 00:05:09.848
+go through the major functionality. So, that is the sanity testing.
+
+00:05:10.520 --> 00:05:13.870
+Another type of testing in system testing is the installation testing.
+
+00:05:14.810 --> 00:05:21.310
+Installation testing involves deploying the system on to the test environment or
+
+00:05:22.310 --> 00:05:24.310
+it can be just
+
+00:05:26.060 --> 00:05:31.179
+deploying the system on one of the different possible test environments.
+
+00:05:32.569 --> 00:05:39.759
+Then a major type of testing within system testing is the functional testing. Functional testing can be either scripted or exploratory.
+
+00:05:40.639 --> 00:05:42.848
+Scripted functional testing means using
+
+00:05:43.669 --> 00:05:47.528
+pre-written test cases and executing those pre-written test cases.
+
+00:05:48.590 --> 00:05:50.590
+Exploratory functional testing is
+
+00:05:51.770 --> 00:05:53.029
+working without
+
+00:05:53.029 --> 00:05:56.469
+the pre-written test cases. So, the tester
+
+00:05:57.020 --> 00:06:00.490
+goes about designing the tests on the fly and
+
+00:06:01.729 --> 00:06:03.729
+executing them to find out the defects.
+
+00:06:04.610 --> 00:06:12.250
+Then another type of testing in the system testing can be the security testing. Security testing is testing for
+
+00:06:12.949 --> 00:06:14.690
+vulnerabilities or
+
+00:06:14.690 --> 00:06:16.400
+some
+
+00:06:16.400 --> 00:06:19.719
+security issues (security defects) within the system.
+
+00:06:20.389 --> 00:06:21.620
+Then
+
+00:06:21.620 --> 00:06:28.299
+usability testing. Usability testing means how usable the system is from the point of view of a new user, who is
+
+00:06:29.210 --> 00:06:30.710
+not having
+
+00:06:30.710 --> 00:06:32.029
+prior
+
+00:06:32.029 --> 00:06:37.119
+experience with the system. How easy and efficient it is for a user to
+
+00:06:37.490 --> 00:06:44.260
+work with the system? And then there can be accessibility testing. Accessibility testing means testing
+
+00:06:45.830 --> 00:06:49.659
+on behalf of users who have some disabilities.
+
+00:06:51.620 --> 00:06:53.620
+Whether they have some sight
+
+00:06:53.870 --> 00:06:55.550
+disability or
+
+00:06:55.550 --> 00:06:59.950
+they have some hearing disability. So, that is the accessibility testing.
+
+00:07:00.680 --> 00:07:02.240
+Performance testing
+
+00:07:02.240 --> 00:07:04.240
+is also
+
+00:07:04.430 --> 00:07:09.040
+done within system testing. And performance testing means testing for
+
+00:07:09.740 --> 00:07:11.740
+system performance
+
+00:07:12.440 --> 00:07:14.150
+qualities like
+
+00:07:14.150 --> 00:07:16.150
+response time, throughput,
+
+00:07:16.850 --> 00:07:24.459
+concurrent users that the system can support at any one time. And then there is regression testing. Regression testing means that
+
+00:07:24.830 --> 00:07:28.330
+testing that there is no regression in the system.
+
+00:07:29.930 --> 00:07:35.830
+Whatever functionalities were working previously, continue to work. Whatever bugs were closed in the past,
+
+00:07:36.350 --> 00:07:38.350
+continued to be closed.
+
+00:07:39.890 --> 00:07:45.999
+And if you see, that this is the general order of the testing activities in the system testing.
+
+00:07:46.580 --> 00:07:53.259
+So first of all, when the system is provided to the testers for testing...
+
+00:07:53.840 --> 00:07:59.230
+First of all, they do the sanity testing to test whether the system should be tested further or not?
+
+00:07:59.810 --> 00:08:06.220
+If it passes the sanity testing, then installation testing is done to see if the system installs correctly or not.
+
+00:08:06.980 --> 00:08:12.399
+Then there is functional testing to test for all the functional requirements.
+
+00:08:13.190 --> 00:08:20.200
+Then there can be security testing to test that the data is secure, private and so on.
+
+00:08:20.840 --> 00:08:26.020
+Then there is the usability testing testing it from ease of use and
+
+00:08:27.950 --> 00:08:33.580
+efficient use point of view. Then performance testing to test for fast response,
+
+00:08:34.729 --> 00:08:41.679
+high throughput and being able to support the required number of users. And finally, the regression testing is done.
+
+00:08:43.219 --> 00:08:45.219
+Overall in system testing,
+
+00:08:46.010 --> 00:08:53.830
+we have to cover all these types of relevant testing that is required in the system. And overall the activities are
+
+00:08:54.079 --> 00:08:56.769
+first of all, you create the system test plan.
+
+00:08:57.589 --> 00:09:01.929
+Then you create the system test cases, create the required test data,
+
+00:09:02.269 --> 00:09:06.219
+execute the system test cases and report defects and test progress.
+
+00:09:07.070 --> 00:09:12.639
+So, this is an overview of system testing. So,  I hope you understood
+
+00:09:14.449 --> 00:09:20.529
+mainly what system testing really is and you were exposed to different
+
+00:09:22.339 --> 00:09:25.448
+important information about system testing. Thank you very much.
+
