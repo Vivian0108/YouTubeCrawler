@@ -122,8 +122,11 @@ def ex_download(job_id):
     if (len(sys.argv) == 3):
         num_download = int(sys.argv[2])
     download_data = download_data[0:num_download]
-    print(len(download_data))
-    with multiprocessing.Pool(4) as p:
-        p.map(download, download_data)
+    #Downloads videos sequentially, python doesnt like downloading them in parallel in another thread
+    for data in download_data:
+        print("Downloading: " + str(data))
+        download(data)
+    #with multiprocessing.Pool(1) as p:
+    #    p.map(download, download_data)
         # I added this to stop executing, do we want this? Wasn't here before
-        sys.exit()
+        #sys.exit()
