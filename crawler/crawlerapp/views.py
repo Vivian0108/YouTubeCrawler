@@ -21,7 +21,6 @@ def home(request):
 
 def detail(request, job_id):
     job = Job.objects.filter(id=job_id).get()
-    print(job.download_started)
     context = {'job_name': job.name,
                'job_num_vids': job.num_vids,
                'job_videos': job.videos,

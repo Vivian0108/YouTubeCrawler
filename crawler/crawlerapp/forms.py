@@ -24,6 +24,7 @@ class CreateJobForm(forms.Form):
     #language = models.CharField(max_length=50)
     #num_vids = models.IntegerField(default=10)
     #name = models.TextField(default="")
+    name = forms.CharField(help_text="Name your job")
     yt_rawlangs = run_cmds()
     yt_rawlangs = [('','any')] + yt_rawlangs
     language = forms.ChoiceField(choices=yt_rawlangs,required=False)
@@ -41,7 +42,8 @@ class CreateJobForm(forms.Form):
     video_def = forms.ChoiceField(choices=[("any","any"),("high","high"),("standard","standard")])
     video_duration = forms.ChoiceField(choices=[("any","any"),("long","long"),("medium","medium"),("short","short")])
     video_duration.widget.attrs.update({'class': 'browser-default'})
-
+    auto_download = forms.ChoiceField(help_text="Auto download after crawl is finished",choices=[(False,"Manual"),(True,"Automatic")])
+    auto_download.widget.attrs.update({'class': 'browser-default'})
 
     def clean_num_vids(self):
         data = self.cleaned_data['num_vids']
@@ -49,7 +51,6 @@ class CreateJobForm(forms.Form):
             raise ValidationError(
                 _('Invalid number of videos - crawl at least 1 video!'))
         return data
-    name = forms.CharField(help_text="Name your job")
 
 class DownloadForm(forms.Form):
     download_path = "downloaded_videos/"
