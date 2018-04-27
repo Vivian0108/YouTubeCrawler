@@ -42,8 +42,6 @@ class CreateJobForm(forms.Form):
     video_def = forms.ChoiceField(choices=[("any","any"),("high","high"),("standard","standard")])
     video_duration = forms.ChoiceField(choices=[("any","any"),("long","long"),("medium","medium"),("short","short")])
     video_duration.widget.attrs.update({'class': 'browser-default'})
-    auto_download = forms.ChoiceField(help_text="Auto download after crawl is finished",choices=[(False,"Manual"),(True,"Automatic")])
-    auto_download.widget.attrs.update({'class': 'browser-default'})
 
     def clean_num_vids(self):
         data = self.cleaned_data['num_vids']
