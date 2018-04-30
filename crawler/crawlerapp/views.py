@@ -18,6 +18,10 @@ import datetime
 def home(request):
     return render(request, 'crawlerapp/landing.html')
 
+def all(request):
+    jobs = Job.objects.all()
+    context = {'jobs': jobs}
+    return render(request,'crawlerapp/all.html',context)
 
 def detail(request, job_id):
     job = Job.objects.filter(id=job_id).get()
