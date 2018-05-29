@@ -7,23 +7,30 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 import datetime
 from .forms import *
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from crawlerapp.exec_job import ex
 from crawlerapp.download import ex_download
 import threading
 import datetime
-
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
 
 def all(request):
+    if not (request.user.is_authenticated):
+        return HttpResponseRedirect('/accounts/login/')
+    if not request.user.is_authenticated():
+        return render(request, 'crawlerapp/accounts/login/')
     jobs = Job.objects.all()
     context = {'jobs': jobs}
     return render(request,'crawlerapp/all.html',context)
 
+
 def detail(request, job_id):
+    if not request.user.is_authenticated():
+        return render(request, 'crawlerapp/accounts/login/')
     job = Job.objects.filter(id=job_id).get()
     context = {'job_name': job.name,
                'job_num_vids': job.num_vids,
@@ -55,12 +62,15 @@ def detail(request, job_id):
 
 
 def index(request):
+    if not (request.user.is_authenticated):
+        return HttpResponseRedirect('/accounts/login/')
     jobs = Job.objects.all()
     context = {'jobs': jobs}
     return render(request, 'crawlerapp/index.html', context)
 
-
 def job_create(request):
+    if not (request.user.is_authenticated):
+        return HttpResponseRedirect('/accounts/login/')
     if request.method == "POST":
         form = CreateJobForm(request.POST)
         if form.is_valid():
