@@ -88,13 +88,15 @@ def job_create(request):
             job.created_date = datetime.datetime.now()
             job.num_pages = form.cleaned_data['num_vids']
             job.num_vids = 0
+            job.download_started = form.cleaned_data['auto_download']
             job.save()
+            auto_download = job.download_started
             #vid_count = ex(download_path='downloaded_videos/', job_id=str(job.id))
             #job.num_vids = vid_count
             #job.executed = True
             # job.save()
             job_thread = threading.Thread(
-                target=ex, args=('downloaded_videos/', str(job.id)))
+                target=ex, args=(auto_download, str(job.id)))
             job_thread.start()
             return redirect('detail', job.id)
     else:

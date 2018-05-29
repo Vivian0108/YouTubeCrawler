@@ -9,6 +9,7 @@ import psycopg2
 import atexit
 import multiprocessing
 import json
+from crawlerapp.download import ex_download
 
 from apiclient.discovery import build
 from apiclient.discovery import HttpError
@@ -203,7 +204,7 @@ def query(terms,job_id):
                 pageToken=nextPageToken,
             ).execute()
         cur.execute('''UPDATE crawlerapp_job SET youtube_params = '%s' WHERE id = %s;''' % ((json.dumps(search_response)).replace("'", "''"), job_id))
-        
+
         (nextPageToken,found) = process_search_response(job_id, job_name, query, search_response,youtube)
         found_count += found
         cur.execute('''UPDATE crawlerapp_job SET num_vids = '%s' WHERE id = %s;''' % (found_count, job_id))
@@ -214,7 +215,7 @@ def query(terms,job_id):
     conn.close()
     return found_count
 
-def ex(download_path, job_id):
+def ex(auto_download, job_id):
     conn = psycopg2.connect(
             dbname="crawler_db",
             user="crawler_usr",
@@ -238,8 +239,12 @@ def ex(download_path, job_id):
     cur.execute('''UPDATE crawlerapp_job SET num_vids = '%s' WHERE id = %s;''' % (found_count, job_id))
     cur.execute('''UPDATE crawlerapp_job SET executed = '%s' WHERE id = %s;''' % (True, job_id))
     conn.commit()
+
     cur.close()
     conn.close()
+
+    if auto_download:
+        ex_download(job_id)
     return found_count
 if __name__ == '__main__':
     ex(download_path='downloaded_videos/', job_id="2")

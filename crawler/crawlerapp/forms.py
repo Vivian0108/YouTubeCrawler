@@ -42,7 +42,8 @@ class CreateJobForm(forms.Form):
     video_def = forms.ChoiceField(choices=[("any","any"),("high","high"),("standard","standard")])
     video_duration = forms.ChoiceField(choices=[("any","any"),("long","long"),("medium","medium"),("short","short")])
     video_duration.widget.attrs.update({'class': 'browser-default'})
-
+    auto_download = forms.ChoiceField(choices=[("False","False"),("True","True")])
+    auto_download.widget.attrs.update({'class': 'browser-default'})
     def clean_num_vids(self):
         data = self.cleaned_data['num_vids']
         if data < 1:  # need to crawl for at least 1 video
