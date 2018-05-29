@@ -20,7 +20,7 @@ def home(request):
 
 def all(request):
     if not request.user.is_authenticated:
-        return render(request, 'crawlerapp/accounts/login/')
+        return HttpResponseRedirect('/accounts/login/')
     jobs = Job.objects.all()
     context = {'jobs': jobs}
     return render(request,'crawlerapp/all.html',context)
@@ -28,7 +28,7 @@ def all(request):
 
 def detail(request, job_id):
     if not (request.user.is_authenticated):
-        return render(request, 'crawlerapp/accounts/login/')
+        return HttpResponseRedirect('/accounts/login/')
     try:
         job = Job.objects.filter(id=job_id).get()
     except:
