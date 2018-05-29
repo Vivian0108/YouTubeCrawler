@@ -116,7 +116,6 @@ def ex_download(job_id):
 #            ]
     download_data = [(os.path.join(os.path.join(
         (CONFIG_PATH), 'downloaded_videos'), video_id), video_id) for video_id in video_ids]
-    print(len(download_data))
     num_download = len(download_data)
     # Code to restrict number downloaded, if you want
     if (len(sys.argv) == 3):
@@ -124,7 +123,6 @@ def ex_download(job_id):
     download_data = download_data[0:num_download]
     #Downloads videos sequentially, python doesnt like downloading them in parallel in another thread
     for data in download_data:
-        print("Downloading: " + str(data))
         download(data)
     cur.execute('''UPDATE crawlerapp_job SET download_finished = '%s' WHERE id = '%s' ''' % (True, job_id))
     conn.commit()

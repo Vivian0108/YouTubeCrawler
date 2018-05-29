@@ -1,19 +1,14 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import *
-from django.views import generic
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-import datetime
 from .forms import *
+from django.views import generic
+from django.urls import reverse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
-from crawlerapp.exec_job import ex
-from crawlerapp.download import ex_download
-import threading
 import datetime
 from django.contrib.auth.decorators import login_required
+from crawlerapp.tasks import crawl_async, download_async
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -49,13 +44,10 @@ def detail(request, job_id):
                'job_id': job.id}
     if request.method == "POST":
         form = DownloadForm(request.POST)
-        print("Start download")
         job.download_started = True
         job.save()
         context['download_started'] = True
-        download_thread = threading.Thread(
-            target=ex_download, args=[job_id])
-        download_thread.start()
+        download_async.delay(job_id)
         return redirect('detail', job.id)
     else:
         form = DownloadForm()
@@ -91,13 +83,7 @@ def job_create(request):
             job.download_started = form.cleaned_data['auto_download']
             job.save()
             auto_download = job.download_started
-            #vid_count = ex(download_path='downloaded_videos/', job_id=str(job.id))
-            #job.num_vids = vid_count
-            #job.executed = True
-            # job.save()
-            job_thread = threading.Thread(
-                target=ex, args=(auto_download, str(job.id)))
-            job_thread.start()
+            crawl_async.delay(auto_download,str(job.id))
             return redirect('detail', job.id)
     else:
         form = CreateJobForm()
