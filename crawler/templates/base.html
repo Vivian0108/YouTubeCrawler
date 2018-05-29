@@ -22,6 +22,7 @@
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <li><a href="{% url 'signup' %}">Sign Up</a></li>
         <li><a href="{% url 'login' %}">Log In</a></li>
+        <li><a id="logout" href="#">Log Out</a></li>
         <li><a href="{% url 'job-create' %}">Create Job</a></li>
         <li><a id="find" href="#">Find a Job</a></li>
         <li><a href="{% url 'all' %}">View All Jobs</a></li>
@@ -43,6 +44,19 @@
     </div>
   </div>
 
+  <div id="logout_confirm" class="modal">
+    <div class="modal-content">
+      <div class="input-field col s6">
+        <center>
+          <h4>Are you sure you want to logout?</h4>
+        </center>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a id="logout_btn" href="{% url 'logout' %}" class="modal-action waves-effect waves-green btn-flat">Confirm</a>
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Go Back</a>
+    </div>
+  </div>
   <!--JavaScript at end of body for optimized loading-->
   <script type="text/javascript" src="{% static '/js/materialize.min.js' %}"></script>
   <script>
@@ -56,6 +70,9 @@
     });
     $('#find').click(function() {
       $('#findmodal').modal('open');
+    });
+    $('#logout').click(function() {
+      $('#logout_confirm').modal('open');
     });
   </script>
 </body>
