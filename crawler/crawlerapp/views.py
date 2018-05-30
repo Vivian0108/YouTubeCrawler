@@ -51,6 +51,7 @@ def detail(request, job_id):
         return redirect('detail', job.id)
     else:
         form = DownloadForm()
+        context['form'] = form
         return render(request, 'crawlerapp/detail.html', context)
 
 

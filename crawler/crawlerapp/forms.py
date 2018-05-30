@@ -43,3 +43,4 @@ class CreateJobForm(forms.Form):
 
 class DownloadForm(forms.Form):
     download_path = "downloaded_videos/"
+    filters = forms.MultipleChoiceField(choices=[("x","Filter X"),("y","Filter Y"),("z","Filter Z")])
