@@ -263,10 +263,6 @@ def ex(auto_download, job_id):
     cur.close()
     conn.close()
 
-    if auto_download:
+    if auto_download == True:
         ex_download(job_id)
     return found_count
-
-
-if __name__ == '__main__':
-    ex(download_path='downloaded_videos/', job_id="2")
