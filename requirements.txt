@@ -57,7 +57,6 @@ MarkupSafe==1.0
 matplotlib==2.1.1
 mistune==0.8.3
 mosspy==1.0.5
-mossum==0.1.1
 nameparser==0.5.6
 nbconvert==5.3.1
 nbformat==4.4.0
