@@ -114,7 +114,7 @@ def process_search_response(job_id, job_name, query, search_response, client):
                 conn.commit()
                 inserted += 1
             except:
-                print("Probably found the same video twice")
+                pass
 
     try:
         cur.close()
@@ -123,7 +123,7 @@ def process_search_response(job_id, job_name, query, search_response, client):
     except KeyError:
         cur.close()
         conn.close()
-        return None
+        return (None,inserted)
 
 
 def query(terms, job_id):
@@ -216,6 +216,8 @@ def query(terms, job_id):
                 maxResults=50,
                 pageToken=nextPageToken,
             ).execute()
+        if search_response is None:
+            break
         cur.execute('''UPDATE crawlerapp_job SET youtube_params = '%s' WHERE id = %s;''' % (
             (json.dumps(search_response)).replace("'", "''"), job_id))
 

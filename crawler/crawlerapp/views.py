@@ -16,7 +16,7 @@ def home(request):
 def all(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/accounts/login/')
-    jobs = Job.objects.all()
+    jobs = Job.objects.order_by('-id')
     context = {'jobs': jobs}
     return render(request,'crawlerapp/all.html',context)
 

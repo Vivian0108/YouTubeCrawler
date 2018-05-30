@@ -20,10 +20,6 @@ class SignUpForm(UserCreationForm):
 
 
 class CreateJobForm(forms.Form):
-    #created_date = models.DateTimeField(auto_now_add=True)
-    #language = models.CharField(max_length=50)
-    #num_vids = models.IntegerField(default=10)
-    #name = models.TextField(default="")
     name = forms.CharField(help_text="Name your job")
     yt_rawlangs = run_cmds()
     yt_rawlangs = [('','any')] + yt_rawlangs
