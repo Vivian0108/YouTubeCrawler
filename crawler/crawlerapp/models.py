@@ -6,8 +6,8 @@ from django.db import models
 
 class Job(models.Model):
     language = models.CharField(max_length=50)
-    num_vids = models.IntegerField(default=10)
-    num_pages = models.IntegerField(default=10)
+    num_vids = models.IntegerField(default=None, blank=True, null=True)
+    num_pages = models.IntegerField(default=None, blank=True, null=True)
     # videos should be video ids seperated by commas
     videos = models.TextField(default="")
     # channels should be channel ids seperated by commas

@@ -25,7 +25,7 @@ class CreateJobForm(forms.Form):
     yt_rawlangs = [('','any')] + yt_rawlangs
     language = forms.ChoiceField(choices=yt_rawlangs,required=False)
     language.widget.attrs.update({'class': 'browser-default'})
-    num_vids = forms.IntegerField(help_text="What is the max number of videos you want to crawl (in multiples of 50)?")
+    num_vids = forms.IntegerField(help_text="What is the max number of videos you want to crawl (in multiples of 50)? Leave blank for as many as possible.", required=False)
     query = forms.CharField(help_text="What you want youtube to search for")
     channel_id = forms.CharField(help_text="Only crawl this channel ID", required=False)
     ordering = forms.ChoiceField(choices=[("relevance","relevance"),("date","date"),("rating","rating"),("title","title"),("videoCount","video count"),("viewCount","view count")],
@@ -40,12 +40,6 @@ class CreateJobForm(forms.Form):
     video_duration.widget.attrs.update({'class': 'browser-default'})
     auto_download = forms.ChoiceField(choices=[(False,"False"),(True,"True")])
     auto_download.widget.attrs.update({'class': 'browser-default'})
-    def clean_num_vids(self):
-        data = self.cleaned_data['num_vids']
-        if data < 1:  # need to crawl for at least 1 video
-            raise ValidationError(
-                _('Invalid number of videos - crawl at least 1 video!'))
-        return data
 
 class DownloadForm(forms.Form):
     download_path = "downloaded_videos/"

@@ -141,7 +141,7 @@ def query(terms, job_id):
     nextPageToken = None
 
     language = ""
-    num_vids = 0
+    num_vids = None
     query = ""
     cc_enabled = ""
     video_def = ""
@@ -181,7 +181,7 @@ def query(terms, job_id):
     page_count = 0
     found_count = 0
     while (nextPageToken or initial):
-        if (page_count == int(num_vids)):
+        if ((not (num_vids is None)) and page_count == int(num_vids)):
             break
         initial = False
         search_response = None
