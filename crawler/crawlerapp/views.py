@@ -82,6 +82,7 @@ def job_create(request):
             job.num_pages = form.cleaned_data['num_vids']
             job.num_vids = 0
             job.download_started = form.cleaned_data['auto_download']
+            job.user_id = request.user.username
             job.save()
             auto_download = job.download_started
             crawl_async.delay(auto_download,str(job.id))
@@ -91,6 +92,24 @@ def job_create(request):
 
     return render(request, 'crawlerapp/job_create.html', {'form': form})
 
+def dataset_create(request):
+    if not (request.user.is_authenticated):
+        return HttpResponseRedirect('/accounts/login/')
+    if request.method == "POST":
+        form = CreateDatasetForm(request.user,request.POST)
+        if form.is_valid():
+            dataset = Dataset()
+            dataset.jobs_list = form.cleaned_data['jobs_list']
+            dataset.name = form.cleaned_data['name']
+            dataset.description = form.cleaned_data['description']
+            dataset.created_date = datetime.datetime.now()
+            dataset.user_id = request.user.username
+            dataset.save()
+            return render(request, 'crawlerapp/landing.html')
+    else:
+        form = CreateDatasetForm(request.user)
+
+    return render(request, 'crawlerapp/dataset_create.html', {'form': form})
 
 def signup(request):
     if request.method == 'POST':

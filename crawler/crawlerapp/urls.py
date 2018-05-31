@@ -12,4 +12,5 @@ urlpatterns = [
     path('jobs/<int:job_id>/', views.detail, name='detail'),
     path('jobs/new/', views.job_create, name='job-create'),
     path('jobs/all/', views.all,name='all'),
+    path('dataset/new/',views.dataset_create,name='dataset-create'),
 ]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

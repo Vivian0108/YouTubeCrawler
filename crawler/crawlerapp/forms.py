@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import *
 from crawlerapp.generate_models import run_cmds
+
 
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField(
@@ -22,25 +24,52 @@ class SignUpForm(UserCreationForm):
 class CreateJobForm(forms.Form):
     name = forms.CharField(help_text="Name your job")
     yt_rawlangs = run_cmds()
-    yt_rawlangs = [('','any')] + yt_rawlangs
-    language = forms.ChoiceField(choices=yt_rawlangs,required=False)
+    yt_rawlangs = [('', 'any')] + yt_rawlangs
+    language = forms.ChoiceField(choices=yt_rawlangs, required=False)
     language.widget.attrs.update({'class': 'browser-default'})
-    num_vids = forms.IntegerField(help_text="What is the max number of videos you want to crawl (in multiples of 50)? Leave blank for as many as possible.", required=False)
+    num_vids = forms.IntegerField(
+        help_text="What is the max number of videos you want to crawl (in multiples of 50)? Leave blank for as many as possible.", required=False)
     query = forms.CharField(help_text="What you want youtube to search for")
-    channel_id = forms.CharField(help_text="Only crawl this channel ID", required=False)
-    ordering = forms.ChoiceField(choices=[("relevance","relevance"),("date","date"),("rating","rating"),("title","title"),("videoCount","video count"),("viewCount","view count")],
-                                help_text="Select the ordering of the videos")
+    channel_id = forms.CharField(
+        help_text="Only crawl this channel ID", required=False)
+    ordering = forms.ChoiceField(choices=[("relevance", "relevance"), ("date", "date"), ("rating", "rating"), ("title", "title"), ("videoCount", "video count"), ("viewCount", "view count")],
+                                 help_text="Select the ordering of the videos")
     ordering.widget.attrs.update({'class': 'browser-default'})
-    safe_search = forms.ChoiceField(choices=[("none","none"),("moderate","moderate"),("strict","strict")])
+    safe_search = forms.ChoiceField(
+        choices=[("none", "none"), ("moderate", "moderate"), ("strict", "strict")])
     safe_search.widget.attrs.update({'class': 'browser-default'})
-    cc = forms.ChoiceField(choices=[("any","any"),("closedCaption","closed caption"),("none","none")])
+    cc = forms.ChoiceField(
+        choices=[("any", "any"), ("closedCaption", "closed caption"), ("none", "none")])
     cc.widget.attrs.update({'class': 'browser-default'})
-    video_def = forms.ChoiceField(choices=[("any","any"),("high","high"),("standard","standard")])
-    video_duration = forms.ChoiceField(choices=[("any","any"),("long","long"),("medium","medium"),("short","short")])
+    video_def = forms.ChoiceField(
+        choices=[("any", "any"), ("high", "high"), ("standard", "standard")])
+    video_duration = forms.ChoiceField(choices=[(
+        "any", "any"), ("long", "long"), ("medium", "medium"), ("short", "short")])
     video_duration.widget.attrs.update({'class': 'browser-default'})
-    auto_download = forms.ChoiceField(choices=[(False,"False"),(True,"True")])
+    auto_download = forms.ChoiceField(
+        choices=[(False, "False"), (True, "True")])
     auto_download.widget.attrs.update({'class': 'browser-default'})
+
+
+class CreateDatasetForm(forms.Form):
+    name = forms.CharField(help_text="Name your Dataset")
+    description = forms.CharField(
+        help_text="Describe your Dataset", required=False)
+    jobs_list = forms.MultipleChoiceField(
+        choices=[])
+    jobs = []
+    matching_jobs = []
+    def __init__(self, user, *args, **kwargs):
+        super(CreateDatasetForm, self).__init__(*args, **kwargs)
+        jobs = Job.objects.filter(user_id=user.username).values_list('id','name').iterator()
+        matching_jobs = []
+        for job in jobs:
+            matching_jobs.append(job)
+        self.fields['jobs_list'].choices = matching_jobs
+
+
 
 class DownloadForm(forms.Form):
     download_path = "downloaded_videos/"
-    filters = forms.MultipleChoiceField(choices=[("x","Filter X"),("y","Filter Y"),("z","Filter Z")])
+    filters = forms.MultipleChoiceField(
+        choices=[("x", "Filter X"), ("y", "Filter Y"), ("z", "Filter Z")])
