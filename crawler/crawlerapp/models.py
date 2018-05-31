@@ -65,3 +65,13 @@ class PlayList(models.Model):
     videos = models.TextField(default="")
     owner = models.TextField(default="")
     youtube_params = JSONField(default=list,null=True)
+
+class Dataset(models.Model):
+    jobs_list = models.TextField(default="")
+    videos = models.TextField(default="")
+    name = models.TextField(default="")
+    description = models.TextField(default="")
+    created_date = models.DateTimeField(default=None, blank=True, null=True)
+    user_id = models.TextField(default="")
+    filters = models.TextField(default="")
+    
