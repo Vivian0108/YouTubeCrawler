@@ -16,16 +16,31 @@
 
 
 <body>
+  <!-- Dropdown Structure -->
+  <ul id="job_actions" class="dropdown-content">
+    <li><a href="{% url 'job-create' %}">Create Job</a></li>
+    <li><a href="{% url 'all' %}">View All Jobs</a></li>
+    <li><a id="find" href="#">Find a Job</a></li>
+  </ul>
+  <!-- Dropdown Structure -->
+  <ul id="dataset_actions" class="dropdown-content">
+    <li><a href="{% url 'dataset-create' %}">Create Dataset</a></li>
+    <li><a href="{% url 'dataset-all' %}">View All Datasets</a></li>
+    <li><a id="find_dataset" href="#">Find a Dataset</a></li>
+  </ul>
   <nav>
     <div class="nav-wrapper teal">
       <a href="{% url 'home' %}" class="brand-logo">Youtube Crawler</a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <!-- Dropdown Trigger -->
+        <li><a class="dropdown-trigger" href="#!" data-target="job_actions">Job Actions<i class="material-icons right">arrow_drop_down</i></a></li>
+        <!-- Dropdown Trigger -->
+        <li><a class="dropdown-trigger" href="#!" data-target="dataset_actions">Dataset Actions<i class="material-icons right">arrow_drop_down</i></a></li>
+
         <li><a href="{% url 'signup' %}">Sign Up</a></li>
         <li><a href="{% url 'login' %}">Log In</a></li>
         <li><a id="logout" href="#">Log Out</a></li>
-        <li><a href="{% url 'job-create' %}">Create Job</a></li>
-        <li><a id="find" href="#">Find a Job</a></li>
-        <li><a href="{% url 'all' %}">View All Jobs</a></li>
+        <li><a id="{% url 'profile' %}" href="#">Profile</a></li>
       </ul>
     </div>
   </nav>
@@ -43,7 +58,18 @@
       <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Go Back</a>
     </div>
   </div>
-
+  <div id="find_dataset_modal" class="modal">
+    <div class="modal-content">
+      <h4>Find a Dataset</h4>
+      <div class="input-field col s6">
+        <input placeholder="Enter a dataset id" id="datasetid" type="text" class="validate">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a id="submit_model_id" class="waves-effect waves-green btn-flat">Submit</a>
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Go Back</a>
+    </div>
+  </div>
   <div id="logout_confirm" class="modal">
     <div class="modal-content">
       <div class="input-field col s6">
@@ -63,14 +89,23 @@
     $(document).ready(function() {
       $(".modal").modal();
       $('select').formSelect();
+      $(".dropdown-trigger").dropdown();
     });
     $('#submit_id').click(function() {
       var target = $("#jobid").val();
       var url_mask = "{% url 'detail' 12345 %}".replace(/12345/, target.toString());
       window.location.href = url_mask
     });
+    $('#submit_model_id').click(function() {
+      var target = $("#datasetid").val();
+      var url_mask = "{% url 'dataset-detail' 12345 %}".replace(/12345/, target.toString());
+      window.location.href = url_mask
+    });
     $('#find').click(function() {
       $('#findmodal').modal('open');
+    });
+    $('#find_dataset').click(function() {
+      $('#find_dataset_modal').modal('open');
     });
     $('#logout').click(function() {
       $('#logout_confirm').modal('open');
