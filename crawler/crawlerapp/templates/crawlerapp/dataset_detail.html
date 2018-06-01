@@ -1,0 +1,47 @@
+{% extends '../base.html' %} {% block title %}Dataset {{ dataset_name }}{% endblock %}{% block content %}
+<div class="container">
+  <center>
+
+    <div class="row">
+      <h4>Dataset data for dataset {{ dataset_name }}</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>Dataset Name</td>
+            <td>{{ dataset_name }}</td>
+          </tr>
+          <tr>
+            <td>Dataset ID</td>
+            <td>{{ dataset_id }}</td>
+          </tr>
+          <tr>
+            <td>Number of jobs added</td>
+            <td>{{ dataset_num_jobs }}</td>
+          </tr>
+          <tr>
+            <td>Name of jobs added</td>
+            <td>{% for job in dataset_jobs %}
+              <a href="{% url 'detail' job.id %}">{{ job.name }}</a> {% endfor %}</td>
+          </tr>
+          <tr>
+            <td>Number of videos stored</td>
+            <td>{{ dataset_num_vids }}</td>
+          </tr>
+          <tr>
+            <td>Time of dataset creation</td>
+            <td>{{ dataset_created_date }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</div>
+</center>
+</div>
+{% endblock %}

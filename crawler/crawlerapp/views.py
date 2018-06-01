@@ -9,6 +9,7 @@ from django.contrib.auth.forms import UserCreationForm
 import datetime
 from django.contrib.auth.decorators import login_required
 from crawlerapp.tasks import crawl_async, download_async
+import ast
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -20,6 +21,14 @@ def all(request):
     context = {'jobs': jobs}
     return render(request,'crawlerapp/all.html',context)
 
+def dataset_all(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/accounts/login/')
+
+    datasets = Dataset.objects.order_by('-id')
+    context = {'datasets': datasets}
+
+    return render(request,'crawlerapp/dataset_all.html',context)
 
 def detail(request, job_id):
     if not (request.user.is_authenticated):
@@ -53,6 +62,30 @@ def detail(request, job_id):
         form = DownloadForm()
         context['form'] = form
         return render(request, 'crawlerapp/detail.html', context)
+
+def dataset_detail(request, dataset_id):
+    if not (request.user.is_authenticated):
+        return HttpResponseRedirect('/accounts/login/')
+    try:
+        dataset = Dataset.objects.filter(id=dataset_id).get()
+    except:
+        return render(request, 'crawlerapp/datasetnotfound.html', {'datasetid': dataset_id})
+    #get list of jobs
+    job_str_list = ast.literal_eval(dataset.jobs_list)
+    job_list = []
+    video_sum = 0
+    for str_job_id in job_str_list:
+        job = Job.objects.filter(id=int(str_job_id)).get()
+        job_list.append(job)
+        video_sum += int(job.num_vids)
+    context = {'dataset_name': dataset.name,
+               'dataset_num_vids': video_sum,
+               'dataset_num_jobs': len(job_list),
+               'dataset_created_date': dataset.created_date,
+               'dataset_user_id': dataset.user_id,
+               'dataset_id': dataset.id,
+               'dataset_jobs': job_list}
+    return render(request, 'crawlerapp/dataset_detail.html', context)
 
 
 def index(request):
@@ -124,3 +157,11 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
+
+def profile(request):
+    if not (request.user.is_authenticated):
+        return HttpResponseRedirect('/accounts/login/')
+    jobs = Job.objects.filter(user_id=request.user.username)
+    datasets = Dataset.objects.filter(user_id=request.user.username)
+    context = {'jobs': jobs, 'datasets': datasets, 'user': request.user}
+    return render(request, 'crawlerapp/profile.html', context)
