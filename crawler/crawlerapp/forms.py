@@ -88,7 +88,8 @@ class SelectWithSelected(SelectMultiple):
         return option_dict
 
 class ChangeDatasetJobs(forms.Form):
-    jobs_list = forms.MultipleChoiceField(choices=[])
+    jobs_list = forms.MultipleChoiceField(choices=[],required=False)
+    jobs_list.widget.attrs.update({'id': 'jobs_list'})
     def __init__(self, user, dataset, *args, **kwargs):
         super(ChangeDatasetJobs, self).__init__(*args, **kwargs)
         jobs = Job.objects.filter(user_id=user.username).values_list(

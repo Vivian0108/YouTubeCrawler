@@ -90,10 +90,11 @@ def dataset_detail(request, dataset_id):
         if form.is_valid():
             dataset.jobs_list = form.cleaned_data['jobs_list']
             dataset.save()
+            return redirect('dataset-detail', dataset.id)
     else:
         form = ChangeDatasetJobs(request.user,dataset)
-    context['form'] = form
-    return render(request, 'crawlerapp/dataset_detail.html', context)
+        context['form'] = form
+        return render(request, 'crawlerapp/dataset_detail.html', context)
 
 
 def index(request):
