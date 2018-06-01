@@ -91,9 +91,6 @@
       $('select').formSelect();
       $(".dropdown-trigger").dropdown();
     });
-    $(".select-dropdown + .dropdown-trigger").click(function(event){
-      event.stopPropagation();
-    });
     $('#submit_id').click(function() {
       var target = $("#jobid").val();
       var url_mask = "{% url 'detail' 12345 %}".replace(/12345/, target.toString());
