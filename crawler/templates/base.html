@@ -1,0 +1,120 @@
+<!DOCTYPE html> {% load static %}
+<html>
+
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Import materialize.css-->
+  <link type="text/css" rel="stylesheet" href="{% static '/css/materialize.min.css' %}" media="screen,projection" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/smoothness/jquery-ui.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+
+<body>
+  <!-- Dropdown Structure -->
+  <ul id="job_actions" class="dropdown-content">
+    <li><a href="{% url 'job-create' %}">Create Job</a></li>
+    <li><a href="{% url 'all' %}">View All Jobs</a></li>
+    <li><a id="find" href="#">Find a Job</a></li>
+  </ul>
+  <!-- Dropdown Structure -->
+  <ul id="dataset_actions" class="dropdown-content">
+    <li><a href="{% url 'dataset-create' %}">Create Dataset</a></li>
+    <li><a href="{% url 'dataset-all' %}">View All Datasets</a></li>
+    <li><a id="find_dataset" href="#">Find a Dataset</a></li>
+  </ul>
+  <nav>
+    <div class="nav-wrapper teal">
+      <a href="{% url 'home' %}" class="brand-logo">Youtube Crawler</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <!-- Dropdown Trigger -->
+        <li><a class="dropdown-trigger" href="#!" data-target="job_actions">Job Actions<i class="material-icons right">arrow_drop_down</i></a></li>
+        <!-- Dropdown Trigger -->
+        <li><a class="dropdown-trigger" href="#!" data-target="dataset_actions">Dataset Actions<i class="material-icons right">arrow_drop_down</i></a></li>
+
+        <li><a href="{% url 'signup' %}">Sign Up</a></li>
+        <li><a href="{% url 'login' %}">Log In</a></li>
+        <li><a id="logout" href="#">Log Out</a></li>
+        <li><a href="{% url 'profile' %}">Profile</a></li>
+      </ul>
+    </div>
+  </nav>
+  {% block content %}{% endblock %}
+
+  <div id="findmodal" class="modal">
+    <div class="modal-content">
+      <h4>Find a Job</h4>
+      <div class="input-field col s6">
+        <input placeholder="Enter a job id" id="jobid" type="text" class="validate">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a id="submit_id" class="waves-effect waves-green btn-flat">Submit</a>
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Go Back</a>
+    </div>
+  </div>
+  <div id="find_dataset_modal" class="modal">
+    <div class="modal-content">
+      <h4>Find a Dataset</h4>
+      <div class="input-field col s6">
+        <input placeholder="Enter a dataset id" id="datasetid" type="text" class="validate">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a id="submit_model_id" class="waves-effect waves-green btn-flat">Submit</a>
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Go Back</a>
+    </div>
+  </div>
+  <div id="logout_confirm" class="modal">
+    <div class="modal-content">
+      <div class="input-field col s6">
+        <center>
+          <h4>Are you sure you want to logout?</h4>
+        </center>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a id="logout_btn" href="{% url 'logout' %}" class="modal-action waves-effect waves-green btn-flat">Confirm</a>
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Go Back</a>
+    </div>
+  </div>
+  <!--JavaScript at end of body for optimized loading-->
+  <script type="text/javascript" src="{% static '/js/materialize.min.js' %}"></script>
+  <script>
+    $(document).ready(function() {
+      $(".modal").modal();
+      $('select').formSelect();
+      $(".dropdown-trigger").dropdown();
+    });
+    $(".select-dropdown + .dropdown-trigger").click(function(event){
+      event.stopPropagation();
+    });
+    $('#submit_id').click(function() {
+      var target = $("#jobid").val();
+      var url_mask = "{% url 'detail' 12345 %}".replace(/12345/, target.toString());
+      window.location.href = url_mask
+    });
+    $('#submit_model_id').click(function() {
+      var target = $("#datasetid").val();
+      var url_mask = "{% url 'dataset-detail' 12345 %}".replace(/12345/, target.toString());
+      window.location.href = url_mask
+    });
+    $('#find').click(function() {
+      $('#findmodal').modal('open');
+    });
+    $('#find_dataset').click(function() {
+      $('#find_dataset_modal').modal('open');
+    });
+    $('#logout').click(function() {
+      $('#logout_confirm').modal('open');
+    });
+  </script>
+</body>
+
+
+</html>

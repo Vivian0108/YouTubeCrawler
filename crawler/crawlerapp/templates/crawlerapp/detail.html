@@ -1,0 +1,67 @@
+{% extends '../base.html' %} {% block title %}Job {{ job_name }}{% endblock %}{% block content %}
+<div class="container">
+  <center>
+
+    <div class="row">
+      <div class="col s6">
+        <h4>Job data for job {{ job_name }}</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Job Name</td>
+              <td>{{ job_name }}</td>
+            </tr>
+            <tr>
+              <td>Job ID</td>
+              <td>{{ job_id }}</td>
+            </tr>
+            <tr>
+              <td>Number of videos stored</td>
+              <td>{{ job_num_vids }}</td>
+            </tr>
+            <tr>
+              <td>Query</td>
+              <td>{{ job_query }}</td>
+            </tr>
+            <tr>
+              <td>Time of job creation</td>
+              <td>{{ job_created_date }}</td>
+            </tr>
+            <tr>
+              <td>Finished Crawl</td>
+              <td>{{ executed }}</td>
+            </tr>
+            <tr>
+              <td>Finished downloading</td>
+              <td>{{ download_finished }}</td>
+              <tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col s6">
+        <h4>Actions</h4>
+        <form method="post">
+          {% csrf_token %} {% if executed == False or download_started == True %}
+          <button class="btn-large disabled">Download</button> {% else %}
+          <button class="btn-large waves-effect waves-light" type="submit" value="download" name="download">Download</button> {% endif %} {% for field in form %}
+          <p>
+            {{ field.label_tag }}<br> {{ field }} {% if field.help_text %}
+            <small style="color: grey">{{ field.help_text }}</small> {% endif %} {% for error in field.errors %}
+            <p style="color: red">{{ error }}</p>
+            {% endfor %}
+          </p>
+          {% endfor %}
+
+        </form>
+      </div>
+    </div>
+  </center>
+</div>
+{% endblock %}
