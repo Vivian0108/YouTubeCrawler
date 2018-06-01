@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import *
 from crawlerapp.generate_models import run_cmds
+from django.forms.widgets import SelectMultiple
+import ast
 
 
 class SignUpForm(UserCreationForm):
@@ -59,14 +61,44 @@ class CreateDatasetForm(forms.Form):
         choices=[])
     jobs = []
     matching_jobs = []
+
     def __init__(self, user, *args, **kwargs):
         super(CreateDatasetForm, self).__init__(*args, **kwargs)
-        jobs = Job.objects.filter(user_id=user.username).values_list('id','name').iterator()
+        jobs = Job.objects.filter(user_id=user.username).values_list(
+            'id', 'name').iterator()
         matching_jobs = []
         for job in jobs:
             matching_jobs.append(job)
         self.fields['jobs_list'].choices = matching_jobs
 
+class SelectWithSelected(SelectMultiple):
+    """
+    Subclass of Django's select widget that allows disabling options.
+    To disable an option, pass a dict instead of a string for its label,
+    of the form: {'label': 'option label', 'disabled': True}
+    """
+
+    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
+        selected = False
+        if isinstance(label, dict):
+            label, selected = label['label'], label['selected']
+        option_dict = super(SelectWithSelected, self).create_option(name, value, label, selected, index, subindex=subindex, attrs=attrs)
+        if selected:
+            option_dict['attrs']['selected'] = 'True'
+        return option_dict
+
+class ChangeDatasetJobs(forms.Form):
+    jobs_list = forms.MultipleChoiceField(choices=[])
+    def __init__(self, user, dataset, *args, **kwargs):
+        super(ChangeDatasetJobs, self).__init__(*args, **kwargs)
+        jobs = Job.objects.filter(user_id=user.username).values_list(
+            'id', 'name')
+        preselected = ast.literal_eval(dataset.jobs_list)
+        matching_jobs = []
+        for job in jobs:
+            matching_jobs.append((job[0], {'label': job[1], 'selected': (str(job[0]) in preselected)}))
+        self.fields['jobs_list'].widget = SelectWithSelected()
+        self.fields['jobs_list'].choices = matching_jobs
 
 
 class DownloadForm(forms.Form):

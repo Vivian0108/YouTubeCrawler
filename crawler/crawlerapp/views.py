@@ -85,6 +85,14 @@ def dataset_detail(request, dataset_id):
                'dataset_user_id': dataset.user_id,
                'dataset_id': dataset.id,
                'dataset_jobs': job_list}
+    if request.method == "POST":
+        form = ChangeDatasetJobs(request.user,dataset,request.POST)
+        if form.is_valid():
+            dataset.jobs_list = form.cleaned_data['jobs_list']
+            dataset.save()
+    else:
+        form = ChangeDatasetJobs(request.user,dataset)
+    context['form'] = form
     return render(request, 'crawlerapp/dataset_detail.html', context)
 
 
