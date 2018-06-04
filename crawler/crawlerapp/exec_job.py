@@ -37,7 +37,7 @@ def process_search_response(job_id, job_name, query, search_response, client):
         sys.exit(1)
     cur = conn.cursor()
     conn.autocommit = True
-    inserted = 0
+    found = []
     for item in search_response['items']:
         video_id = item['id']['videoId']
         video_data = videos_list_by_id(
@@ -112,18 +112,18 @@ def process_search_response(job_id, job_name, query, search_response, client):
                             '''VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');''' %
                             (video_id, channel_id, query, captions, default_lang, video_def, video_duration, job_name, job_id, dislike_count, like_count, view_count, comment_count, published_date, datetime.datetime.now(), (json.dumps(vid)).replace("'", "''")))
                 conn.commit()
-                inserted += 1
             except:
                 pass
+            found.append(video_id)
 
     try:
         cur.close()
         conn.close()
-        return (search_response['nextPageToken'], inserted)
+        return (search_response['nextPageToken'], found)
     except KeyError:
         cur.close()
         conn.close()
-        return (None,inserted)
+        return (None, found)
 
 
 def query(terms, job_id):
@@ -179,7 +179,7 @@ def query(terms, job_id):
         elif col == 'channel_id':
             channel_id = data
     page_count = 0
-    found_count = 0
+    total_found = []
     while (nextPageToken or initial):
         if ((not (num_vids is None)) and page_count == int(num_vids)):
             break
@@ -218,20 +218,22 @@ def query(terms, job_id):
             ).execute()
         if search_response is None:
             break
-        cur.execute('''UPDATE crawlerapp_job SET youtube_params = '%s' WHERE id = %s;''' % (
-            (json.dumps(search_response)).replace("'", "''"), job_id))
+        #cur.execute('''UPDATE crawlerapp_job SET youtube_params = '%s' WHERE id = %s;''' % (
+        #    (json.dumps(search_response)).replace("'", "''"), job_id))
 
         (nextPageToken, found) = process_search_response(
             job_id, job_name, query, search_response, youtube)
-        found_count += found
+        total_found.extend(found)
         cur.execute('''UPDATE crawlerapp_job SET num_vids = '%s' WHERE id = %s;''' % (
-            found_count, job_id))
+            len(total_found), job_id))
+        cur.execute('''UPDATE crawlerapp_job SET videos = '%s' WHERE id = %s;''' % (
+            total_found, job_id))
         if nextPageToken:
             page_count += 1
     conn.commit()
     cur.close()
     conn.close()
-    return found_count
+    return total_found
 
 
 def ex(auto_download, job_id):
@@ -252,10 +254,11 @@ def ex(auto_download, job_id):
                 )
     column_names = [i[0] for i in cur.fetchall()]
     zipped_row_data = list(zip(column_names, terms_list))
-    found_count = 0
-    found_count = query(zipped_row_data, job_id)
+    total_found = query(zipped_row_data, job_id)
     cur.execute('''UPDATE crawlerapp_job SET num_vids = '%s' WHERE id = %s;''' % (
-        found_count, job_id))
+        len(total_found), job_id))
+    cur.execute('''UPDATE crawlerapp_job SET videos = '%s' WHERE id = %s;''' % (
+        total_found, job_id))
     cur.execute(
         '''UPDATE crawlerapp_job SET executed = '%s' WHERE id = %s;''' % (True, job_id))
     conn.commit()
@@ -265,4 +268,4 @@ def ex(auto_download, job_id):
 
     if auto_download == True:
         ex_download(job_id)
-    return found_count
+    return total_found

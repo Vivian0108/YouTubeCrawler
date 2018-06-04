@@ -20,7 +20,6 @@ class Job(models.Model):
     # filters should be filter ids seperated by commas
     filters = models.TextField(default="")
     cc_enabled = models.CharField(default="",max_length=50)
-    youtube_params = JSONField(default=list,null=True)
     video_def = models.CharField(max_length=15,default="")
     video_duration = models.CharField(max_length=15,default="")
     safe_search = models.CharField(max_length=15,default="")
