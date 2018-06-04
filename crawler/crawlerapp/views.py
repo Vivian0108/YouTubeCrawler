@@ -8,8 +8,10 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 import datetime
 from django.contrib.auth.decorators import login_required
-from crawlerapp.tasks import crawl_async, download_async
+from crawlerapp.tasks import crawl_async, download_async, filter_async
+from crawlerapp.filters import *
 import ast
+import jsonpickle
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -37,6 +39,13 @@ def detail(request, job_id):
         job = Job.objects.filter(id=job_id).get()
     except:
         return render(request, 'crawlerapp/jobnotfound.html', {'jobid': job_id})
+    #Creates instances of all filters in filter.py
+    gen = (subclass for subclass in AbstractFilter.__subclasses__())
+    filters = []
+    index = 0
+    for subclass in gen:
+        filters.append((subclass(), index))
+        index += 1
     context = {'job_name': job.name,
                'job_num_vids': job.num_vids,
                'job_videos': job.videos,
@@ -50,13 +59,19 @@ def detail(request, job_id):
                'executed': job.executed,
                'download_started': job.download_started,
                'download_finished': job.download_finished,
-               'job_id': job.id}
+               'job_id': job.id,
+               'filters': filters}
     if request.method == "POST":
         form = DownloadForm(request.POST)
-        job.download_started = True
-        job.save()
-        context['download_started'] = True
-        download_async.delay(job_id)
+        if request.POST.get("download"):
+            job.download_started = True
+            job.save()
+            context['download_started'] = True
+            download_async.delay(job_id)
+        else:
+            filter_num = int(request.POST.get("filter"))
+            filter_obj = filters[filter_num][0]
+            filter_async.delay(jsonpickle.encode(filter_obj), job_id, "")
         return redirect('detail', job.id)
     else:
         form = DownloadForm()

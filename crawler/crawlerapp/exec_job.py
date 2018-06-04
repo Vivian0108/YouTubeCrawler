@@ -108,9 +108,9 @@ def process_search_response(job_id, job_name, query, search_response, client):
 
             try:
                 cur.execute('''INSERT INTO crawlerapp_video''' +
-                            '''(id,channel_id,query,cc_enabled,language,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,search_time,youtube_params)''' +
+                            '''(id,channel_id,query,cc_enabled,language,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,search_time)''' +
                             '''VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');''' %
-                            (video_id, channel_id, query, captions, default_lang, video_def, video_duration, job_name, job_id, dislike_count, like_count, view_count, comment_count, published_date, datetime.datetime.now(), (json.dumps(vid)).replace("'", "''")))
+                            (video_id, channel_id, query, captions, default_lang, video_def, video_duration, job_name, job_id, dislike_count, like_count, view_count, comment_count, published_date, datetime.datetime.now()))
                 conn.commit()
             except:
                 pass

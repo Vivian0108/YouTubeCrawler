@@ -10,6 +10,7 @@ class Job(models.Model):
     num_pages = models.IntegerField(default=None, blank=True, null=True)
     # videos should be video ids seperated by commas
     videos = models.TextField(default="")
+    filtered_videos = models.TextField(default="")
     # channels should be channel ids seperated by commas
     found_channels = models.TextField(default="")
     channel_id = models.CharField(max_length=15,default="")

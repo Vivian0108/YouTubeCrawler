@@ -47,17 +47,27 @@
       </div>
       <div class="col s6">
         <h4>Actions</h4>
-        <form method="post">
+        <form id='form-id' method="post">
           {% csrf_token %} {% if executed == False or download_started == True %}
           <button class="btn-large disabled">Download</button> {% else %}
-          <button class="btn-large waves-effect waves-light" type="submit" value="download" name="download">Download</button> {% endif %} {% for field in form %}
-          <p>
-            {{ field.label_tag }}<br> {{ field }} {% if field.help_text %}
-            <small style="color: grey">{{ field.help_text }}</small> {% endif %} {% for error in field.errors %}
-            <p style="color: red">{{ error }}</p>
+          <button class="btn-large waves-effect waves-light" type="submit" value="download" name="download">Download</button> {% endif %}
+          <center>
+            {% for filter, index in filters %}
+            <div class="row">
+              <div class="col s12 m6">
+                <div class="card blue-grey darken-1">
+                  <div class="card-content white-text">
+                    <span class="card-title">{{ filter.name }}</span>
+                    <p>{{ filter.description }}</p>
+                  </div>
+                  <div class="card-action">
+                    <button class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="filter">Run Filter</button>
+                  </div>
+                </div>
+              </div>
+            </div>
             {% endfor %}
-          </p>
-          {% endfor %}
+          </center>
 
         </form>
       </div>
