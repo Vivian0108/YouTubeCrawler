@@ -26,6 +26,7 @@ youtube\_dl                 & 2018.3.20   \\ \midrule
 google\_api\_python\_client & 1.6.7       \\ \midrule
 celery                      & 4.1.1       \\ \midrule
 redis                       & 4.0.9       \\ \midrule
+jsonpickle                  & 0.9.6       \\ \midrule
 protobuf                    & 3.5.2.post1 \\ \bottomrule
 \end{tabular}
 \end{center}
@@ -37,4 +38,13 @@ In another terminal window, start a celery worker with
 $$\texttt{celery -A crawler worker -l info}$$
 To fully terminate the celery worker, run
 $$\texttt{pkill -f celery}$$
+
+\DIV[2]{section}{Adding a filter}
+To add a filter, simply create a new class in filters.py that inherites the
+\texttt{AbstractFilter} class. Then, implement the functions name, description,
+and filter. \texttt{name} and \texttt{description} should return strings.
+$\texttt{filter(self, video_ids, download_path)}$
+should return a list of video ids
+similair to the input argument video_ids.
+
 \end{document}
