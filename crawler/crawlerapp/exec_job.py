@@ -227,7 +227,7 @@ def query(terms, job_id):
         cur.execute('''UPDATE crawlerapp_job SET num_vids = '%s' WHERE id = %s;''' % (
             len(total_found), job_id))
         cur.execute('''UPDATE crawlerapp_job SET videos = '%s' WHERE id = %s;''' % (
-            total_found, job_id))
+            (json.dumps(total_found)).replace("'", "''"), job_id))
         if nextPageToken:
             page_count += 1
     conn.commit()
@@ -258,7 +258,7 @@ def ex(auto_download, job_id):
     cur.execute('''UPDATE crawlerapp_job SET num_vids = '%s' WHERE id = %s;''' % (
         len(total_found), job_id))
     cur.execute('''UPDATE crawlerapp_job SET videos = '%s' WHERE id = %s;''' % (
-        total_found, job_id))
+        (json.dumps(total_found)).replace("'", "''"), job_id))
     cur.execute(
         '''UPDATE crawlerapp_job SET executed = '%s' WHERE id = %s;''' % (True, job_id))
     conn.commit()
