@@ -41,7 +41,6 @@ def filter_async(filter, job_id, download_path):
                 #If we haven't filtered this video with this filter, add the new filter name
                 filters.append(filter_name)
                 final_filtered.append((video_id,filters))
-                print(final_filtered[-1])
             else:
                 #If we have filtered it with this filter, don't check the filter list
                 final_filtered.append((video_id,filters))
