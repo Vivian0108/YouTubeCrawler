@@ -25,3 +25,11 @@ class RandFilter(AbstractFilter):
         num_vids = random.randint(0,len(video_ids)-1)
         chosen_vids = random.sample(video_ids, num_vids)
         return chosen_vids
+
+class FilterDemo(AbstractFilter):
+    def name(self):
+        return "Filter Demo"
+    def description(self):
+        return "Picks half of the videos"
+    def filter(self, video_ids, download_path):
+        return video_ids[0:len(video_ids)//2]
