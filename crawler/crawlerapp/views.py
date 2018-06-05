@@ -46,6 +46,11 @@ def detail(request, job_id):
     for subclass in gen:
         filters.append((subclass(), index))
         index += 1
+    num_filtered_videos = 0
+    try:
+        num_filtered_videos = len(ast.literal_eval(job.filtered_videos))
+    except:
+        pass
     context = {'job_name': job.name,
                'job_num_vids': job.num_vids,
                'job_videos': job.videos,
@@ -60,7 +65,8 @@ def detail(request, job_id):
                'download_started': job.download_started,
                'download_finished': job.download_finished,
                'job_id': job.id,
-               'filters': filters}
+               'filters': filters,
+               'job_num_filtered_videos': num_filtered_videos}
     if request.method == "POST":
         form = DownloadForm(request.POST)
         if request.POST.get("download"):
