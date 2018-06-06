@@ -24,8 +24,10 @@ def filter_async(filter, job_id, download_path):
     except:
         video_ids = []
     filter_obj = jsonpickle.decode(filter)
-    filtered = [(vid,filter_obj.name()) for vid in filter_obj.filter(video_ids, download_path)]
-
+    total_filtered = filter_obj.filter(video_ids, download_path)
+    filtered = [(vid,filter_obj.name()) for vid in total_filtered]
+    #Refresh the job before getting the filtered videos
+    job = Job.objects.filter(id=job_id).get()
     try:
         prefiltered = ast.literal_eval(job.filtered_videos)
     except:
@@ -52,4 +54,22 @@ def filter_async(filter, job_id, download_path):
     final_filtered.extend([(video_id,filters) for (video_id,filters) in prefiltered if video_id not in final_filtered_ids])
     job.filtered_videos = final_filtered
 
+    job.save()
+
+@shared_task
+@transaction.atomic
+def clear_filter_async(filter_name, job_id):
+    job = Job.objects.filter(id=job_id).get()
+    try:
+        filtered_videos = ast.literal_eval(job.filtered_videos)
+    except:
+        filtered_videos = []
+    final_filtered = []
+    for (video_id,filters) in filtered_videos:
+        if not (filter_name in filters):
+            final_filtered.append((video_id,filters))
+        elif (filter_name in filters) and (len(filters) > 1):
+            filters.remove(filter_name)
+            final_filtered.append((video_id,filters))
+    job.filtered_videos = final_filtered
     job.save()

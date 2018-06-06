@@ -8,10 +8,9 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 import datetime
 from django.contrib.auth.decorators import login_required
-from crawlerapp.tasks import crawl_async, download_async, filter_async
+from crawlerapp.tasks import *
 from crawlerapp.filters import *
-import ast
-import jsonpickle
+import jsonpickle, io, ast, csv
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -74,15 +73,35 @@ def detail(request, job_id):
             job.save()
             context['download_started'] = True
             download_async.delay(job_id)
-        else:
+        elif request.POST.get("filter"):
             filter_num = int(request.POST.get("filter"))
             filter_obj = filters[filter_num][0]
             filter_async.delay(jsonpickle.encode(filter_obj), job_id, "")
+        elif request.POST.get("remove"):
+            filter_num = int(request.POST.get("remove"))
+            filter_name = filters[filter_num][0].name()
+            #Dont clear the filters asynchronously
+            clear_filter_async(filter_name, job_id)
         return redirect('detail', job.id)
     else:
         form = DownloadForm()
         context['form'] = form
         return render(request, 'crawlerapp/detail.html', context)
+
+def newcsv(data, csvheader, fieldnames):
+    """
+    Create a new csv file that represents generated data.
+    """
+    csvrow = []
+    new_csvfile = io.StringIO()
+    wr = csv.writer(new_csvfile, quoting=csv.QUOTE_ALL)
+    wr.writerow([csvheader])
+    wr = csv.DictWriter(new_csvfile, fieldnames = fieldnames)
+
+    for job in data:
+        wr.writerow(job.videos)
+
+    return new_csvfile
 
 def dataset_detail(request, dataset_id):
     if not (request.user.is_authenticated):
@@ -107,11 +126,22 @@ def dataset_detail(request, dataset_id):
                'dataset_id': dataset.id,
                'dataset_jobs': job_list}
     if request.method == "POST":
-        form = ChangeDatasetJobs(request.user,dataset,request.POST)
-        if form.is_valid():
-            dataset.jobs_list = form.cleaned_data['jobs_list']
-            dataset.save()
-            return redirect('dataset-detail', dataset.id)
+        if request.POST.get("submit_jobs"):
+            form = ChangeDatasetJobs(request.user,dataset,request.POST)
+            if form.is_valid():
+                dataset.jobs_list = form.cleaned_data['jobs_list']
+                dataset.save()
+                return redirect('dataset-detail', dataset.id)
+        elif request.POST.get("download"):
+            # Create the HttpResponse object with the appropriate CSV header.
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename=' + dataset.name + '.csv'
+            fieldnames = ['job_id', 'job_name', 'video_ids']
+            writer = csv.DictWriter(response, fieldnames = fieldnames)
+            for job in job_list:
+                writer.writerow({'job_id': job.id, 'job_name': job.name, 'video_ids': job.videos})
+            return response
+
     else:
         form = ChangeDatasetJobs(request.user,dataset)
         context['form'] = form

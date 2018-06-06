@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-import random
+import random, time
 
 class AbstractFilter(ABC):
     @property
@@ -32,4 +32,5 @@ class FilterDemo(AbstractFilter):
     def description(self):
         return "Picks half of the videos"
     def filter(self, video_ids, download_path):
+        time.sleep(5)
         return video_ids[0:len(video_ids)//2]
