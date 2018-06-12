@@ -46,8 +46,14 @@ def detail(request, job_id):
         filters.append((subclass(), index))
         index += 1
     num_filtered_videos = 0
+    applied_filters = []
     try:
-        num_filtered_videos = len(ast.literal_eval(job.filtered_videos))
+        filtered = ast.literal_eval(job.filtered_videos)
+        num_filtered_videos = len(filtered)
+        for (video_id,applied) in filtered:
+            for f in applied:
+                if f not in applied_filters:
+                    applied_filters.append(f)
     except:
         pass
     context = {'job_name': job.name,
@@ -65,7 +71,8 @@ def detail(request, job_id):
                'download_finished': job.download_finished,
                'job_id': job.id,
                'filters': filters,
-               'job_num_filtered_videos': num_filtered_videos}
+               'job_num_filtered_videos': num_filtered_videos,
+               'job_applied_filters': applied_filters}
     if request.method == "POST":
         form = DownloadForm(request.POST)
         if request.POST.get("download"):
