@@ -25,7 +25,7 @@ SECRET_KEY = 'gvlk(1xwbpub)pog+^w6&1=wpm@f0%61+=6!9gmfarovz$7@gc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['18.217.82.183','ec2-18-217-82-183.us-east-2.compute.amazonaws.com']
 
 
 # Application definition
