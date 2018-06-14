@@ -25,7 +25,7 @@ SECRET_KEY = 'gvlk(1xwbpub)pog+^w6&1=wpm@f0%61+=6!9gmfarovz$7@gc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['52.14.214.59']
+ALLOWED_HOSTS = ['52.14.214.59','localhost']
 
 
 # Application definition
@@ -145,6 +145,7 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
+CELERY_REDIRECT_STDOUTS_LEVEL = 'INFO'
 
 CELERYD_CHDIR="/home/ubuntu/YouTubeCrawler/crawler/"
 

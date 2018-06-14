@@ -5,15 +5,15 @@ import shutil
 import datetime
 import youtube_dl
 import subprocess
-import psycopg2
 import atexit
-import multiprocessing
 import json
+from django.db import models
+from crawlerapp.models import *
+import ast
 from crawlerapp.download import ex_download
 
-from apiclient.discovery import build
-from apiclient.discovery import HttpError
-from oauth2client.tools import argparser
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 
 def videos_list_by_id(client, **kwargs):
@@ -28,15 +28,6 @@ def videos_list_by_id(client, **kwargs):
 
 
 def process_search_response(job_id, job_name, query, search_response, client):
-    try:
-        conn = psycopg2.connect(
-            "dbname='crawler_db'" +
-            "user='crawler_usr' host='localhost' password='rdGBOx7KSQJmIt6C'")
-    except psycopg2.OperationalError as e:
-        print('Unable to connect!\n{0}').format(e)
-        sys.exit(1)
-    cur = conn.cursor()
-    conn.autocommit = True
     found = []
     for item in search_response['items']:
         video_id = item['id']['videoId']
@@ -105,166 +96,105 @@ def process_search_response(job_id, job_name, query, search_response, client):
             except:
                 pass
                 #print("Couldn't find duration")
-
-            try:
-                cur.execute('''INSERT INTO crawlerapp_video''' +
-                            '''(id,channel_id,query,cc_enabled,language,video_def,video_duration,job_name,job_id,dislike_count,like_count,view_count,comment_count,published_date,search_time)''' +
-                            '''VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');''' %
-                            (video_id, channel_id, query, captions, default_lang, video_def, video_duration, job_name, job_id, dislike_count, like_count, view_count, comment_count, published_date, datetime.datetime.now()))
-                conn.commit()
-            except:
-                pass
+            video,created = Video.objects.get_or_create(id=video_id)
+            if created:
+                video.channel_id=channel_id
+                video.query=query
+                video.cc_enabled=captions
+                video.language=default_lang
+                video.video_def=video_def
+                video.video_duration=video_duration
+                video.job_ids='''[%s]'''.format(job_id)
+                video.dislike_count=dislike_count
+                video.like_count=like_count
+                video.view_count=view_count
+                video.comment_count=comment_count
+                video.published_date=published_date
+                video.search_time=datetime.datetime.now()
+                video.save()
+            else:
+                try:
+                    job_ids = ast.literal_eval(video.job_ids)
+                except:
+                    job_ids = []
+                job_ids.append(job_id)
+                video.job_ids=job_ids
+                video.save()
             found.append(video_id)
 
     try:
-        cur.close()
-        conn.close()
         return (search_response['nextPageToken'], found)
     except KeyError:
-        cur.close()
-        conn.close()
         return (None, found)
 
 
-def query(terms, job_id):
-    conn = psycopg2.connect(
-        dbname="crawler_db",
-        user="crawler_usr",
-        host="localhost",
-        password="rdGBOx7KSQJmIt6C")
-    cur = conn.cursor()
-    conn.autocommit = True
-
+def query(job, job_id):
+    job_query = Job.objects.filter(id=job_id).get()
     youtube = build("youtube", "v3",
                     developerKey="AIzaSyC485wtcaeL1yZrciuDWrliKSC74k8UODM")
     initial = True
     nextPageToken = None
 
-    language = ""
-    num_vids = None
-    query = ""
-    cc_enabled = ""
-    video_def = ""
-    video_duration = ""
-    safe_search = ""
-    ordering = ""
-    job_id = ""
-    job_name = ""
-    channel_id = ""
-
-    for (col, data) in terms:
-        if col == 'language':
-            if data == '':
-                language = 'en'
-            else:
-                language = data
-        elif col == 'num_pages':
-            num_vids = data
-        elif col == 'query':
-            query = data
-        elif col == 'cc_enabled':
-            cc_enabled = data
-        elif col == 'video_def':
-            video_def = data
-        elif col == 'video_duration':
-            video_duration = data
-        elif col == 'safe_search':
-            safe_search = data
-        elif col == 'ordering':
-            ordering = data
-        elif col == 'id':
-            job_id = data
-        elif col == 'name':
-            job_name = data
-        elif col == 'channel_id':
-            channel_id = data
     page_count = 0
     total_found = []
     while (nextPageToken or initial):
-        if ((not (num_vids is None)) and page_count == int(num_vids)):
+        if ((not (job['num_pages'] is None)) and page_count == int(job['num_pages'])):
             break
         initial = False
         search_response = None
-        if (len(channel_id) == 0):
+        if (len(job['channel_id']) == 0):
             search_response = youtube.search().list(
-                q=query,
-                relevanceLanguage=language,
-                safeSearch=safe_search,
-                videoCaption=cc_enabled,
-                videoDefinition=video_def,
-                videoDuration=video_duration,
+                q=(job['query']),
+                relevanceLanguage=(job['language']),
+                safeSearch=job['safe_search'],
+                videoCaption=job['cc_enabled'],
+                videoDefinition=job['video_def'],
+                videoDuration=job['video_duration'],
                 type="video",
                 part="id, snippet",
-                order=ordering,
+                order=job['ordering'],
                 # 50 is the maximum allowable value
                 maxResults=50,
                 pageToken=nextPageToken,
             ).execute()
         else:
             search_response = youtube.search().list(
-                q=query,
-                relevanceLanguage=language,
-                safeSearch=safe_search,
-                videoCaption=cc_enabled,
-                videoDefinition=video_def,
-                videoDuration=video_duration,
+                q=job['query'],
+                relevanceLanguage=job['language'],
+                safeSearch=job['safe_search'],
+                videoCaption=job['cc_enabled'],
+                videoDefinition=job['video_def'],
+                videoDuration=job['video_duration'],
                 type="video",
                 part="id, snippet",
-                order=ordering,
-                channelId=channel_id,
+                order=job['ordering'],
+                channelId=job['channel_id'],
                 # 50 is the maximum allowable value
                 maxResults=50,
                 pageToken=nextPageToken,
             ).execute()
         if search_response is None:
             break
-        #cur.execute('''UPDATE crawlerapp_job SET youtube_params = '%s' WHERE id = %s;''' % (
-        #    (json.dumps(search_response)).replace("'", "''"), job_id))
-
         (nextPageToken, found) = process_search_response(
-            job_id, job_name, query, search_response, youtube)
+            job_id, job['name'], job['query'], search_response, youtube)
         total_found.extend(found)
-        cur.execute('''UPDATE crawlerapp_job SET num_vids = '%s' WHERE id = %s;''' % (
-            len(total_found), job_id))
-        cur.execute('''UPDATE crawlerapp_job SET videos = '%s' WHERE id = %s;''' % (
-            (json.dumps(total_found)).replace("'", "''"), job_id))
+        job_query.num_vids = len(total_found)
+        job_query.videos = total_found
+        job_query.save()
         if nextPageToken:
             page_count += 1
-    conn.commit()
-    cur.close()
-    conn.close()
     return total_found
 
 
 def ex(auto_download, job_id):
-    conn = psycopg2.connect(
-        dbname="crawler_db",
-        user="crawler_usr",
-        host="localhost",
-        password="rdGBOx7KSQJmIt6C")
-    cur = conn.cursor()
-    conn.autocommit = True
-
-    cur.execute("SELECT * FROM crawlerapp_job WHERE id = " + job_id)
-    terms_list = list(cur.fetchall()[0])
-    cur.execute('''
-    SELECT column_name
-    FROM information_schema.columns
-    WHERE table_name = 'crawlerapp_job';'''
-                )
-    column_names = [i[0] for i in cur.fetchall()]
-    zipped_row_data = list(zip(column_names, terms_list))
-    total_found = query(zipped_row_data, job_id)
-    cur.execute('''UPDATE crawlerapp_job SET num_vids = '%s' WHERE id = %s;''' % (
-        len(total_found), job_id))
-    cur.execute('''UPDATE crawlerapp_job SET videos = '%s' WHERE id = %s;''' % (
-        (json.dumps(total_found)).replace("'", "''"), job_id))
-    cur.execute(
-        '''UPDATE crawlerapp_job SET executed = '%s' WHERE id = %s;''' % (True, job_id))
-    conn.commit()
-
-    cur.close()
-    conn.close()
+    job = Job.objects.filter(id=job_id).get()
+    job_vals = (Job.objects.filter(id=job_id).values())[0]
+    print("Querying!")
+    total_found = query(job_vals, job_id)
+    job.num_vids = len(total_found)
+    job.videos = total_found
+    job.executed = True
+    job.save()
 
     if auto_download == True:
         ex_download(job_id)
