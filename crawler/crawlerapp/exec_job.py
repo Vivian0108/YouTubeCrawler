@@ -104,7 +104,7 @@ def process_search_response(job_id, job_name, query, search_response, client):
                 video.language=default_lang
                 video.video_def=video_def
                 video.video_duration=video_duration
-                video.job_ids='''[%s]'''.format(job_id)
+                video.job_ids=('''['%s']''' % (job_id))
                 video.dislike_count=dislike_count
                 video.like_count=like_count
                 video.view_count=view_count
@@ -118,7 +118,7 @@ def process_search_response(job_id, job_name, query, search_response, client):
                 except:
                     job_ids = []
                 job_ids.append(job_id)
-                video.job_ids=job_ids
+                video.job_ids=list(set(job_ids))
                 video.save()
             found.append(video_id)
 
