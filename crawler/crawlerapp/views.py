@@ -15,6 +15,9 @@ import jsonpickle, io, ast, csv
 def home(request):
     return render(request, 'crawlerapp/landing.html')
 
+def mobile(request):
+    return render(request, 'crawlerapp/mobile.html')
+
 def all(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/accounts/login/')

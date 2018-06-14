@@ -15,5 +15,6 @@ urlpatterns = [
     path('dataset/new/',views.dataset_create,name='dataset-create'),
     path('dataset/<int:dataset_id>/',views.dataset_detail,name='dataset-detail'),
     path('dataset/all/',views.dataset_all,name='dataset-all'),
-    path('profile/',views.profile,name='profile')
+    path('profile/',views.profile,name='profile'),
+    path('mobile/',views.mobile,name='mobile'),
 ]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
