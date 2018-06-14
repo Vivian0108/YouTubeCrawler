@@ -25,7 +25,7 @@ SECRET_KEY = 'gvlk(1xwbpub)pog+^w6&1=wpm@f0%61+=6!9gmfarovz$7@gc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['18.217.82.183','ec2-18-217-82-183.us-east-2.compute.amazonaws.com']
+ALLOWED_HOSTS = ['52.14.214.59']
 
 
 # Application definition
@@ -146,6 +146,7 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
+CELERYD_CHDIR="/home/ubuntu/YouTubeCrawler/crawler/"
 
 # FOR TESTING PURPOSES
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
