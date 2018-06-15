@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 import datetime
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from crawlerapp.tasks import *
 from crawlerapp.filters import *
 import jsonpickle, io, ast, csv
@@ -18,6 +18,8 @@ def home(request):
 def mobile(request):
     return render(request, 'crawlerapp/mobile.html')
 
+@login_required
+@permission_required('crawlerapp.can_crawl', raise_exception=True)
 def all(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/accounts/login/')
@@ -25,6 +27,9 @@ def all(request):
     context = {'jobs': jobs}
     return render(request,'crawlerapp/all.html',context)
 
+
+@login_required
+@permission_required('crawlerapp.can_crawl', raise_exception=True)
 def dataset_all(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/accounts/login/')
@@ -34,6 +39,9 @@ def dataset_all(request):
 
     return render(request,'crawlerapp/dataset_all.html',context)
 
+
+@login_required
+@permission_required('crawlerapp.can_crawl', raise_exception=True)
 def detail(request, job_id):
     if not (request.user.is_authenticated):
         return HttpResponseRedirect('/accounts/login/')
@@ -113,6 +121,9 @@ def newcsv(data, csvheader, fieldnames):
 
     return new_csvfile
 
+
+@login_required
+@permission_required('crawlerapp.can_crawl', raise_exception=True)
 def dataset_detail(request, dataset_id):
     if not (request.user.is_authenticated):
         return HttpResponseRedirect('/accounts/login/')
@@ -165,6 +176,9 @@ def index(request):
     context = {'jobs': jobs}
     return render(request, 'crawlerapp/index.html', context)
 
+
+@login_required
+@permission_required('crawlerapp.can_crawl', raise_exception=True)
 def job_create(request):
     if not (request.user.is_authenticated):
         return HttpResponseRedirect('/accounts/login/')
@@ -195,6 +209,9 @@ def job_create(request):
 
     return render(request, 'crawlerapp/job_create.html', {'form': form})
 
+
+@login_required
+@permission_required('crawlerapp.can_crawl', raise_exception=True)
 def dataset_create(request):
     if not (request.user.is_authenticated):
         return HttpResponseRedirect('/accounts/login/')
@@ -228,6 +245,8 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
 
+
+@login_required
 def profile(request):
     if not (request.user.is_authenticated):
         return HttpResponseRedirect('/accounts/login/')
