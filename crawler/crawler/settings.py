@@ -25,7 +25,7 @@ SECRET_KEY = 'gvlk(1xwbpub)pog+^w6&1=wpm@f0%61+=6!9gmfarovz$7@gc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['52.14.214.59','localhost']
+ALLOWED_HOSTS = ['52.14.214.59','localhost','mini.multicomp.cs.cmu.edu']
 
 
 # Application definition
@@ -139,8 +139,8 @@ LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/'
 
 #Celery configs
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = 'redis://mini.multicomp.cs.cmu.edu:6379/0'
+CELERY_RESULT_BACKEND = 'redis://mini.multicomp.cs.cmu.edu:6379/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
