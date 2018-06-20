@@ -82,8 +82,8 @@ DATABASES = {
         'NAME': 'crawler_db',
         'USER': 'crawler_usr',
         'PASSWORD': 'rdGBOx7KSQJmIt6C',
-        'HOST': 'localhost',
-        'PORT': '',
+        'HOST': 'mini.multicomp.cs.cmu.edu',
+        'PORT': '5432',
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
