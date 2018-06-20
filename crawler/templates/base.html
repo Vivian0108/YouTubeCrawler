@@ -48,14 +48,18 @@
         <!-- Dropdown Trigger -->
         <li><a class="dropdown-trigger" href="#!" data-target="dataset_actions">Dataset Actions<i class="material-icons right">arrow_drop_down</i></a></li>
 
+        {% if not request.user.is_authenticated %}
         <li><a href="{% url 'signup' %}">Sign Up</a></li>
         <li><a href="{% url 'login' %}">Log In</a></li>
+        {% endif %}
+        {% if request.user.is_authenticated %}
         <li><a id="logout" href="#">Log Out</a></li>
         <li><a href="{% url 'profile' %}">Profile</a></li>
+        {% endif %}
       </ul>
     </div>
   </nav>
-  
+
   {% block content %}{% endblock %}
   <div id="findmodal" class="modal">
     <div class="modal-content">
