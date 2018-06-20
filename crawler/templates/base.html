@@ -12,6 +12,17 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
   <!--Let browser know website is optimized for mobile-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    main {
+      flex: 1 0 auto;
+    }
+  </style>
 </head>
 
 
@@ -44,8 +55,8 @@
       </ul>
     </div>
   </nav>
+  
   {% block content %}{% endblock %}
-
   <div id="findmodal" class="modal">
     <div class="modal-content">
       <h4>Find a Job</h4>

@@ -7,3 +7,5 @@ downloaded_videos/*
 
 # exception to the rule
 !downloaded_videos/.gitkeep
+
+crawler/__pycache__/*
