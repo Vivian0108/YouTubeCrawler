@@ -155,8 +155,9 @@ def dataset_detail(request, dataset_id):
                 return redirect('dataset-detail', dataset.id)
         elif request.POST.get("download"):
             # Create the HttpResponse object with the appropriate CSV header.
-            redir_url = 'crawlerapp/dataset/' + dataset.id
-            response = HttpResponseRedirect(content_type='text/csv', url=redir_url)
+            #redir_url = 'crawlerapp/dataset/' + str(dataset.id)
+            #response = HttpResponseRedirect('',content_type='text/csv')
+            response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename=' + dataset.name + '.csv'
             fieldnames = ['job_id', 'job_name', 'video_ids']
             writer = csv.DictWriter(response, fieldnames = fieldnames)
