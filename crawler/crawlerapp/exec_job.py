@@ -188,6 +188,7 @@ def query(job, job_id):
 
 
 def ex(auto_download, job_id):
+    print(job_id)
     job = Job.objects.filter(id=job_id).get()
     job_vals = (Job.objects.filter(id=job_id).values())[0]
     print("Querying!")
