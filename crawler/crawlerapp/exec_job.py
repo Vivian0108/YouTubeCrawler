@@ -11,6 +11,7 @@ from django.db import models
 from crawlerapp.models import *
 import ast
 from crawlerapp.download import ex_download
+from crawlerapp.tasks import *
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -195,7 +196,6 @@ def ex(auto_download, job_id):
     job.videos = total_found
     job.executed = True
     job.save()
-
-    if auto_download == True:
+    if auto_download:
         ex_download(job_id)
     return total_found

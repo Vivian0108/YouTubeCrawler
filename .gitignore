@@ -9,3 +9,6 @@ downloaded_videos/*
 !downloaded_videos/.gitkeep
 
 crawler/__pycache__/*
+__pycache__/*
+crawler/crawler/settings.py
+crawler/crawler/celery.py

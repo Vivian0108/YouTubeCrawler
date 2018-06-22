@@ -10,7 +10,8 @@ import datetime
 from django.contrib.auth.decorators import login_required, permission_required
 from crawlerapp.tasks import *
 from crawlerapp.filters import *
-import jsonpickle, io, ast, csv
+import jsonpickle, io, ast, csv, os
+from crawlerapp.definitions import CONFIG_PATH
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -67,6 +68,8 @@ def detail(request, job_id):
                     applied_filters.append(f)
     except:
         pass
+    in_path = os.listdir(os.path.join(CONFIG_PATH, 'downloaded_videos/'))
+    num_downloaded = len(in_path)
     context = {'job_name': job.name,
                'job_num_vids': job.num_vids,
                'job_videos': job.videos,
@@ -83,7 +86,8 @@ def detail(request, job_id):
                'job_id': job.id,
                'filters': filters,
                'job_num_filtered_videos': num_filtered_videos,
-               'job_applied_filters': applied_filters}
+               'job_applied_filters': applied_filters,
+               'num_downloaded': num_downloaded}
     if request.method == "POST":
         form = DownloadForm(request.POST)
         if request.POST.get("download"):
