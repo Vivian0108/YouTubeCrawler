@@ -1,58 +1,56 @@
 {% extends 'base.html' %} {% block title %} Youtube Crawler {% endblock %} {% block content %}
 <main>
-<div class="section no-pad-bot" id="index-banner">
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <br><br>
+      <h1 class="header center teal-text">Youtube Crawler</h1>
+      <div class="row center">
+        <h5 class="header col s12 light">A tool building highly customized, mutlimodal datasets for training models</h5>
+      </div>
+      <br><br>
+
+    </div>
+  </div>
+
+
   <div class="container">
-    <br><br>
-    <h1 class="header center teal-text">Youtube Crawler</h1>
-    <div class="row center">
-      <h5 class="header col s12 light">A tool building highly customized, mutlimodal datasets for training models</h5>
+    <div class="section">
+
+      <!--   Icon Section   -->
+      <div class="row">
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-teal-text"><i class="material-icons">file_download</i></h2>
+            <h5 class="center">Download and filter jobs</h5>
+
+            <p class="light">Once your crawl has finished, click the download button on the job page. We will download your videos to our server, allowing you to filter them using our custom designed filters. You can then add the job to a dataset and download a csv file
+              containing the relevant information, giving you insight into your new dataset.</p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-teal-text"><i class="material-icons">video_library</i></h2>
+            <h5 class="center">Collect videos en masse</h5>
+
+            <p class="light">On the create job page, you can specify all the parameters YouTube can ask for, giving you full control of the content added to your datasets.</p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-teal-text"><i class="material-icons">create</i></h2>
+            <h5 class="center">Build data sets quickly</h5>
+
+            <p class="light">Once you have completed a variety of jobs, click on the create dataset page where you can add any combination of your jobs to a dataset. This hierarchical approach allows you to create unique, personalized datasets to train a wide variety
+              of models. Different jobs can be filtered for different parameters, allowing for complex and specialized datasets. </p>
+          </div>
+        </div>
+      </div>
+
     </div>
     <br><br>
-
   </div>
-</div>
-
-
-<div class="container">
-  <div class="section">
-
-    <!--   Icon Section   -->
-    <div class="row">
-      <div class="col s12 m4">
-        <div class="icon-block">
-          <h2 class="center light-teal-text"><i class="material-icons">file_download</i></h2>
-          <h5 class="center">Download and filter jobs</h5>
-
-          <p class="light">Once your crawl has finished, click the download button on the job page. We will download your videos to our
-                             server, allowing you to filter them using our custom designed filters. You can then add the job to a dataset and
-                            download a csv file containing the relevant information, giving you insight into your new dataset.</p>
-        </div>
-      </div>
-
-      <div class="col s12 m4">
-        <div class="icon-block">
-          <h2 class="center light-teal-text"><i class="material-icons">video_library</i></h2>
-          <h5 class="center">Collect videos en masse</h5>
-
-          <p class="light">On the create job page, you can specify all the parameters YouTube can ask for, giving you full control of the content added to your datasets.</p>
-        </div>
-      </div>
-
-      <div class="col s12 m4">
-        <div class="icon-block">
-          <h2 class="center light-teal-text"><i class="material-icons">create</i></h2>
-          <h5 class="center">Build data sets quickly</h5>
-
-          <p class="light">Once you have completed a variety of jobs, click on the create dataset page where you can add any combination of your jobs to a dataset. This
-                          hierarchical approach allows you to create unique, personalized datasets to train a wide variety of models. Different jobs can be filtered
-                        for different parameters, allowing for complex and specialized datasets. </p>
-        </div>
-      </div>
-    </div>
-
-  </div>
-  <br><br>
-</div>
 </main>
 <footer class="page-footer teal">
   <div class="container">
