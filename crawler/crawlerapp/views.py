@@ -68,10 +68,14 @@ def detail(request, job_id):
                     applied_filters.append(f)
     except:
         pass
-    in_path = os.listdir(os.path.join(CONFIG_PATH, 'downloaded_videos/'))
-    total_videos = ast.literal_eval(job.videos)
-    in_both = [id for id in in_path if id in total_videos]
-    num_downloaded = len(in_both)
+    downloaded = []
+    downloaded_query = Video.objects.filter(download_success="True").values('id','job_ids')
+    for vid in downloaded_query:
+        jobs_list = ast.literal_eval(vid['job_ids'])
+        if str(job_id) in jobs_list:
+            downloaded.append(vid['id'])
+    print(downloaded)
+    num_downloaded = len(downloaded)
     context = {'job_name': job.name,
                'job_num_vids': job.num_vids,
                'job_videos': job.videos,
