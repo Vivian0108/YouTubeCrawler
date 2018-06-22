@@ -206,7 +206,7 @@ def job_create(request):
             job.download_started = form.cleaned_data['auto_download']
             job.user_id = request.user.username
             job.save()
-            auto_download = job.download_started
+            auto_download = bool(job.download_started)
             crawl_async.delay(auto_download,str(job.id))
             return redirect('detail', job.id)
     else:
