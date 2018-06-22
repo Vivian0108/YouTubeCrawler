@@ -70,7 +70,7 @@ def detail(request, job_id):
         pass
     in_path = os.listdir(os.path.join(CONFIG_PATH, 'downloaded_videos/'))
     total_videos = ast.literal_eval(job.videos)
-    in_both = [id for id in total_videos and in_path]
+    in_both = [id for id in in_path if id in total_videos]
     num_downloaded = len(in_both)
     context = {'job_name': job.name,
                'job_num_vids': job.num_vids,
