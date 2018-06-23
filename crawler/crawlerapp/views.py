@@ -104,7 +104,8 @@ def detail(request, job_id):
         if request.POST.get("filter"):
             filter_num = int(request.POST.get("filter"))
             filter_obj = filters[filter_num][0]
-            filter_async.delay(jsonpickle.encode(filter_obj), job_id, "")
+            downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
+            filter_async.delay(jsonpickle.encode(filter_obj), job_id, downloaded_path)
         elif request.POST.get("remove"):
             filter_num = int(request.POST.get("remove"))
             filter_name = filters[filter_num][0].name()
