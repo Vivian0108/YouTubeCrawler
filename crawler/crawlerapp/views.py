@@ -101,7 +101,7 @@ def detail(request, job_id):
             #job.save()
             #context['download_started'] = True
             #download_async.delay(job_id)
-        elif request.POST.get("filter"):
+        if request.POST.get("filter"):
             filter_num = int(request.POST.get("filter"))
             filter_obj = filters[filter_num][0]
             filter_async.delay(jsonpickle.encode(filter_obj), job_id, "")
