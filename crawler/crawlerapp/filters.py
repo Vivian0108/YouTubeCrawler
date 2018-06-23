@@ -54,6 +54,8 @@ class AlignFilter(AbstractFilter):
         return "Uses P2FA to align the downloaded videos"
 
     def filter(self, video_ids, download_path):
+        print(video_ids)
+        print(download_path)
         for video in video_ids:
             print("Trying " + video)
             video_dir = os.path.join(download_path, video)
