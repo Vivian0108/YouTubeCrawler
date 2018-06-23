@@ -77,3 +77,4 @@ def ex_download(job_id):
     for data in download_data:
         download(data)
     job.download_finished = True
+    job.save()
