@@ -198,5 +198,5 @@ def ex(auto_download, job_id):
     job.executed = True
     job.save()
     if auto_download:
-        download_async.delay(job_id)
+        ex_download(job_id)
     return total_found
