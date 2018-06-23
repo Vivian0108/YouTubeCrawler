@@ -63,7 +63,7 @@ def download(download_data):
         output = os.path.join(video.download_path, video_id + ".wav")
         ff = ffmpy.FFmpeg(
             inputs={input: None},
-            outputs={output: ['-ar 11025 -ac 1 -s s16 -b:a 176k']}
+            outputs={output: '-ar 11025 -ac 1 -s s16 -b:a 176k'}
         )
         print(ff.cmd)
         ff.run()
