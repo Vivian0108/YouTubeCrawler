@@ -59,8 +59,10 @@
       </div>
       <div class="col s6">
         <h4>Actions</h4>
-        <form id='form-id' method="post"><!--
-          {% csrf_token %} {% if executed == False or download_started == True %}
+        <form id='form-id' method="post">
+          {% csrf_token %}
+          <!--
+           {% if executed == False or download_started == True %}
           <button class="btn-large disabled">Download</button> {% else %}
           <button class="btn-large waves-effect waves-light" type="submit" value="download" name="download">Download</button> {% endif %}-->
           <center>
@@ -74,10 +76,8 @@
                   </div>
                   <div class="card-action">
                     {% if download_finished == True %}
-                    <button class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="filter">Run Filter</button>
-                    {% else %}
-                    <button class="btn waves-effect waves-light disabled" type="submit" value="{{ index }}" name="filter">Run Filter</button>
-                    {% endif %}
+                    <button class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% else %}
+                    <button class="btn waves-effect waves-light disabled" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% endif %}
                     <button class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="remove">Clear this Filter</button>
                   </div>
                 </div>
