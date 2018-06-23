@@ -55,6 +55,7 @@ class AlignFilter(AbstractFilter):
 
     def filter(self, video_ids, download_path):
         for video in video_ids:
+            print("Trying " + video)
             try:
                 video_dir = os.path.join(download_path, video)
                 mp4_path = os.path.join(video_dir, video + ".mp4")
