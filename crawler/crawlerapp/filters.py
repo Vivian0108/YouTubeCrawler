@@ -80,7 +80,7 @@ class AlignFilter(AbstractFilter):
 
                 with open(plaintext_path, 'w') as f:
                     f.write(' '.join(lines))
-                subprocess.call(align_path + ' %s %s %s'
+                subprocess.call("sudo " + align_path + ' %s %s %s'
                                 % (wav_path, plaintext_path, pratt_path),
                                 shell=True)
             except FileNotFoundError as e:
