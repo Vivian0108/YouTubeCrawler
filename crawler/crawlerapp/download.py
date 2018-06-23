@@ -7,6 +7,7 @@ import youtube_dl
 import subprocess
 import atexit
 import json, ast
+import ffmpy
 from crawlerapp.definitions import CONFIG_PATH
 from crawlerapp.models import *
 from django.db import models
@@ -58,6 +59,14 @@ def download(download_data):
         video.download_time=datetime.datetime.now()
         video.download_path=download_to_path
         video.download_success=True
+        input = os.path.join(video.download_path, video_id + ".mp4")
+        output = os.path.join(video.download_path, video_id + ".wav")
+        ff = FFmpeg(
+            inputs={input: None},
+            outputs={output: ['-ar 11025 -ac 1 -s s16 -b:a 176k']}
+        )
+        print(ff.cmd)
+        ff.run()
         video.save()
 
 def ex_download(job_id):
