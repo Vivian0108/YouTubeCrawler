@@ -187,7 +187,7 @@ def query(job, job_id):
     return total_found
 
 
-def ex(auto_download, job_id):
+def ex(job_id):
     print(job_id)
     job = Job.objects.filter(id=job_id).get()
     job_vals = (Job.objects.filter(id=job_id).values())[0]
@@ -197,6 +197,5 @@ def ex(auto_download, job_id):
     job.videos = total_found
     job.executed = True
     job.save()
-    if auto_download:
-        ex_download(job_id)
+    ex_download(job_id)
     return total_found

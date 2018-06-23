@@ -96,11 +96,11 @@ def detail(request, job_id):
                'num_downloaded': num_downloaded}
     if request.method == "POST":
         form = DownloadForm(request.POST)
-        if request.POST.get("download"):
-            job.download_started = True
-            job.save()
-            context['download_started'] = True
-            download_async.delay(job_id)
+        #if request.POST.get("download"):
+            #job.download_started = True
+            #job.save()
+            #context['download_started'] = True
+            #download_async.delay(job_id)
         elif request.POST.get("filter"):
             filter_num = int(request.POST.get("filter"))
             filter_obj = filters[filter_num][0]
@@ -210,11 +210,9 @@ def job_create(request):
             job.created_date = datetime.datetime.now()
             job.num_pages = form.cleaned_data['num_vids']
             job.num_vids = 0
-            job.download_started = form.cleaned_data['auto_download']
             job.user_id = request.user.username
             job.save()
-            auto_download = bool(job.download_started)
-            crawl_async.delay(auto_download,str(job.id))
+            crawl_async.delay(str(job.id))
             return redirect('detail', job.id)
     else:
         form = CreateJobForm()

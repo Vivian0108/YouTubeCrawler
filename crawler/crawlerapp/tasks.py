@@ -8,8 +8,8 @@ from .models import *
 import jsonpickle, ast
 
 @shared_task
-def crawl_async(auto_download,job_id):
-    ex(auto_download,job_id)
+def crawl_async(job_id):
+    ex(job_id)
 
 @shared_task
 def download_async(job_id):
