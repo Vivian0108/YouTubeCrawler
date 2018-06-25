@@ -170,10 +170,10 @@ def dataset_detail(request, dataset_id):
             #response = HttpResponseRedirect('',content_type='text/csv')
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename=' + dataset.name + '.csv'
-            fieldnames = ['job_id', 'job_name', 'video_ids']
+            fieldnames = ['job_id', 'job_name', 'query', 'video_ids']
             writer = csv.DictWriter(response, fieldnames = fieldnames)
             for job in job_list:
-                writer.writerow({'job_id': job.id, 'job_name': job.name, 'video_ids': job.videos})
+                writer.writerow({'job_id': job.id, 'job_name': job.name, 'query': job.query, 'video_ids': job.videos})
             return response
 
     else:
