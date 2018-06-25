@@ -236,7 +236,7 @@ def dataset_create(request):
             dataset.created_date = datetime.datetime.now()
             dataset.user_id = request.user.username
             dataset.save()
-            return render(request, 'crawlerapp/landing.html')
+            return redirect('dataset-detail', dataset.id)
     else:
         form = CreateDatasetForm(request.user)
 
