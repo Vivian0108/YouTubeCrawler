@@ -139,7 +139,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/'
 
 #Celery configs
-CELERY_BROKER_URL = 'redis://mini.multicomp.cs.cmu.edu:6379/0'
+CELERY_BROKER_URL = 'redis://:M9^*H1SEn1si@mini.multicomp.cs.cmu.edu:6379/0'
 CELERY_RESULT_BACKEND = 'redis://mini.multicomp.cs.cmu.edu:6379/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
