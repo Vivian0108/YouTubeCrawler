@@ -8,6 +8,7 @@ import subprocess
 import atexit
 import json, ast
 import ffmpy
+from crawlerapp.Filters.extractFrames import extractFrames
 from crawlerapp.definitions import CONFIG_PATH
 from crawlerapp.models import *
 from django.db import models
@@ -65,7 +66,7 @@ def download(download_data):
             inputs={input: None},
             outputs={output: '-ar 11025 -ac 1 -s s16 -b:a 176k'}
         )
-        print(ff.cmd)
+        extractFrames(video.id, 1, video.download_path)
         ff.run()
         video.save()
 
