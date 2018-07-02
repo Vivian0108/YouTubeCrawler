@@ -66,6 +66,7 @@ def download(download_data):
             inputs={input: None},
             outputs={output: '-ar 11025 -ac 1 -s s16 -b:a 176k'}
         )
+        print("Extracting Frames")
         extractFrames(video.id, 1, video.download_path)
         ff.run()
         video.save()

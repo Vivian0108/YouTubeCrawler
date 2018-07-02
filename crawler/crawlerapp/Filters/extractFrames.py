@@ -6,6 +6,7 @@ def extractFrames(videoID, FPS, video_path):
 	frames_path = os.path.join(video_path, "Frames")
 	vidcap = cv2.VideoCapture(video_path + ".mp4")
 	success, image = vidcap.read()
+	print("Success: " + str(success))
 	curr = 0
 	fcount = 1
 	# wait = 1.0/FPS
