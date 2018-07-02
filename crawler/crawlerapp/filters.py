@@ -99,7 +99,9 @@ class FaceDetectFilter(AbstractFilter):
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
         for video in video_ids:
+            print("Testing " + str(video))
             truth_vals = faceDetect(video, downloaded_path)
             if truth_vals[0]:
+                print("Passed")
                 passed.append(video)
         return passed
