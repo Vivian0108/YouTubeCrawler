@@ -13,7 +13,7 @@ def faceDetect(videoID, downloaded_path):
     frames_path = os.path.join(video_path, "Frames")
     fcascade = cv2.CascadeClassifier(cv2.data.haarcascades+"haarcascade_frontalface_alt.xml")
     scascade = cv2.CascadeClassifier(cv2.data.haarcascades+"haarcascade_profileface.xml")
-    filelist = glob.glob(frames_path+'*.jpg')
+    filelist = glob.glob(os.path.join(frames_path,'*.jpg'))
     print(filelist)
     filelist.sort()
 
