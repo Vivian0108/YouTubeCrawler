@@ -11,9 +11,10 @@ count = 1
 def faceDetect(videoID, downloaded_path):
     video_path = os.path.join(downloaded_path, videoID)
     frames_path = os.path.join(video_path, "Frames")
-    fcascade = cv2.CascadeClassifier("./haarcascade_frontalface_alt.xml")
-    scascade = cv2.CascadeClassifier("./haarcascade_profileface.xml")
+    fcascade = cv2.CascadeClassifier(cv2.data.haarcascades+"haarcascade_frontalface_alt.xml")
+    scascade = cv2.CascadeClassifier(cv2.data.haarcascades+"haarcascade_profileface.xml")
     filelist = glob.glob(frames_path+'*.jpg')
+    print(filelist)
     filelist.sort()
 
     frameArray = np.array([np.array(detect(fname,fcascade,scascade,videoID), dtype=np.float64) for fname in filelist])
