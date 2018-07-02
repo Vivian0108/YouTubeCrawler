@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import random
 import time, os, subprocess
 from crawlerapp.Filters.faceDetectFilter import *
+from crawlerapp.Filters.sceneChangeFilter import *
 from crawlerapp.definitions import CONFIG_PATH
 #from AZP2FA.p2fa.align_mod import align
 
@@ -20,32 +21,6 @@ class AbstractFilter(ABC):
     @abstractmethod
     def filter(self, video_ids):
         pass
-
-
-class RandFilter(AbstractFilter):
-    def name(self):
-        return "Random Filter"
-
-    def description(self):
-        return "Randomly chooses videos that pass"
-
-    def filter(self, video_ids):
-        num_vids = random.randint(0, len(video_ids) - 1)
-        chosen_vids = random.sample(video_ids, num_vids)
-        return chosen_vids
-
-
-class FilterDemo(AbstractFilter):
-    def name(self):
-        return "Filter Demo"
-
-    def description(self):
-        return "Picks first half of the videos"
-
-    def filter(self, video_ids):
-        time.sleep(5)
-        return video_ids[0:len(video_ids) // 2]
-
 
 class AlignFilter(AbstractFilter):
     def name(self):
@@ -102,6 +77,22 @@ class FaceDetectFilter(AbstractFilter):
             print("Testing " + str(video))
             truth_vals = faceDetect(video, downloaded_path)
             if truth_vals[0]:
+                print("Passed")
+                passed.append(video)
+        return passed
+
+class SceneChangeFilter(AbstractFilter):
+    def name(self):
+        return "Scene Change"
+    def description(self):
+        return "Detects if there is less than 10 scene changes"
+    def filter(self, video_ids):
+        downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
+        passed = []
+        for video in video_ids:
+            print("Testing " + str(video))
+            succeeded = sceneChangeFilter(video, downloaded_path, 25, 100)
+            if succeeded:
                 print("Passed")
                 passed.append(video)
         return passed
