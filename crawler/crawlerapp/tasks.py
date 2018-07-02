@@ -19,8 +19,14 @@ def download_async(job_id):
 @transaction.atomic
 def filter_async(filter, job_id, download_path):
     job = Job.objects.filter(id=job_id).get()
+    downloaded_video_ids = []
     try:
         video_ids = ast.literal_eval(job.videos)
+        for video_id in video_ids:
+            video = Video.objects.filter(id=video_id).get()
+            if str(video.download_success) == "True":
+                downloaded_video_ids.append(video_id)
+        video_ids = downloaded_video_ids
     except:
         video_ids = []
     filter_obj = jsonpickle.decode(filter)
