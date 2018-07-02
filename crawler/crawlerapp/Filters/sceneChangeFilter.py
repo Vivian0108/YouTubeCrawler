@@ -6,17 +6,19 @@ import numpy as np
 
 #videoID - also the name of the folder with the frames
 #frameStep - how frequently we check the frames (ex: if frameStep = 7,
-#            we check every 7 frames and compare only those to count the 
+#            we check every 7 frames and compare only those to count the
 # 	         number of scene changes)
-#totalNumSplits - number of splits made of each frame (how precise we want 
+#totalNumSplits - number of splits made of each frame (how precise we want
 #            to subtract each frame from each other)
 
-def sceneChangeFilter(videoID,frameStep,totalNumSplits):
-	filelist = glob.glob(videoID+'/*.jpg')
+def sceneChangeFilter(videoID,downloaded_path,frameStep,totalNumSplits):
+    video_path = os.path.join(downloaded_path, videoID)
+    frames_path = os.path.join(video_path, "Frames")
+    filelist = glob.glob(os.path.join(frames_path,'*.jpg'))
 	filelist.sort()
-	
+
 	frameNumbers = [i for i in range (len(filelist)) if i % frameStep == 0]
-	frameArray = np.array([np.array(Image.open(filelist[fcount]), 
+	frameArray = np.array([np.array(Image.open(filelist[fcount]),
 		dtype=np.float64) for fcount in frameNumbers])
 
 	# Makes exact copy of frameArray starting from index 1 (so one element smaller)
@@ -55,4 +57,4 @@ def sceneChangeFilter(videoID,frameStep,totalNumSplits):
 
 	numSC = [i for i in range (sceneChange.shape[0]) if torch.nonzero(sceneChange[i]).shape[0] > totalNumSplits/2]
 
-	return len(numSC)
+	return (len(numSC) < 10)
