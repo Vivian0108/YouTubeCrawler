@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import random
 import time, os, subprocess
+from crawlerapp.Filters.faceDetectFilter import *
 from crawlerapp.definitions import CONFIG_PATH
 #from AZP2FA.p2fa.align_mod import align
 
@@ -17,7 +18,7 @@ class AbstractFilter(ABC):
         return self.description
 
     @abstractmethod
-    def filter(self, video_ids, download_path):
+    def filter(self, video_ids):
         pass
 
 
@@ -28,7 +29,7 @@ class RandFilter(AbstractFilter):
     def description(self):
         return "Randomly chooses videos that pass"
 
-    def filter(self, video_ids, download_path):
+    def filter(self, video_ids):
         num_vids = random.randint(0, len(video_ids) - 1)
         chosen_vids = random.sample(video_ids, num_vids)
         return chosen_vids
@@ -41,7 +42,7 @@ class FilterDemo(AbstractFilter):
     def description(self):
         return "Picks first half of the videos"
 
-    def filter(self, video_ids, download_path):
+    def filter(self, video_ids):
         time.sleep(5)
         return video_ids[0:len(video_ids) // 2]
 
@@ -53,7 +54,7 @@ class AlignFilter(AbstractFilter):
     def description(self):
         return "Uses P2FA to align the downloaded videos"
 
-    def filter(self, video_ids, download_path):
+    def filter(self, video_ids):
         my_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         for video in video_ids:
             print("Trying " + video)
@@ -86,3 +87,19 @@ class AlignFilter(AbstractFilter):
             except FileNotFoundError as e:
                 print(e)
         return []
+
+class FaceDetectFilter(AbstractFilter):
+    def name(self):
+        return "Face Detection"
+
+    def description(self):
+        return "Detects Faces"
+
+    def filter(self, video_ids):
+        downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
+        passed = []
+        for video in video_ids:
+            truth_vals = faceDetect(video, downloaded_path)
+            if truth_vals[0]:
+                passed.append(video)
+        return passed

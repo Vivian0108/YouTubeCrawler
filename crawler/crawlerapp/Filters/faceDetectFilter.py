@@ -7,10 +7,12 @@ import numpy as np
 
 count = 1
 
-def faceDetect(videoID):
+def faceDetect(videoID, downloaded_path):
+    video_path = os.path.join(downloaded_path, videoID)
+    frames_path = os.path.join(video_path, "Frames")
     fcascade = cv2.CascadeClassifier("./haarcascade_frontalface_alt.xml")
     scascade = cv2.CascadeClassifier("./haarcascade_profileface.xml")
-    filelist = glob.glob(videoID+'/*.jpg')
+    filelist = glob.glob(frames_path+'*.jpg')
     filelist.sort()
 
     frameArray = np.array([np.array(detect(fname,fcascade,scascade,videoID), dtype=np.float64) for fname in filelist])
@@ -23,8 +25,8 @@ def faceDetect(videoID):
 
     global count
     count = 1
-    print (oneFace.shape[0])
-    print (moreFaces.shape[0])
+    #print (oneFace.shape[0])
+    #print (moreFaces.shape[0])
     #Choose the percentage (0.75) of the total frames that must contain faces
     return [oneFace.shape[0] >= int (0.75 * size),moreFaces.shape[0] >= int (0.75 * size)]
 
@@ -43,7 +45,7 @@ def detect(path,front_cascade,side_cascade,videoID):
     # #left faces
     # s2rects = side_cascade.detectMultiScale(gray_flip, 1.2, 4, cv2.CASCADE_SCALE_IMAGE, (30,30))
     # box(frects, s1rects, s2rects, img, videoID)
-    box(frects, img, videoID)
+    #box(frects, img, videoID)
 
     return len(frects) #+ len(s1rects) + len(s2rects)
     #len(rects) represents the number of faces
@@ -68,5 +70,3 @@ def box(frects, img, videoID)
     global count
     cv2.imwrite(videoID + '/' + 'detected'+'%03d.jpg' % count, img)
     count += 1
-
-
