@@ -12,9 +12,9 @@ import numpy as np
 #            to subtract each frame from each other)
 
 def sceneChangeFilter(videoID,downloaded_path,frameStep,totalNumSplits):
-    video_path = os.path.join(downloaded_path, videoID)
-    frames_path = os.path.join(video_path, "Frames")
-    filelist = glob.glob(os.path.join(frames_path,'*.jpg'))
+	video_path = os.path.join(downloaded_path, videoID)
+	frames_path = os.path.join(video_path, "Frames")
+	filelist = glob.glob(os.path.join(frames_path,'*.jpg'))
 	filelist.sort()
 
 	frameNumbers = [i for i in range (len(filelist)) if i % frameStep == 0]
