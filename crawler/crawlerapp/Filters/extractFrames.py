@@ -4,7 +4,8 @@ from crawlerapp.definitions import CONFIG_PATH
 
 def extractFrames(videoID, FPS, video_path):
 	frames_path = os.path.join(video_path, "Frames")
-	vidcap = cv2.VideoCapture(video_path + ".mp4")
+	mp4_path = os.path.join(video_path, videoID + ".mp4")
+	vidcap = cv2.VideoCapture(mp4_path)
 	success, image = vidcap.read()
 	print("Success: " + str(success))
 	curr = 0
