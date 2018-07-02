@@ -56,7 +56,7 @@ def detect(path,front_cascade,side_cascade,videoID):
 
 # for testing purposes to see what the detect faces are, when actually running comment out the box line
 # def box(frects, s1rects, s2rects, img, videoID):
-def box(frects, img, videoID)
+def box(frects, img, videoID):
     width = img.shape[1]
     for x1, y1, x2, y2 in frects:
         #cv2.rectangle(img, (x1, y1), (x2, y2), (127, 255, 0), 2)
