@@ -41,16 +41,13 @@ class CreateJobForm(forms.Form):
         choices=[("none", "none"), ("moderate", "moderate"), ("strict", "strict")])
     safe_search.widget.attrs.update({'class': 'browser-default'})
     cc = forms.ChoiceField(
-        choices=[("any", "any"), ("closedCaption", "closed caption"), ("none", "none")])
+        choices=[("closedCaption", "closed caption"), ("any", "any"), ("none", "none")])
     cc.widget.attrs.update({'class': 'browser-default'})
     video_def = forms.ChoiceField(
         choices=[("any", "any"), ("high", "high"), ("standard", "standard")])
     video_duration = forms.ChoiceField(choices=[(
         "any", "any"), ("long", "long"), ("medium", "medium"), ("short", "short")])
     video_duration.widget.attrs.update({'class': 'browser-default'})
-    auto_download = forms.ChoiceField(
-        choices=[(False, "False"), (True, "True")])
-    auto_download.widget.attrs.update({'class': 'browser-default'})
 
 
 class CreateDatasetForm(forms.Form):
