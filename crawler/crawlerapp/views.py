@@ -86,8 +86,11 @@ def detail(request, job_id):
         jobs_list = ast.literal_eval(vid['job_ids'])
         if str(job_id) in jobs_list:
             downloaded.append(vid['id'])
-            if vid['frames_extracted'] == True:
-                frames_extracted_list.append(vid['id'])
+            try:
+                if vid['frames_extracted'] == True:
+                    frames_extracted_list.append(vid['id'])
+            except:
+                print("Key error on video " + str(vid['id']))
     num_downloaded = len(downloaded)
     num_frames_extracted = len(frames_extracted_list)
 
