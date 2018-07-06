@@ -130,7 +130,7 @@ def detail(request, job_id):
                'job_applied_filters': applied_filters,
                'num_downloaded': num_downloaded,
                'active_filters': job.active_filters,
-               'num_frames_extracted': num_frames_extracted,
+               'num_frames_extracted': len(frames_extracted_list),
                'num_face_detected': len(face_detected_list),
                'num_scene_change_passed': len(scene_change_detected_list)}
     if request.method == "POST":
