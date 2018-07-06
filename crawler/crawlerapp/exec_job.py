@@ -112,6 +112,7 @@ def process_search_response(job_id, job_name, query, search_response, client):
                 video.comment_count=comment_count
                 video.published_date=published_date
                 video.search_time=datetime.datetime.now()
+                video.frames_extracted=False
                 video.save()
             else:
                 try:
@@ -191,7 +192,6 @@ def ex(job_id):
     print(job_id)
     job = Job.objects.filter(id=job_id).get()
     job_vals = (Job.objects.filter(id=job_id).values())[0]
-    print("Querying!")
     total_found = query(job_vals, job_id)
     job.num_vids = len(total_found)
     job.videos = total_found
