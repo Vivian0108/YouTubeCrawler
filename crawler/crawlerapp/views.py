@@ -50,13 +50,8 @@ def detail(request, job_id):
         job = Job.objects.filter(id=job_id).get()
     except:
         return render(request, 'crawlerapp/jobnotfound.html', {'jobid': job_id})
-    #Creates instances of all filters in filter.py
-    gen = (subclass for subclass in AbstractFilter.__subclasses__())
-    filters = []
-    index = 0
-    for subclass in gen:
-        filters.append((subclass(), index))
-        index += 1
+
+    #Finds all applied filters
     num_filtered_videos = 0
     applied_filters = []
     try:
@@ -68,14 +63,33 @@ def detail(request, job_id):
                     applied_filters.append(f)
     except:
         pass
+
+    try:
+        active_filters = ast.literal_eval(job.active_filters)
+    except:
+        active_filters = []
+
+    #Creates instances of all filters in filter.py
+    gen = (subclass for subclass in AbstractFilter.__subclasses__())
+    filters = []
+    index = 0
+    for subclass in gen:
+        filter_obj = subclass()
+        enabled = (not (filter_obj.name() in applied_filters)) or (not (filter_obj.name() in applied_filters))
+        filters.append((filter_obj, index, enabled))
+        index += 1
+
     downloaded = []
     downloaded_query = Video.objects.filter(download_success="True").values('id','job_ids')
     for vid in downloaded_query:
         jobs_list = ast.literal_eval(vid['job_ids'])
         if str(job_id) in jobs_list:
             downloaded.append(vid['id'])
-    print(downloaded)
     num_downloaded = len(downloaded)
+
+
+
+
     context = {'job_name': job.name,
                'job_num_vids': job.num_vids,
                'job_videos': job.videos,
@@ -97,11 +111,6 @@ def detail(request, job_id):
                'active_filters': job.active_filters}
     if request.method == "POST":
         form = DownloadForm(request.POST)
-        #if request.POST.get("download"):
-            #job.download_started = True
-            #job.save()
-            #context['download_started'] = True
-            #download_async.delay(job_id)
         if request.POST.get("filter"):
             filter_num = int(request.POST.get("filter"))
             filter_obj = filters[filter_num][0]
