@@ -80,13 +80,16 @@ def detail(request, job_id):
         index += 1
 
     downloaded = []
+    frames_extracted_list = []
     downloaded_query = Video.objects.filter(download_success="True").values('id','job_ids')
     for vid in downloaded_query:
         jobs_list = ast.literal_eval(vid['job_ids'])
         if str(job_id) in jobs_list:
             downloaded.append(vid['id'])
+            if vid['frames_extracted'] == True:
+                frames_extracted_list.append(vid['id'])
     num_downloaded = len(downloaded)
-
+    num_frames_extracted = len(frames_extracted_list)
 
 
 
@@ -108,7 +111,8 @@ def detail(request, job_id):
                'job_num_filtered_videos': num_filtered_videos,
                'job_applied_filters': applied_filters,
                'num_downloaded': num_downloaded,
-               'active_filters': job.active_filters}
+               'active_filters': job.active_filters,
+               'num_frames_extracted': num_frames_extracted}
     if request.method == "POST":
         form = DownloadForm(request.POST)
         if request.POST.get("filter"):

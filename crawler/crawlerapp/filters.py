@@ -32,10 +32,10 @@ class ExtractFrames(AbstractFilter):
     def description(self):
         return "Extracts the frames from each video. Required before running FaceDetect or SceneChanges"
     def filter(self, video_ids):
-        
+
         for id in video_ids:
+            vid_query = Video.objects.filter(id=id).get()
             try:
-                vid_query = Video.objects.filter(id=id).get()
                 extractFrames(id, 1, vid_query.download_path)
                 vid_query.frames_extracted = True
             except:

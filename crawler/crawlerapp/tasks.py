@@ -39,6 +39,7 @@ def filter_async(filter, job_id):
         active_filters = [filter_obj.name()]
         job.active_filters = active_filters
     job.save()
+    print(job.active_filters)
     total_filtered = filter_obj.filter(video_ids)
     filtered = [(vid,filter_obj.name()) for vid in total_filtered]
     #Refresh the job before getting the filtered videos
