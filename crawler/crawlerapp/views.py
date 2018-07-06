@@ -44,12 +44,12 @@ def dataset_all(request):
 @login_required
 @permission_required('crawlerapp.can_crawl', raise_exception=True)
 def detail(request, job_id):
-    if not (request.user.is_authenticated):
-        return HttpResponseRedirect('/accounts/login/')
     try:
         job = Job.objects.filter(id=job_id).get()
     except:
         return render(request, 'crawlerapp/jobnotfound.html', {'jobid': job_id})
+
+
 
     #Finds all applied filters
     num_filtered_videos = 0
@@ -69,6 +69,8 @@ def detail(request, job_id):
     except:
         active_filters = []
 
+
+
     #Creates instances of all filters in filter.py
     gen = (subclass for subclass in AbstractFilter.__subclasses__())
     filters = []
@@ -79,8 +81,12 @@ def detail(request, job_id):
         filters.append((filter_obj, index, enabled))
         index += 1
 
+
+
     downloaded = []
     frames_extracted_list = []
+    face_detected_list = []
+    scene_change_detected_list = []
     downloaded_query = Video.objects.filter(download_success="True").values('id','job_ids')
     for vid in downloaded_query:
         jobs_list = ast.literal_eval(vid['job_ids'])
@@ -91,8 +97,17 @@ def detail(request, job_id):
                     frames_extracted_list.append(vid['id'])
             except:
                 print("Key error on video " + str(vid['id']))
+            try:
+                if vid['face_detected'] == True:
+                    face_detected_list.append(vid['id'])
+            except:
+                print("Key error on video " + str(vid['id']))
+            try:
+                if vid['scene_change_detected_list'] == True:
+                    scene_change_detected_list.append(vid['id'])
+            except:
+                print("Key error on video " + str(vid['id']))
     num_downloaded = len(downloaded)
-    num_frames_extracted = len(frames_extracted_list)
 
 
 
@@ -115,7 +130,9 @@ def detail(request, job_id):
                'job_applied_filters': applied_filters,
                'num_downloaded': num_downloaded,
                'active_filters': job.active_filters,
-               'num_frames_extracted': num_frames_extracted}
+               'num_frames_extracted': num_frames_extracted,
+               'num_face_detected': len(face_detected_list),
+               'num_scene_change_passed': len(scene_change_detected_list)}
     if request.method == "POST":
         form = DownloadForm(request.POST)
         if request.POST.get("filter"):

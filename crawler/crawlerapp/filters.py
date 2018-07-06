@@ -54,7 +54,6 @@ class AlignFilter(AbstractFilter):
     def filter(self, video_ids):
         my_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         for video in video_ids:
-            print("Trying " + video)
             try:
                 video_dir = os.path.join(my_path, video)
                 mp4_path = os.path.join(video_dir, video + ".mp4")
@@ -96,13 +95,20 @@ class FaceDetectFilter(AbstractFilter):
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
         for video in video_ids:
+            vid_query = Video.objects.filter(id=video).get()
+
             try:
                 truth_vals = faceDetect(video, downloaded_path)
                 if truth_vals[0]:
-                    print("Passed")
+                    print("Passed " + str(video))
+                    vid_query.face_detected = True
                     passed.append(video)
+                else:
+                    vid_query.face_detected = False
             except:
                 print("programming error on video " + str(video))
+                vid_query.face_detected = False
+            vid_query.save()
         return passed
 
 class SceneChangeFilter(AbstractFilter):
@@ -114,11 +120,16 @@ class SceneChangeFilter(AbstractFilter):
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
         for video in video_ids:
+            vid_query = Video.objects.filter(id=video).get()
             try:
                 succeeded = sceneChangeFilter(video, downloaded_path, 25, 100)
                 if succeeded:
-                    print("Passed")
+                    print("Passed " + str(video))
+                    vid_query.scene_change_filter_passed = True
                     passed.append(video)
+                else:
+                    vid_query.scene_change_filter_passed = False
             except:
                 print("programming error on video " + str(video))
+                vid_query.scene_change_filter_passed = False
         return passed
