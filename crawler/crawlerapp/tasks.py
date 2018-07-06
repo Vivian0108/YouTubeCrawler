@@ -17,7 +17,7 @@ def download_async(job_id):
 
 @shared_task
 @transaction.atomic
-def filter_async(filter, job_id, download_path):
+def filter_async(filter, job_id):
     job = Job.objects.filter(id=job_id).get()
     downloaded_video_ids = []
     try:
