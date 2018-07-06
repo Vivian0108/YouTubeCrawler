@@ -46,7 +46,7 @@ class Video(models.Model):
     download_path = models.TextField(default="",null=True)
     download_success = models.NullBooleanField()
     frames_extracted = models.NullBooleanField()
-    audio_extracted = modlels.NullBooleanField()
+    audio_extracted = models.NullBooleanField()
     mturk_description = models.TextField(default="",null=True)
     youtube_params = JSONField(default=list,null=True)
     query = models.TextField(default="",null=True)
