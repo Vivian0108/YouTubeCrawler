@@ -96,11 +96,13 @@ class FaceDetectFilter(AbstractFilter):
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
         for video in video_ids:
-            print("Testing " + str(video))
-            truth_vals = faceDetect(video, downloaded_path)
-            if truth_vals[0]:
-                print("Passed")
-                passed.append(video)
+            try:
+                truth_vals = faceDetect(video, downloaded_path)
+                if truth_vals[0]:
+                    print("Passed")
+                    passed.append(video)
+            except:
+                print("programming error on video " + str(video))
         return passed
 
 class SceneChangeFilter(AbstractFilter):
@@ -112,9 +114,11 @@ class SceneChangeFilter(AbstractFilter):
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
         for video in video_ids:
-            print("Testing " + str(video))
-            succeeded = sceneChangeFilter(video, downloaded_path, 25, 100)
-            if succeeded:
-                print("Passed")
-                passed.append(video)
+            try:
+                succeeded = sceneChangeFilter(video, downloaded_path, 25, 100)
+                if succeeded:
+                    print("Passed")
+                    passed.append(video)
+            except:
+                print("programming error on video " + str(video))
         return passed
