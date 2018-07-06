@@ -93,17 +93,17 @@ def detail(request, job_id):
         if str(job_id) in jobs_list:
             downloaded.append(vid['id'])
             try:
-                if vid['frames_extracted'] == True:
+                if vid['frames_extracted'] == "True":
                     frames_extracted_list.append(vid['id'])
             except:
                 print("Key error on video " + str(vid['id']))
             try:
-                if vid['face_detected'] == True:
+                if vid['face_detected'] == "True":
                     face_detected_list.append(vid['id'])
             except:
                 print("Key error on video " + str(vid['id']))
             try:
-                if vid['scene_change_detected_list'] == True:
+                if vid['scene_change_detected_list'] == "True":
                     scene_change_detected_list.append(vid['id'])
             except:
                 print("Key error on video " + str(vid['id']))
