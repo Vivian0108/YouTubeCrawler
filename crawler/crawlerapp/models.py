@@ -28,10 +28,11 @@ class Job(models.Model):
     executed = models.BooleanField(default=False)
     download_finished = models.BooleanField(default=False)
     download_started = models.BooleanField(default=False)
+    active_filters = models.TextField(default="")
 
     class Meta:
         permissions = [('can_crawl',"Can Crawl and Download")]
-        
+
 class Video(models.Model):
     id = models.CharField(max_length=50, default="", primary_key=True)
     channel_id = models.CharField(max_length=50,default="",null=True)
@@ -44,6 +45,8 @@ class Video(models.Model):
     download_time = models.DateTimeField(default=None, blank=True, null=True)
     download_path = models.TextField(default="",null=True)
     download_success = models.NullBooleanField()
+    frames_extracted = models.NullBooleanField()
+    audio_extracted = modlels.NullBooleanField()
     mturk_description = models.TextField(default="",null=True)
     youtube_params = JSONField(default=list,null=True)
     query = models.TextField(default="",null=True)

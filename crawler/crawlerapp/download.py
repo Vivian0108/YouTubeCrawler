@@ -62,13 +62,16 @@ def download(download_data):
         video.download_success=True
         input = os.path.join(video.download_path, video_id + ".mp4")
         output = os.path.join(video.download_path, video_id + ".wav")
-        ff = ffmpy.FFmpeg(
-            inputs={input: None},
-            outputs={output: '-ar 11025 -ac 1 -s s16 -b:a 176k'}
-        )
-        print("Extracting Frames")
-        extractFrames(video.id, 1, video.download_path)
-        ff.run()
+        try:
+            ff = ffmpy.FFmpeg(
+                inputs={input: None},
+                outputs={output: '-ar 11025 -ac 1 -s s16 -b:a 176k'}
+            )
+            ff.run()
+            video.audio_extracted = True
+        except:
+            print("Failed to extract audio for " + str(video.id))
+            video.audio_extracted = False
         video.save()
 
 def ex_download(job_id):

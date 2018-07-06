@@ -29,7 +29,16 @@ def filter_async(filter, job_id, download_path):
         video_ids = downloaded_video_ids
     except:
         video_ids = []
+
     filter_obj = jsonpickle.decode(filter)
+    try:
+        active_filters = ast.literal_eval(job.active_filters)
+        active_filters.append(filter_obj.name())
+        job.active_filters = active_filters
+    except:
+        active_filters = [filter_obj.name()]
+        job.active_filters = active_filters
+    job.save()
     total_filtered = filter_obj.filter(video_ids)
     filtered = [(vid,filter_obj.name()) for vid in total_filtered]
     #Refresh the job before getting the filtered videos
@@ -59,7 +68,12 @@ def filter_async(filter, job_id, download_path):
 
     final_filtered.extend([(video_id,filters) for (video_id,filters) in prefiltered if video_id not in final_filtered_ids])
     job.filtered_videos = final_filtered
-
+    try:
+        active_filters = ast.literal_eval(job.active_filters)
+        active_filters.remove(filter_obj.name())
+        job.active_filters = active_filters
+    except:
+        pass
     job.save()
 
 @shared_task
