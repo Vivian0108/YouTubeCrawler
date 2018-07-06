@@ -4,6 +4,10 @@ import time, os, subprocess
 from crawlerapp.Filters.faceDetectFilter import *
 from crawlerapp.Filters.sceneChangeFilter import *
 from crawlerapp.definitions import CONFIG_PATH
+from crawlerapp.Filters.extractFrames import extractFrames
+from django.db import models
+from .models import *
+
 #from AZP2FA.p2fa.align_mod import align
 
 
@@ -21,6 +25,24 @@ class AbstractFilter(ABC):
     @abstractmethod
     def filter(self, video_ids):
         pass
+
+class ExtractFrames(AbstractFilter):
+    def name(self):
+        return "Extract Frames"
+    def description(self):
+        return "Extracts the frames from each video. Required before running FaceDetect or SceneChanges"
+    def filter(self, video_ids):
+        
+        for id in video_ids:
+            try:
+                vid_query = Video.objects.filter(id=id).get()
+                extractFrames(id, 1, vid_query.download_path)
+                vid_query.frames_extracted = True
+            except:
+                print("Failed to extract frames for video " + str(id))
+                vid_query.frames_extracted = False
+            vid_query.save()
+        return []
 
 class AlignFilter(AbstractFilter):
     def name(self):
@@ -68,7 +90,7 @@ class FaceDetectFilter(AbstractFilter):
         return "Face Detection"
 
     def description(self):
-        return "Detects Faces"
+        return "Detects Faces. Extract Frames must be run first."
 
     def filter(self, video_ids):
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
@@ -85,7 +107,7 @@ class SceneChangeFilter(AbstractFilter):
     def name(self):
         return "Scene Change"
     def description(self):
-        return "Detects if there is less than 10 scene changes"
+        return "Detects if there are less than 10 scene changes. Extract Frames must be run first."
     def filter(self, video_ids):
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []

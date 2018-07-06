@@ -93,7 +93,8 @@ def detail(request, job_id):
                'filters': filters,
                'job_num_filtered_videos': num_filtered_videos,
                'job_applied_filters': applied_filters,
-               'num_downloaded': num_downloaded}
+               'num_downloaded': num_downloaded,
+               'active_filters': job.active_filters}
     if request.method == "POST":
         form = DownloadForm(request.POST)
         #if request.POST.get("download"):
