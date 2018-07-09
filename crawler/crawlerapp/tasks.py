@@ -76,6 +76,7 @@ def filter_async(filter, job_id):
 
     final_filtered.extend([(video_id,filters) for (video_id,filters) in prefiltered if video_id not in final_filtered_ids])
     job.filtered_videos = final_filtered
+    print(job.active_filters)
     try:
         active_filters = ast.literal_eval(job.active_filters)
         active_filters.remove(filter_obj.name())
@@ -83,6 +84,7 @@ def filter_async(filter, job_id):
     except:
         pass
     job.save()
+    print(job.active_filters)
 
 @shared_task
 @transaction.atomic
