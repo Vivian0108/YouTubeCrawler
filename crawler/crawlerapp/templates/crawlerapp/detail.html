@@ -109,7 +109,7 @@
 </div>
 <script>
   window.onload = function() {
-    updateProgress("{% url 'update-progress' %}")
+    updateProgress("{% url 'update-progress' 12345 %}".replace(/12345/, "{{ job_id }}"))
   };
 
   function updateProgress(progressUrl) {
