@@ -320,8 +320,7 @@ def get_job_detail_progress(request, job_id):
         jobs_list = ast.literal_eval(vid['job_ids'])
         if str(job_id) in jobs_list:
             downloaded.append(vid['id'])
-    response_data =
-        {
+    response_data = {
             'job': job,
             'num_downloaded': len(downloaded)
         }
