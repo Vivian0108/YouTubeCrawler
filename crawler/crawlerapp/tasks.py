@@ -16,7 +16,6 @@ def download_async(job_id):
     ex_download(job_id)
 
 @shared_task
-@transaction.atomic
 def filter_async(filter, job_id):
     job = Job.objects.filter(id=job_id).get()
     downloaded_video_ids = []
@@ -87,7 +86,6 @@ def filter_async(filter, job_id):
     print(job.active_filters)
 
 @shared_task
-@transaction.atomic
 def clear_filter_async(filter_name, job_id):
     job = Job.objects.filter(id=job_id).get()
     try:
