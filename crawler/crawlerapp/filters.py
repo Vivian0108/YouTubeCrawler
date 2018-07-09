@@ -38,6 +38,7 @@ class ExtractFrames(AbstractFilter):
             try:
                 extractFrames(id, 1, vid_query.download_path)
                 vid_query.frames_extracted = True
+                print("Extracted " + str(vid_query.id))
             except:
                 print("Failed to extract frames for video " + str(id))
                 vid_query.frames_extracted = False
