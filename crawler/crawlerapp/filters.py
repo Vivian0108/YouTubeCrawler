@@ -40,8 +40,8 @@ class ExtractFrames(AbstractFilter):
                 vid_query.frames_extracted = True
                 print("Extracted " + str(vid_query.id))
                 vid_query.save()
-            except:
-                print("Failed to extract frames for video " + str(id))
+            except Exception as e:
+                print("Error extracting frames video " + str(vid_query.id) + ": " + str(e))
                 vid_query.frames_extracted = False
                 vid_query.save()
         return []
@@ -107,8 +107,8 @@ class FaceDetectFilter(AbstractFilter):
                     passed.append(video)
                 else:
                     vid_query.face_detected = False
-            except:
-                print("programming error on video " + str(video))
+            except Exception as e:
+                print("Error face detecting video " + str(vid_query.id) + ": " + str(e))
                 vid_query.face_detected = False
             vid_query.save()
         return passed
@@ -133,8 +133,8 @@ class SceneChangeFilter(AbstractFilter):
                 else:
                     vid_query.scene_change_filter_passed = False
                     vid_query.save()
-            except:
-                print("programming error on video " + str(video))
+            except Exception as e:
+                print("Error scene change detecting video " + str(vid_query.id) + ": " + str(e))
                 vid_query.scene_change_filter_passed = False
                 vid_query.save()
         return passed
