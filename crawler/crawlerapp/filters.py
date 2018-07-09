@@ -22,10 +22,17 @@ class AbstractFilter(ABC):
     def description(self):
         return self.description
 
+    # Returns a list of strings that are the names of filters that must be run before running
+    # the given filter
     @property
     @abstractmethod
     def prefilters(self):
         return self.prefilters
+
+    # Returns function that queries database for the relevant true/false if video has passed filter
+    @abstractmethod
+    def database_query(self, args, video):
+        pass
 
     @abstractmethod
     def filter(self, video_ids):
@@ -38,6 +45,10 @@ class ExtractFrames(AbstractFilter):
         return "Extracts the frames from each video. Required before running FaceDetect or SceneChanges"
     def prefilters(self):
         return []
+    def database_query(self, args, video):
+        video.frames_extracted = args
+        video.save()
+
     def filter(self, video_ids):
 
         for id in video_ids:
@@ -61,6 +72,8 @@ class AlignFilter(AbstractFilter):
         return "Uses P2FA to align the downloaded videos"
     def prefilters(self):
         return []
+    def database_query(self, args, video):
+        pass
     def filter(self, video_ids):
         my_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         for video in video_ids:
@@ -90,8 +103,8 @@ class AlignFilter(AbstractFilter):
                 subprocess.call("sudo python " + align_path + ' %s %s %s'
                                 % (wav_path, plaintext_path, pratt_path),
                                 shell=True)
-            except FileNotFoundError as e:
-                print(e)
+            except Exception as e:
+                print("Error aligning " + str(vid_query.id) + ": " + str(e))
         return []
 
 class FaceDetectFilter(AbstractFilter):
@@ -102,6 +115,9 @@ class FaceDetectFilter(AbstractFilter):
         return "Detects Faces. Extract Frames must be run first."
     def prefilters(self):
         return ["Extract Frames"]
+    def database_query(self,args,video):
+        video.face_detected = args
+        video.save()
     def filter(self, video_ids):
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
@@ -129,6 +145,9 @@ class SceneChangeFilter(AbstractFilter):
         return "Detects if there are less than 10 scene changes. Extract Frames must be run first."
     def prefilters(self):
         return ["Extract Frames"]
+    def database_query(self,args,video):
+        video.scene_change_filter_passed = True
+        video.save()
     def filter(self, video_ids):
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []

@@ -153,9 +153,9 @@ def detail(request, job_id):
             filter_async.delay(jsonpickle.encode(filter_obj), job_id)
         elif request.POST.get("remove"):
             filter_num = int(request.POST.get("remove"))
-            filter_name = filters[filter_num][0].name()
+            filter_obj = filters[filter_num][0]
             #Dont clear the filters asynchronously
-            clear_filter_async(filter_name, job_id)
+            clear_filter_async(jsonpickle.encode(filter_obj), job_id)
         return redirect('detail', job.id)
     else:
         form = DownloadForm()

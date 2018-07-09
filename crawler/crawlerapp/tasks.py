@@ -13,6 +13,9 @@ def crawl_async(job_id):
 
 @shared_task
 def download_async(job_id):
+    job = Job.objects.filter(id=job_id).get()
+    job.download_started = True
+    job.save()
     ex_download(job_id)
 
 @shared_task
@@ -85,11 +88,13 @@ def filter_async(filter, job_id):
             applied_filters.append(filter_obj.name())
         job.applied_filters = applied_filters
     except:
-        pass
+        job.applied_filters = [filter_obj.name()]
     job.save()
 
 @shared_task
-def clear_filter_async(filter_name, job_id):
+def clear_filter_async(filter, job_id):
+    filter_obj = jsonpickle.decode(filter)
+    filter_name = filter_obj.name()
     job = Job.objects.filter(id=job_id).get()
     try:
         filtered_videos = ast.literal_eval(job.filtered_videos)
@@ -102,6 +107,9 @@ def clear_filter_async(filter_name, job_id):
         elif (filter_name in filters) and (len(filters) > 1):
             filters.remove(filter_name)
             final_filtered.append((video_id,filters))
+
+        vid_query = Video.objects.filter(id=video_id).get()
+        filter_obj.database_query(args=None,video=vid_query)
     job.filtered_videos = final_filtered
     job.save()
     try:
