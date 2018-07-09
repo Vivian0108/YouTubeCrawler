@@ -87,26 +87,26 @@ def detail(request, job_id):
     frames_extracted_list = []
     face_detected_list = []
     scene_change_detected_list = []
-    downloaded_query = Video.objects.filter(download_success="True").values('id','job_ids')
+    downloaded_query = Video.objects.filter(download_success="True").values()
     for vid in downloaded_query:
         jobs_list = ast.literal_eval(vid['job_ids'])
         if str(job_id) in jobs_list:
             downloaded.append(vid['id'])
             try:
-                if vid['frames_extracted'] == "True":
+                if vid['frames_extracted']:
                     frames_extracted_list.append(vid['id'])
-            except:
-                print("Key error on video " + str(vid['id']))
+            except Exception as e:
+                print("Error on video " + str(vid['id']) + ": " + str(e))
             try:
-                if vid['face_detected'] == "True":
+                if vid['face_detected']:
                     face_detected_list.append(vid['id'])
-            except:
-                print("Key error on video " + str(vid['id']))
+            except Exception as e:
+                print("Error on video " + str(vid['id']) + ": " + str(e))
             try:
-                if vid['scene_change_detected_list'] == "True":
+                if vid['scene_change_filter_passed']:
                     scene_change_detected_list.append(vid['id'])
-            except:
-                print("Key error on video " + str(vid['id']))
+            except Exception as e:
+                print("Error on video " + str(vid['id']) + ": " + str(e))
     num_downloaded = len(downloaded)
 
 
