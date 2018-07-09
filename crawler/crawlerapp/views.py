@@ -10,7 +10,7 @@ import datetime
 from django.contrib.auth.decorators import login_required, permission_required
 from crawlerapp.tasks import *
 from crawlerapp.filters import *
-import jsonpickle, io, ast, csv, os
+import jsonpickle, io, ast, csv, os, json
 from crawlerapp.definitions import CONFIG_PATH
 
 def home(request):
@@ -313,7 +313,7 @@ def profile(request):
 
 #TESTING THINGS
 def updateProgress(request, job_id):
-    job = Job.objects.filter(id=job_id).get()
+    job = Job.objects.filter(id=job_id).values()[0]
     downloaded_query = Video.objects.filter(download_success="True").values()
     downloaded = []
     for vid in downloaded_query:
