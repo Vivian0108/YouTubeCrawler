@@ -48,15 +48,15 @@
             </tr>
             <tr>
               <td>Finished Crawl</td>
-              <td>{{ executed }}</td>
+              <td id="finished_crawl">{{ executed }}</td>
             </tr>
             <tr>
               <td>Finished downloading</td>
-              <td>{{ download_finished }}</td>
+              <td id="finished_downloading">{{ download_finished }}</td>
             </tr>
             <tr>
               <td>Active Filters</td>
-              <td>{{ active_filters }}</td>
+              <td id="active_filters">{{ active_filters }}</td>
             </tr>
             <tr>
               <td>Number of videos with frames extracted</td>
@@ -117,8 +117,11 @@
       response.json().then(function(data) {
         // update the appropriate UI components
         document.getElementById("crawled").innerHTML = data.job.num_vids
+        document.getElementById("finished_crawl").innerHTML = data.job.executed
+        document.getElementById("finished_downloading").innerHTML = data.job.download_finished
+        document.getElementById("active_filters").innerHTML = data.job.active_filters
         document.getElementById("downloaded").innerHTML = data.num_downloaded
-        setTimeout(updateProgress, 500, progressUrl);
+        setTimeout(updateProgress, 3000, progressUrl);
       });
     });
   }

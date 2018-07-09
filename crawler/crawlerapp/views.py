@@ -313,7 +313,7 @@ def profile(request):
 
 #TESTING THINGS
 def updateProgress(request, job_id):
-    job = Job.objects.filter(id=job_id).values('num_vids')[0]
+    job = Job.objects.filter(id=job_id).values('num_vids', 'active_filters','applied_filters','executed','download_finished','download_started')[0]
     downloaded_query = Video.objects.filter(download_success="True").values()
     downloaded = []
     for vid in downloaded_query:
