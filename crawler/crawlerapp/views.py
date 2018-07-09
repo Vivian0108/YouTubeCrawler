@@ -312,7 +312,7 @@ def profile(request):
     return render(request, 'crawlerapp/profile.html', context)
 
 #TESTING THINGS
-def get_job_detail_progress(request, job_id):
+def updateProgress(request, job_id):
     job = Job.objects.filter(id=job_id).get()
     downloaded_query = Video.objects.filter(download_success="True").values()
     downloaded = []
