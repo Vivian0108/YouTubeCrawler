@@ -38,9 +38,6 @@ def filter_async(filter, job_id):
         active_filters = [filter_obj.name()]
         job.active_filters = active_filters
     job.save()
-    print(job.active_filters)
-
-
 
     #start the filter
     total_filtered = filter_obj.filter(video_ids)
@@ -75,7 +72,6 @@ def filter_async(filter, job_id):
 
     final_filtered.extend([(video_id,filters) for (video_id,filters) in prefiltered if video_id not in final_filtered_ids])
     job.filtered_videos = final_filtered
-    print(job.active_filters)
     try:
         active_filters = ast.literal_eval(job.active_filters)
         active_filters.remove(filter_obj.name())
@@ -83,7 +79,14 @@ def filter_async(filter, job_id):
     except:
         pass
     job.save()
-    print(job.active_filters)
+    try:
+        applied_filters = ast.literal_eval(job.applied_filters)
+        if filter_obj.name() not in applied_filters:
+            applied_filters.append(filter_obj.name())
+        job.applied_filters = applied_filters
+    except:
+        pass
+    job.save()
 
 @shared_task
 def clear_filter_async(filter_name, job_id):
@@ -100,4 +103,12 @@ def clear_filter_async(filter_name, job_id):
             filters.remove(filter_name)
             final_filtered.append((video_id,filters))
     job.filtered_videos = final_filtered
+    job.save()
+    try:
+        applied_filters = ast.literal_eval(job.applied_filters)
+        if filter_obj.name() in applied_filters:
+            applied_filters.remove(filter_obj.name())
+        job.applied_filters = applied_filters
+    except:
+        pass
     job.save()

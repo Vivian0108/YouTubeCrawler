@@ -29,6 +29,7 @@ class Job(models.Model):
     download_finished = models.BooleanField(default=False)
     download_started = models.BooleanField(default=False)
     active_filters = models.TextField(default="",null=True)
+    applied_filters = models.TextField(default="",null=True)
 
     class Meta:
         permissions = [('can_crawl',"Can Crawl and Download")]

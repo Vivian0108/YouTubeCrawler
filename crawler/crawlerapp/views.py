@@ -50,19 +50,23 @@ def detail(request, job_id):
         return render(request, 'crawlerapp/jobnotfound.html', {'jobid': job_id})
 
 
-
+    #Old way of finding applied filters
     #Finds all applied filters
-    num_filtered_videos = 0
-    applied_filters = []
+    #num_filtered_videos = 0
+    #applied_filters = []
+    #try:
+    #    filtered = ast.literal_eval(job.filtered_videos)
+    #    num_filtered_videos = len(filtered)
+    #    for (video_id,applied) in filtered:
+    #        for f in applied:
+    #            if f not in applied_filters:
+    #                applied_filters.append(f)
+    #except:
+    #    pass
     try:
-        filtered = ast.literal_eval(job.filtered_videos)
-        num_filtered_videos = len(filtered)
-        for (video_id,applied) in filtered:
-            for f in applied:
-                if f not in applied_filters:
-                    applied_filters.append(f)
+        applied_filters = ast.literal_eval(job.applied_filters)
     except:
-        pass
+        applied_filters = []
 
     try:
         active_filters = ast.literal_eval(job.active_filters)
@@ -77,7 +81,7 @@ def detail(request, job_id):
     index = 0
     for subclass in gen:
         filter_obj = subclass()
-        enabled = (not (filter_obj.name() in applied_filters)) or (not (filter_obj.name() in applied_filters))
+        enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters()))
         filters.append((filter_obj, index, enabled))
         index += 1
 

@@ -22,6 +22,11 @@ class AbstractFilter(ABC):
     def description(self):
         return self.description
 
+    @property
+    @abstractmethod
+    def prefilters(self):
+        return self.prefilters
+
     @abstractmethod
     def filter(self, video_ids):
         pass
@@ -31,6 +36,8 @@ class ExtractFrames(AbstractFilter):
         return "Extract Frames"
     def description(self):
         return "Extracts the frames from each video. Required before running FaceDetect or SceneChanges"
+    def prefilters(self):
+        return []
     def filter(self, video_ids):
 
         for id in video_ids:
@@ -52,7 +59,8 @@ class AlignFilter(AbstractFilter):
 
     def description(self):
         return "Uses P2FA to align the downloaded videos"
-
+    def prefilters(self):
+        return []
     def filter(self, video_ids):
         my_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         for video in video_ids:
@@ -92,7 +100,8 @@ class FaceDetectFilter(AbstractFilter):
 
     def description(self):
         return "Detects Faces. Extract Frames must be run first."
-
+    def prefilters(self):
+        return ["Extract Frames"]
     def filter(self, video_ids):
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
@@ -118,6 +127,8 @@ class SceneChangeFilter(AbstractFilter):
         return "Scene Change"
     def description(self):
         return "Detects if there are less than 10 scene changes. Extract Frames must be run first."
+    def prefilters(self):
+        return ["Extract Frames"]
     def filter(self, video_ids):
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
