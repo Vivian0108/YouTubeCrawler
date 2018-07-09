@@ -69,6 +69,13 @@ def detail(request, job_id):
         applied_filters = []
 
     try:
+        filtered = ast.literal_eval(job.filtered_videos)
+        num_filtered_videos = len(filtered)
+    except:
+        num_filtered_videos = 0
+
+
+    try:
         active_filters = ast.literal_eval(job.active_filters)
     except:
         active_filters = []
