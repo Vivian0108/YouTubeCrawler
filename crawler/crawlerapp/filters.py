@@ -39,10 +39,11 @@ class ExtractFrames(AbstractFilter):
                 extractFrames(id, 1, vid_query.download_path)
                 vid_query.frames_extracted = True
                 print("Extracted " + str(vid_query.id))
+                vid_query.save()
             except:
                 print("Failed to extract frames for video " + str(id))
                 vid_query.frames_extracted = False
-            vid_query.save()
+                vid_query.save()
         return []
 
 class AlignFilter(AbstractFilter):
@@ -128,9 +129,12 @@ class SceneChangeFilter(AbstractFilter):
                     print("Passed " + str(video))
                     vid_query.scene_change_filter_passed = True
                     passed.append(video)
+                    vid_query.save()
                 else:
                     vid_query.scene_change_filter_passed = False
+                    vid_query.save()
             except:
                 print("programming error on video " + str(video))
                 vid_query.scene_change_filter_passed = False
+                vid_query.save()
         return passed
