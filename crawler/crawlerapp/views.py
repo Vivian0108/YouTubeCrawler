@@ -313,15 +313,45 @@ def profile(request):
 
 #TESTING THINGS
 def updateProgress(request, job_id):
-    job = Job.objects.filter(id=job_id).values('num_vids', 'active_filters','applied_filters','executed','download_finished','download_started')[0]
+    job = Job.objects.filter(id=job_id).values('num_vids','executed','applied_filters','download_finished','active_filters','filtered_videos')[0]
     downloaded_query = Video.objects.filter(download_success="True").values()
     downloaded = []
+    frames_extracted_list = []
+    face_detected_list = []
+    scene_change_detected_list = []
     for vid in downloaded_query:
         jobs_list = ast.literal_eval(vid['job_ids'])
         if str(job_id) in jobs_list:
             downloaded.append(vid['id'])
+            try:
+                if vid['frames_extracted']:
+                    frames_extracted_list.append(vid['id'])
+            except Exception as e:
+                print("Error on video " + str(vid['id']) + ": " + str(e))
+            try:
+                if vid['face_detected']:
+                    face_detected_list.append(vid['id'])
+            except Exception as e:
+                print("Error on video " + str(vid['id']) + ": " + str(e))
+            try:
+                if vid['scene_change_filter_passed']:
+                    scene_change_detected_list.append(vid['id'])
+            except Exception as e:
+                print("Error on video " + str(vid['id']) + ": " + str(e))
+
+    try:
+        filtered = ast.literal_eval(job["filtered_videos"])
+        num_filtered_videos = len(filtered)
+    except:
+        num_filtered_videos = 0
+
+
     response_data = {
             'job': job,
-            'num_downloaded': len(downloaded)
+            'downloaded': len(downloaded),
+            'job_num_filtered_videos': num_filtered_videos,
+            'num_frames_extracted': len(frames_extracted_list),
+            'num_face_detected': len(face_detected_list),
+            'num_scene_change_passed': len(scene_change_detected_list)
         }
     return HttpResponse(json.dumps(response_data), content_type='application/json')

@@ -24,7 +24,7 @@
             </tr>
             <tr>
               <td>Number of videos crawled</td>
-              <td id="crawled">{{ job_num_vids }}</td>
+              <td id="num_vids">{{ job_num_vids }}</td>
             </tr>
             <tr>
               <td>Number of videos downloaded</td>
@@ -32,11 +32,11 @@
             </tr>
             <tr>
               <td>Number of filtered (passed) videos</td>
-              <td>{{ job_num_filtered_videos }}</td>
+              <td id="job_num_filtered_videos">{{ job_num_filtered_videos }}</td>
             </tr>
             <tr>
               <td>Applied Filters (Logical OR'd)</td>
-              <td>{{ job_applied_filters }}</td>
+              <td id="applied_filters">{{ job_applied_filters }}</td>
             </tr>
             <tr>
               <td>Query</td>
@@ -48,11 +48,11 @@
             </tr>
             <tr>
               <td>Finished Crawl</td>
-              <td id="finished_crawl">{{ executed }}</td>
+              <td id="executed">{{ executed }}</td>
             </tr>
             <tr>
               <td>Finished downloading</td>
-              <td id="finished_downloading">{{ download_finished }}</td>
+              <td id="download_finished">{{ download_finished }}</td>
             </tr>
             <tr>
               <td>Active Filters</td>
@@ -60,15 +60,15 @@
             </tr>
             <tr>
               <td>Number of videos with frames extracted</td>
-              <td>{{ num_frames_extracted }}</td>
+              <td id="num_frames_extracted">{{ num_frames_extracted }}</td>
             </tr>
             <tr>
               <td>Number of videos with faces detected</td>
-              <td>{{ num_face_detected }}</td>
+              <td id="num_face_detected">{{ num_face_detected }}</td>
             </tr>
             <tr>
               <td>Number of videos that passed scene change filter</td>
-              <td>{{ num_scene_change_passed }}</td>
+              <td id="num_scene_change_passed">{{ num_scene_change_passed }}</td>
             </tr>
           </tbody>
         </table>
@@ -116,11 +116,15 @@
     fetch(progressUrl).then(function(response) {
       response.json().then(function(data) {
         // update the appropriate UI components
-        document.getElementById("crawled").innerHTML = data.job.num_vids
-        document.getElementById("finished_crawl").innerHTML = data.job.executed
-        document.getElementById("finished_downloading").innerHTML = data.job.download_finished
-        document.getElementById("active_filters").innerHTML = data.job.active_filters
-        document.getElementById("downloaded").innerHTML = data.num_downloaded
+        for (var key in data) {
+          if (key == "job") {
+            for (var k in data.job) {
+              document.getElementById(k).innerHTML = data.job[k]
+            }
+          } else {
+              document.getElementById(key).innerHTML = data[key]
+          }
+        }
         setTimeout(updateProgress, 3000, progressUrl);
       });
     });
