@@ -103,6 +103,7 @@ class AlignFilter(AbstractFilter):
                 subprocess.call("sudo python " + align_path + ' %s %s %s'
                                 % (wav_path, plaintext_path, pratt_path),
                                 shell=True)
+                print("Probably aligned " + str(video))
             except Exception as e:
                 print("Error aligning " + str(vid_query.id) + ": " + str(e))
         return []

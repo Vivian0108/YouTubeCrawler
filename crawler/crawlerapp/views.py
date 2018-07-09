@@ -310,3 +310,19 @@ def profile(request):
     datasets = Dataset.objects.filter(user_id=request.user.username)
     context = {'jobs': jobs, 'datasets': datasets, 'user': request.user}
     return render(request, 'crawlerapp/profile.html', context)
+
+#TESTING THINGS
+def get_job_detail_progress(request, job_id):
+    job = Job.objects.filter(id=job_id).get()
+    downloaded_query = Video.objects.filter(download_success="True").values()
+    downloaded = []
+    for vid in downloaded_query:
+        jobs_list = ast.literal_eval(vid['job_ids'])
+        if str(job_id) in jobs_list:
+            downloaded.append(vid['id'])
+    response_data =
+        {
+            'job': job,
+            'num_downloaded': len(downloaded)
+        }
+    return HttpResponse(json.dumps(response_data), content_type='application/json')
