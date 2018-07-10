@@ -122,7 +122,10 @@ def clear_filter_async(filter, job_id):
         pass
     job.save()
 
-    quit_filter(job_id,filter_name)
+    try:
+        quit_filter(job_id,filter_name)
+    except Exception as e:
+        print("Couldn't clear filter: " + str(e))
 
     try:
         active_filters = ast.literal_eval(job.active_filters)
