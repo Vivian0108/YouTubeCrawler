@@ -6,6 +6,7 @@ from crawlerapp.download import ex_download
 from django.db import models, transaction
 from .models import *
 import jsonpickle, ast
+from crawlerapp.utils import quit_filter
 
 @shared_task
 def crawl_async(job_id):
@@ -117,6 +118,17 @@ def clear_filter_async(filter, job_id):
         if filter_obj.name() in applied_filters:
             applied_filters.remove(filter_obj.name())
         job.applied_filters = applied_filters
+    except:
+        pass
+    job.save()
+
+    quit_filter(filter_name,job_id)
+
+    try:
+        active_filters = ast.literal_eval(job.active_filters)
+        if filter_obj.name() in active_filters:
+            active_filters.remove(filter_obj.name())
+        job.active_filters = active_filters
     except:
         pass
     job.save()

@@ -12,6 +12,7 @@ from crawlerapp.tasks import *
 from crawlerapp.filters import *
 import jsonpickle, io, ast, csv, os, json
 from crawlerapp.definitions import CONFIG_PATH
+from celery.task.control import revoke
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -151,6 +152,7 @@ def detail(request, job_id):
             filter_obj = filters[filter_num][0]
             downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
             filter_async.delay(jsonpickle.encode(filter_obj), job_id)
+
         elif request.POST.get("remove"):
             filter_num = int(request.POST.get("remove"))
             filter_obj = filters[filter_num][0]

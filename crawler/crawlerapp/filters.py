@@ -169,3 +169,16 @@ class SceneChangeFilter(AbstractFilter):
                 vid_query.scene_change_filter_passed = False
                 vid_query.save()
         return passed
+
+class TestFilter(AbstractFilter):
+    def name(self):
+        return "Test"
+    def description(self):
+        return "Test"
+    def prefilters(self):
+        return []
+    def database_query(self,args,video):
+        pass
+    def filter(self,video_ids):
+        time.sleep(120)
+        return []
