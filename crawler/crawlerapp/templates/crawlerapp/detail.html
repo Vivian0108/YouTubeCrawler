@@ -119,18 +119,30 @@
         for (var key in data) {
           if (key == "job") {
             for (var k in data.job) {
-              document.getElementById(k).innerHTML = data.job[k]
+              try {
+                document.getElementById(k).innerHTML = data.job[k];
+              } catch (error) {
+                console.log("Error " + error);
+              }
             }
           } else if (key == "filters") {
-              for (var k in data[key]) {
+            for (var k in data[key]) {
+              try {
                 if (k[1]) {
                   document.getElementById(k[0]).className = "btn waves-effect waves-light";
                 } else {
                   document.getElementById(k[0]).className = "btn waves-effect waves-light disabled";
                 }
+              } catch (error) {
+                console.log("Error " + error);
               }
+            }
           } else {
-            document.getElementById(key).innerHTML = data[key]
+            try {
+              document.getElementById(key).innerHTML = data[key];
+            } catch (error) {
+              console.log("Error " + error);
+            }
           }
         }
         setTimeout(updateProgress, 3000, progressUrl);
