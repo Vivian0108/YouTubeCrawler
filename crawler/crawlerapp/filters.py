@@ -180,5 +180,5 @@ class TestFilter(AbstractFilter):
     def database_query(self,args,video):
         pass
     def filter(self,video_ids):
-        time.sleep(120)
+        time.sleep(12000)
         return []

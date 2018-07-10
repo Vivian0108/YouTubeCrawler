@@ -156,6 +156,7 @@ def detail(request, job_id):
         elif request.POST.get("remove"):
             filter_num = int(request.POST.get("remove"))
             filter_obj = filters[filter_num][0]
+            print(filter_obj)
             #Dont clear the filters asynchronously
             clear_filter_async(jsonpickle.encode(filter_obj), job_id)
         return redirect('detail', job.id)
@@ -341,7 +342,7 @@ def updateProgress(request, job_id):
     filters = []
     for subclass in gen:
         filter_obj = subclass()
-        enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters())) and (job['download_finished'] == "True")
+        enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters())) and (job['download_finished'])
         filters.append((filter_obj.name(), enabled))
 
 

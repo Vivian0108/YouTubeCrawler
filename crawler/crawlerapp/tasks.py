@@ -122,7 +122,7 @@ def clear_filter_async(filter, job_id):
         pass
     job.save()
 
-    quit_filter(filter_name,job_id)
+    quit_filter(job_id,filter_name)
 
     try:
         active_filters = ast.literal_eval(job.active_filters)
