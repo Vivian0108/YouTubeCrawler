@@ -113,10 +113,12 @@
   };
 
   function updateProgress(progressUrl) {
+    console.log("Go!");
     fetch(progressUrl).then(function(response) {
       response.json().then(function(data) {
         // update the appropriate UI components
         for (var key in data) {
+          console.log("Getting " + key);
           if (key == "job") {
             for (var k in data.job) {
               try {
