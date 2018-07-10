@@ -113,16 +113,19 @@
   };
 
   function updateProgress(progressUrl) {
+    console.log("Go!");
     fetch(progressUrl).then(function(response) {
       response.json().then(function(data) {
         // update the appropriate UI components
         for (var key in data) {
+          console.log("Getting " + key);
           if (key == "job") {
             for (var k in data.job) {
-              document.getElementById(k).innerHTML = data.job[k]
+              console.log("Job " + k);
+              document.getElementById(k).innerHTML = data.job[k];
             }
           } else {
-              document.getElementById(key).innerHTML = data[key]
+              document.getElementById(key).innerHTML = data[key];
           }
         }
         setTimeout(updateProgress, 3000, progressUrl);
