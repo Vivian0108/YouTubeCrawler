@@ -341,7 +341,7 @@ def updateProgress(request, job_id):
     filters = []
     for subclass in gen:
         filter_obj = subclass()
-        enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters())) and (job['download_finished'])
+        enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters())) and (job['download_finished'] == "True")
         filters.append((filter_obj.name(), enabled))
 
 
