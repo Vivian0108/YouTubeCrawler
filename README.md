@@ -6,3 +6,5 @@
 - Have filter buttons immediatly be disabled after clicking
 - Documentation (setup, etc)
 - QA testing
+- Order parts for video storage machine
+- Get worker2 set up
