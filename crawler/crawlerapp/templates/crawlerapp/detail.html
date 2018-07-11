@@ -109,7 +109,7 @@
                   </div>
                   <div class="card-action">
                     <button id="sample" class="btn waves-effect waves-light" type="submit" value="sample" name="sample">Sample</button>
-                    {% ifnotequal sampled_url "" %}
+                    {% ifnotequal sampled_url "None" %}
                       <a href="{{ sampled_url }}" target="_blank">Sampled Video</a>
                     {% endifnotequal %}
                   </div>
