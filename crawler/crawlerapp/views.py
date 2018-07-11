@@ -6,11 +6,10 @@ from django.views import generic
 from django.urls import reverse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
-import datetime
 from django.contrib.auth.decorators import login_required, permission_required
 from crawlerapp.tasks import *
 from crawlerapp.filters import *
-import jsonpickle, io, ast, csv, os, json
+import jsonpickle, io, ast, csv, os, json, random, datetime
 from crawlerapp.definitions import CONFIG_PATH
 from celery.task.control import revoke
 
@@ -73,6 +72,7 @@ def detail(request, job_id):
         filtered = ast.literal_eval(job.filtered_videos)
         num_filtered_videos = len(filtered)
     except:
+        filtered = []
         num_filtered_videos = 0
 
 
@@ -121,6 +121,13 @@ def detail(request, job_id):
                 print("Error on video " + str(vid['id']) + ": " + str(e))
     num_downloaded = len(downloaded)
 
+    try:
+        sampled_video = random.sample(filtered, 1)
+        sampled_id = sampled_video[0][0]
+        print(sampled_id)
+        url = "https://www.youtube.com/watch?v=" + str(sampled_id)
+    except:
+        url = "None"
 
 
     context = {'job_name': job.name,
@@ -144,21 +151,23 @@ def detail(request, job_id):
                'active_filters': job.active_filters,
                'num_frames_extracted': len(frames_extracted_list),
                'num_face_detected': len(face_detected_list),
-               'num_scene_change_passed': len(scene_change_detected_list)}
+               'num_scene_change_passed': len(scene_change_detected_list),
+               'sampled_url': url}
     if request.method == "POST":
         form = DownloadForm(request.POST)
         if request.POST.get("filter"):
             filter_num = int(request.POST.get("filter"))
             filter_obj = filters[filter_num][0]
-            downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
             filter_async.delay(jsonpickle.encode(filter_obj), job_id)
-
+            filters[filter_num][2] = False
         elif request.POST.get("remove"):
             filter_num = int(request.POST.get("remove"))
             filter_obj = filters[filter_num][0]
             #Dont clear the filters asynchronously
             clear_filter_async(jsonpickle.encode(filter_obj), job_id)
-        return redirect('detail', job.id)
+        elif request.POST.get("sample"):
+
+        return render(request, 'crawlerapp/detail.html',context)
     else:
         form = DownloadForm()
         context['form'] = form
