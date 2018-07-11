@@ -92,7 +92,7 @@
                   </div>
                   <div class="card-action">
                     {% if download_finished == True and enabled == True %}
-                    <button id="{{ filter.name }}" class="btn waves-effect waves-light" type="submit" onClick="this.disabled=true;this.form.submit();" value="{{ index }}" name="filter">Run Filter</button> {% else %}
+                    <button id="{{ filter.name }}" class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% else %}
                     <button id="{{ filter.name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% endif %}
                     <button class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="remove">Clear this Filter</button>
                   </div>
