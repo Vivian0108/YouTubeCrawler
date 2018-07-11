@@ -166,8 +166,6 @@ def detail(request, job_id):
             print(filter_obj)
             #Dont clear the filters asynchronously
             clear_filter_async(jsonpickle.encode(filter_obj), job_id)
-        elif request.POST.get("sample"):
-
         return render(request, 'crawlerapp/detail.html',context)
     else:
         form = DownloadForm()

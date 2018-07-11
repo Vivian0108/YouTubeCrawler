@@ -108,8 +108,8 @@
                     <p>Redirects to one of the videos in the filtered videos category</p>
                   </div>
                   <div class="card-action">
-                    {% if url == "None" %}
-                    <p>No videos found</p>
+                    {% if url == None %}
+                    <a href="{% url 'detail' job_id %}">No videos found</a>
                     {% else %}
                     <a href="{{ sampled_url }}" target="_blank">Sampled Video</a> {% endif %}
                   </div>
