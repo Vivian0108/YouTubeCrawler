@@ -12,6 +12,7 @@ from crawlerapp.filters import *
 import jsonpickle, io, ast, csv, os, json, random, datetime
 from crawlerapp.definitions import CONFIG_PATH
 from celery.task.control import revoke
+from crawlerapp.utils import filter_progress
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -89,8 +90,13 @@ def detail(request, job_id):
     index = 0
     for subclass in gen:
         filter_obj = subclass()
+        raw_results = filter_progress(job_id, filter_obj.name())
+        if raw_results:
+            results = raw_results.info
+        else:
+            results = None
         enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters()))
-        filters.append((filter_obj, index, enabled))
+        filters.append((filter_obj, index, enabled, results))
         index += 1
 
 
@@ -349,8 +355,13 @@ def updateProgress(request, job_id):
     filters = []
     for subclass in gen:
         filter_obj = subclass()
+        raw_results = filter_progress(job_id, filter_obj.name())
+        if raw_results
+            results = raw_results.info
+        else:
+            results = None
         enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters())) and (job['download_finished'])
-        filters.append((filter_obj.name(), enabled))
+        filters.append((filter_obj.name(), enabled, results))
 
 
 
@@ -379,6 +390,8 @@ def updateProgress(request, job_id):
             except Exception as e:
                 print("Error on video " + str(vid['id']) + ": " + str(e))
     num_downloaded = len(downloaded)
+
+
 
     response_data = {
             'job': job,

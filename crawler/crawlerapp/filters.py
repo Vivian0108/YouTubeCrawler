@@ -59,6 +59,7 @@ class ExtractFrames(AbstractFilter):
                     'video_id': id,
                     'current': current,
                     'total': len(video_ids),
+                    'percent': (current//len(video_ids))*100,
                 }
             )
             vid_query = Video.objects.filter(id=id).get()
