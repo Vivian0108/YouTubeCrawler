@@ -95,8 +95,9 @@
                     <button id="{{ filter.name }}" class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% else %}
                     <button id="{{ filter.name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% if not results == None %}
                     <div class="progress">
-                      <div class="determinate" style="width: {{ results.info.percent }}%"></div>
+                      <div id="{{ filter.name }}_progress" class="determinate" style="width: {{ results.percent }}%"></div>
                     </div>
+                    {% endif %}
                     {% endif %}
                     <button class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="remove">Clear this Filter</button>
                   </div>
@@ -154,6 +155,10 @@
                   document.getElementById(filter[0]).className = "btn waves-effect waves-light";
                 } else if (!(filter[1])) {
                   document.getElementById(filter[0]).className = "btn waves-effect waves-light disabled";
+                  var progress_elem = document.getElementById(filter[0] + "_progress");
+                  if (progress_elem) {
+                    progress_elem.style = "width: " + filter[2]['percent'] + "%";
+                  }
                 }
               } catch (error) {
                 //console.log("Error " + error);
