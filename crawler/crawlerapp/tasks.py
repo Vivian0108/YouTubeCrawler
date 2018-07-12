@@ -43,8 +43,7 @@ def filter_async(self, filter, job_id):
         job.active_filters = active_filters
     job.save()
 
-    #start the filter
-    total_filtered = filter_obj.filter(video_ids, self)
+    total_filtered = filter_obj.filter(video_ids, job)
 
 
 

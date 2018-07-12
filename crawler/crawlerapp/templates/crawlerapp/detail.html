@@ -157,7 +157,7 @@
                   document.getElementById(filter[0]).className = "btn waves-effect waves-light disabled";
                   var progress_elem = document.getElementById(filter[0] + "_progress");
                   if (progress_elem) {
-                    progress_elem.style = "width: " + filter[2]['percent'] + "%";
+                    progress_elem.style = "width: " + filter[2] + "%";
                   }
                 }
               } catch (error) {
@@ -172,7 +172,7 @@
             }
           }
         }
-        setTimeout(updateProgress, 3000, progressUrl);
+        setTimeout(updateProgress, 500, progressUrl);
       });
     });
   }
