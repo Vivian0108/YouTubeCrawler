@@ -77,7 +77,7 @@ def filter_async(self, filter, job_id):
     job.filtered_videos = final_filtered
     try:
         active_filters = ast.literal_eval(job.active_filters)
-        active_filters = [(f,p) for f,p in active_filters and f != filter_obj.name()]
+        active_filters = [(f,p) for f,p in active_filters if f != filter_obj.name()]
         job.active_filters = active_filters
     except:
         pass
@@ -128,7 +128,7 @@ def clear_filter_async(filter, job_id):
 
     try:
         active_filters = ast.literal_eval(job.active_filters)
-        active_filters = [(f,p) for f,p in active_filters and f != filter_obj.name()]
+        active_filters = [t for t in active_filters if t[0] != filter_obj.name()]
         job.active_filters = active_filters
     except:
         pass

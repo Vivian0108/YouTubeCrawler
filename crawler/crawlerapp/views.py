@@ -79,7 +79,7 @@ def detail(request, job_id):
     try:
         active_filters = ast.literal_eval(job.active_filters)
         active_with_progress = [t for t in active_filters]
-        active_filters = [f for f,p in active_filters]
+        active_filters = [t[0] for t in active_filters]
     except:
         active_with_progress = []
         active_filters = []
@@ -346,7 +346,7 @@ def updateProgress(request, job_id):
     try:
         active_filters = ast.literal_eval(job.active_filters)
         active_with_progress = [t for t in active_filters]
-        active_filters = [f for f,p in active_filters]
+        active_filters = [t[0] for t in active_filters]
         print(active_filters)
     except:
         active_with_progress = []
@@ -404,6 +404,7 @@ def updateProgress(request, job_id):
             'num_frames_extracted': len(frames_extracted_list),
             'num_face_detected': len(face_detected_list),
             'num_scene_change_passed': len(scene_change_detected_list),
-            'filters': filters
+            'filters': filters,
+            'active_filters': active_filters
         }
     return HttpResponse(json.dumps(response_data), content_type='application/json')
