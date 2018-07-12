@@ -159,7 +159,7 @@ def detail(request, job_id):
             filter_num = int(request.POST.get("filter"))
             filter_obj = filters[filter_num][0]
             filter_async.delay(jsonpickle.encode(filter_obj), job_id)
-            filters[filter_num][2] = False
+            filters[filter_num] = (filter_obj, filters[filter_num][1], False)
         elif request.POST.get("remove"):
             filter_num = int(request.POST.get("remove"))
             filter_obj = filters[filter_num][0]
