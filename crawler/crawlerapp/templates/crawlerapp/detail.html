@@ -82,7 +82,7 @@
           <button class="btn-large disabled">Download</button> {% else %}
           <button class="btn-large waves-effect waves-light" type="submit" value="download" name="download">Download</button> {% endif %}-->
           <center>
-            {% for filter, index, enabled, results in filters %}
+            {% for filter, index, enabled, progress in filters %}
             <div class="row">
               <div class="col s12">
                 <div class="card blue-grey darken-1">
@@ -93,9 +93,9 @@
                   <div class="card-action">
                     {% if download_finished == True and enabled == True %}
                     <button id="{{ filter.name }}" class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% else %}
-                    <button id="{{ filter.name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% if not results == None %}
+                    <button id="{{ filter.name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% if not progress == None %}
                     <div class="progress">
-                      <div id="{{ filter.name }}_progress" class="determinate" style="width: {{ results.percent }}%"></div>
+                      <div id="{{ filter.name }}_progress" class="determinate" style="width: {{ progress }}%"></div>
                     </div>
                     {% endif %}
                     {% endif %}

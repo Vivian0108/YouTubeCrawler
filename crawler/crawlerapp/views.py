@@ -12,7 +12,6 @@ from crawlerapp.filters import *
 import jsonpickle, io, ast, csv, os, json, random, datetime
 from crawlerapp.definitions import CONFIG_PATH
 from celery.task.control import revoke
-from crawlerapp.utils import filter_progress
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -79,6 +78,8 @@ def detail(request, job_id):
 
     try:
         active_filters = ast.literal_eval(job.active_filters)
+        active_with_progress = [t for t in active_filters]
+        active_filters = [f for f,p in active_filters]
     except:
         active_filters = []
 
@@ -90,13 +91,12 @@ def detail(request, job_id):
     index = 0
     for subclass in gen:
         filter_obj = subclass()
-        raw_results = filter_progress(job_id, filter_obj.name())
-        if raw_results:
-            results = raw_results.info
-        else:
-            results = None
+        progress = None
+        for f,p in active_with_progress:
+            if f == filter_obj.name():
+                progress = p
         enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters()))
-        filters.append((filter_obj, index, enabled, results))
+        filters.append((filter_obj, index, enabled, progress))
         index += 1
 
 
@@ -130,7 +130,6 @@ def detail(request, job_id):
     try:
         sampled_video = random.sample(filtered, 1)
         sampled_id = sampled_video[0][0]
-        print(sampled_id)
         url = "https://www.youtube.com/watch?v=" + str(sampled_id)
     except:
         url = "None"
@@ -154,7 +153,7 @@ def detail(request, job_id):
                'job_num_filtered_videos': num_filtered_videos,
                'job_applied_filters': applied_filters,
                'num_downloaded': num_downloaded,
-               'active_filters': job.active_filters,
+               'active_filters': active_filters,
                'num_frames_extracted': len(frames_extracted_list),
                'num_face_detected': len(face_detected_list),
                'num_scene_change_passed': len(scene_change_detected_list),
@@ -345,6 +344,7 @@ def updateProgress(request, job_id):
 
     try:
         active_filters = ast.literal_eval(job['active_filters'])
+        active_filters = [f for f,p in active_filters]
     except:
         active_filters = []
 

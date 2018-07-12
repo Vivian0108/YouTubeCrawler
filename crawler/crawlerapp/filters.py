@@ -8,6 +8,7 @@ from crawlerapp.Filters.extractFrames import extractFrames
 from django.db import models
 from .models import *
 from celery import task
+from crawlerapp.utils import update_filter_progress
 
 #from AZP2FA.p2fa.align_mod import align
 
@@ -36,7 +37,7 @@ class AbstractFilter(ABC):
         pass
 
     @abstractmethod
-    def filter(self, video_ids, task):
+    def filter(self, video_ids, job):
         pass
 
 class ExtractFrames(AbstractFilter):
@@ -50,18 +51,10 @@ class ExtractFrames(AbstractFilter):
         video.frames_extracted = args
         video.save()
 
-    def filter(self, video_ids, task):
+    def filter(self, video_ids, job):
         current = 0
+        progress = 0
         for id in video_ids:
-            task.update_state(
-                state='PROGRESS_STATE',
-                meta={
-                    'video_id': id,
-                    'current': current,
-                    'total': len(video_ids),
-                    'percent': (current//len(video_ids))*100,
-                }
-            )
             vid_query = Video.objects.filter(id=id).get()
             try:
                 extractFrames(id, 1, vid_query.download_path)
@@ -73,6 +66,9 @@ class ExtractFrames(AbstractFilter):
                 vid_query.frames_extracted = False
                 vid_query.save()
             current += 1
+            progress = int((current/len(video_ids))*100)
+            update_filter_progress(job,self.name, progress)
+
         return []
 
 class AlignFilter(AbstractFilter):
@@ -87,16 +83,9 @@ class AlignFilter(AbstractFilter):
         pass
     def filter(self, video_ids, task):
         current = 0
+        progress = 0
         my_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         for video in video_ids:
-            task.update_state(
-                state='PROGRESS_STATE',
-                meta={
-                    'video_id': video,
-                    'current': current,
-                    'total': len(video_ids),
-                }
-            )
             try:
                 video_dir = os.path.join(my_path, video)
                 mp4_path = os.path.join(video_dir, video + ".mp4")
@@ -127,6 +116,8 @@ class AlignFilter(AbstractFilter):
             except Exception as e:
                 print("Error aligning " + str(vid_query.id) + ": " + str(e))
             current += 1
+            progress = int((current/len(video_ids))*100)
+            update_filter_progress(job,self.name, progress)
         return []
 
 class FaceDetectFilter(AbstractFilter):
@@ -142,17 +133,10 @@ class FaceDetectFilter(AbstractFilter):
         video.save()
     def filter(self, video_ids, task):
         current = 0
+        progress = 0
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
         for video in video_ids:
-            task.update_state(
-                state='PROGRESS_STATE',
-                meta={
-                    'video_id': video,
-                    'current': current,
-                    'total': len(video_ids),
-                }
-            )
             vid_query = Video.objects.filter(id=video).get()
 
             try:
@@ -168,6 +152,8 @@ class FaceDetectFilter(AbstractFilter):
                 vid_query.face_detected = False
             vid_query.save()
             current += 1
+            progress = int((current/len(video_ids))*100)
+            update_filter_progress(job,self.name, progress)
         return passed
 
 class SceneChangeFilter(AbstractFilter):
@@ -182,17 +168,10 @@ class SceneChangeFilter(AbstractFilter):
         video.save()
     def filter(self, video_ids, task):
         current = 0
+        progress = 0
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
         for video in video_ids:
-            task.update_state(
-                state='PROGRESS_STATE',
-                meta={
-                    'video_id': video,
-                    'current': current,
-                    'total': len(video_ids),
-                }
-            )
             vid_query = Video.objects.filter(id=video).get()
             try:
                 succeeded = sceneChangeFilter(video, downloaded_path, 25, 100)
@@ -208,5 +187,8 @@ class SceneChangeFilter(AbstractFilter):
                 print("Error scene change detecting video " + str(vid_query.id) + ": " + str(e))
                 vid_query.scene_change_filter_passed = False
                 vid_query.save()
+
             current += 1
+            progress = int((current/len(video_ids))*100)
+            update_filter_progress(job,self.name, progress)
         return passed

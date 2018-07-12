@@ -24,22 +24,15 @@ def quit_filter(job_id, filter_name_str):
         except Exception as e:
             print("Failed to quit task " + task['id'])
 
-def filter_progress(job_id, filter_name_str):
-    filter_name = 'crawlerapp.filters.' + filter_name_str.replace(' ','')
-    # Grab all the current tasks from all the workers
-    i = inspect()
-    active_list_names = [x for x in i.active()]
-    all_tasks = [i.active()[active_list_names[z]] for z in range(len(active_list_names))]
-    all_tasks_flatten = [task for sublist in all_tasks for task in sublist]
-
-    for task in all_tasks_flatten:
-        # Get the job id
-        try:
-            if task['name'] == 'crawlerapp.tasks.filter_async':
-                args = ast.literal_eval(task['args'])
-                task_job_id = args[1]
-                if task_job_id == job_id:
-                    return AsyncResult(task['id'])
-        except Exception as e:
-            print("Failed to find task " + task['id'])
-    return None
+def update_filter_progress(job, filter_name_str, progress):
+    try:
+        active_filters = ast.literal_eval(job.active_filters)
+        for filter,prog in active_filters:
+            if filter_name_str == filter:
+                active_filters.remove((filter,prog))
+                active_filters.append((filter_name_str,progress))
+                break
+        job.active_filters = active_filters
+        job.save()
+    except:
+        pass

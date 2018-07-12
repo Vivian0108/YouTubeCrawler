@@ -36,15 +36,15 @@ def filter_async(self, filter, job_id):
     filter_obj = jsonpickle.decode(filter)
     try:
         active_filters = ast.literal_eval(job.active_filters)
-        active_filters.append(filter_obj.name())
+        active_filters.append((filter_obj.name(),0))
         job.active_filters = active_filters
     except:
-        active_filters = [filter_obj.name()]
+        active_filters = [(filter_obj.name(),0)]
         job.active_filters = active_filters
     job.save()
 
     #start the filter
-    total_filtered = filter_obj.filter(self, video_ids)
+    total_filtered = filter_obj.filter(video_ids, self)
 
 
 
@@ -78,7 +78,7 @@ def filter_async(self, filter, job_id):
     job.filtered_videos = final_filtered
     try:
         active_filters = ast.literal_eval(job.active_filters)
-        active_filters.remove(filter_obj.name())
+        active_filters = [(f,p) for f,p in active_filters and f != filter_obj.name()]
         job.active_filters = active_filters
     except:
         pass
@@ -129,8 +129,7 @@ def clear_filter_async(filter, job_id):
 
     try:
         active_filters = ast.literal_eval(job.active_filters)
-        if filter_obj.name() in active_filters:
-            active_filters.remove(filter_obj.name())
+        active_filters = [(f,p) for f,p in active_filters and f != filter_obj.name()]
         job.active_filters = active_filters
     except:
         pass
