@@ -94,7 +94,8 @@ def detail(request, job_id):
         if raw_results:
             results = raw_results.info
         else:
-            results = None
+            results = ""
+        print(results)
         enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters()))
         filters.append((filter_obj, index, enabled, results))
         index += 1
@@ -169,7 +170,6 @@ def detail(request, job_id):
         elif request.POST.get("remove"):
             filter_num = int(request.POST.get("remove"))
             filter_obj = filters[filter_num][0]
-            print(filter_obj)
             #Dont clear the filters asynchronously
             clear_filter_async(jsonpickle.encode(filter_obj), job_id)
         return render(request, 'crawlerapp/detail.html',context)
@@ -356,10 +356,10 @@ def updateProgress(request, job_id):
     for subclass in gen:
         filter_obj = subclass()
         raw_results = filter_progress(job_id, filter_obj.name())
-        if raw_results
+        if raw_results:
             results = raw_results.info
         else:
-            results = None
+            results = ""
         enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters())) and (job['download_finished'])
         filters.append((filter_obj.name(), enabled, results))
 

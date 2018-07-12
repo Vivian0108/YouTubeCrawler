@@ -93,7 +93,7 @@
                   <div class="card-action">
                     {% if download_finished == True and enabled == True %}
                     <button id="{{ filter.name }}" class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% else %}
-                    <button id="{{ filter.name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% if not results == None %}
+                    <button id="{{ filter.name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% if results %}
                     <div class="progress">
                       <div id="{{ filter.name }}_progress" class="determinate" style="width: {{ results.percent }}%"></div>
                     </div>
@@ -172,7 +172,7 @@
             }
           }
         }
-        setTimeout(updateProgress, 3000, progressUrl);
+        setTimeout(updateProgress, 500, progressUrl);
       });
     });
   }
