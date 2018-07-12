@@ -92,9 +92,10 @@ def detail(request, job_id):
     for subclass in gen:
         filter_obj = subclass()
         progress = None
-        for f,p in active_with_progress:
-            if f == filter_obj.name():
-                progress = p
+        if len(active_with_progress) > 0:
+            for f,p in active_with_progress:
+                if f == filter_obj.name():
+                    progress = p
         enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters()))
         filters.append((filter_obj, index, enabled, progress))
         index += 1
@@ -355,9 +356,10 @@ def updateProgress(request, job_id):
     for subclass in gen:
         filter_obj = subclass()
         progress = None
-        for f,p in active_with_progress:
-            if f == filter_obj.name():
-                progress = p
+        if len(active_with_progress) > 0:
+            for f,p in active_with_progress:
+                if f == filter_obj.name():
+                    progress = p
         enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters())) and (job['download_finished'])
         filters.append((filter_obj.name(), enabled, progress))
 
