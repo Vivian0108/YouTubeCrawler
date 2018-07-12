@@ -93,12 +93,11 @@
                   <div class="card-action">
                     {% if download_finished == True and enabled == True %}
                     <button id="{{ filter.name }}" class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% else %}
-                    <button id="{{ filter.name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% if not progress == None %}
+                    <button id="{{ filter.name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% if progress >= 0 %}
                     <div class="progress">
                       <div id="{{ filter.name }}_progress" class="determinate" style="width: {{ progress }}%"></div>
                     </div>
-                    {% endif %}
-                    {% endif %}
+                    {% endif %} {% endif %}
                     <button class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="remove">Clear this Filter</button>
                   </div>
                 </div>
@@ -155,9 +154,14 @@
                   document.getElementById(filter[0]).className = "btn waves-effect waves-light";
                 } else if (!(filter[1])) {
                   document.getElementById(filter[0]).className = "btn waves-effect waves-light disabled";
+
                   var progress_elem = document.getElementById(filter[0] + "_progress");
                   if (progress_elem) {
-                    progress_elem.style = "width: " + filter[2] + "%";
+                    if (filter[2] < 0) {
+                      progress_elem.parentNode.removeChild(progress_elem);
+                    } else {
+                      progress_elem.style = "width: " + filter[2] + "%";
+                    }
                   }
                 }
               } catch (error) {
