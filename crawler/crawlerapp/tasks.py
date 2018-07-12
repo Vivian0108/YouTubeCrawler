@@ -19,8 +19,8 @@ def download_async(job_id):
     job.save()
     ex_download(job_id)
 
-@shared_task
-def filter_async(filter, job_id):
+@shared_task(bind=True)
+def filter_async(self, filter, job_id):
     job = Job.objects.filter(id=job_id).get()
     downloaded_video_ids = []
     try:
@@ -44,7 +44,7 @@ def filter_async(filter, job_id):
     job.save()
 
     #start the filter
-    total_filtered = filter_obj.filter(video_ids)
+    total_filtered = filter_obj.filter(self, video_ids)
 
 
 
