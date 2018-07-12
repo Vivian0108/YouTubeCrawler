@@ -8,4 +8,4 @@
 - Order parts for video storage machine
 - Add queuing filters option to create job view
 - Get worker2 set up
-- Sampling videos from job?
+- Logical AND filters?
