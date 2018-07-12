@@ -165,8 +165,8 @@ def detail(request, job_id):
         if request.POST.get("filter"):
             filter_num = int(request.POST.get("filter"))
             filter_obj = filters[filter_num][0]
+            filters[filter_num] = (filter_obj, filters[filter_num][1], False, -1)
             filter_async.delay(jsonpickle.encode(filter_obj), job_id)
-            filters[filter_num] = (filter_obj, filters[filter_num][1], False, 0)
         elif request.POST.get("remove"):
             filter_num = int(request.POST.get("remove"))
             filter_obj = filters[filter_num][0]
@@ -347,6 +347,7 @@ def updateProgress(request, job_id):
         active_filters = ast.literal_eval(job.active_filters)
         active_with_progress = [t for t in active_filters]
         active_filters = [f for f,p in active_filters]
+        print(active_filters)
     except:
         active_with_progress = []
         active_filters = []
