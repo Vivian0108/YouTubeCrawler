@@ -364,8 +364,6 @@ def updateProgress(request, job_id):
                 print("Error on video " + str(vid['id']) + ": " + str(e))
     num_downloaded = len(downloaded)
 
-
-
     response_data = {
             'job': job,
             'downloaded': num_downloaded,
