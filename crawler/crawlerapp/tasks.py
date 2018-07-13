@@ -75,12 +75,10 @@ def filter_async(self, filter, job_id):
 
     final_filtered.extend([(video_id,filters) for (video_id,filters) in prefiltered if video_id not in final_filtered_ids])
     job.filtered_videos = final_filtered
-    try:
-        active_filters = ast.literal_eval(job.active_filters)
-        active_filters = [(f,p) for f,p in active_filters if f != filter_obj.name()]
-        job.active_filters = active_filters
-    except:
-        pass
+
+    active_filters = ast.literal_eval(job.active_filters)
+    active_filters = [(f,p) for f,p in active_filters if f != filter_obj.name()]
+    job.active_filters = active_filters
     job.save()
     try:
         applied_filters = ast.literal_eval(job.applied_filters)
