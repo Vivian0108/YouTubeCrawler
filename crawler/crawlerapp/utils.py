@@ -23,16 +23,3 @@ def quit_filter(job_id, filter_name_str):
                         revoke(task['id'], terminate=True)
         except Exception as e:
             print("Failed to quit task " + task['id'])
-
-def update_filter_progress(job, filter_name_str, progress):
-    try:
-        active_filters = ast.literal_eval(job.active_filters)
-        for filter,prog in active_filters:
-            if filter_name_str == filter:
-                active_filters.remove((filter,prog))
-                active_filters.append((filter_name_str,progress))
-                break
-        job.active_filters = active_filters
-        job.save()
-    except:
-        pass

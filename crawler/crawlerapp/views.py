@@ -78,10 +78,7 @@ def detail(request, job_id):
 
     try:
         active_filters = ast.literal_eval(job.active_filters)
-        active_with_progress = [t for t in active_filters]
-        active_filters = [t[0] for t in active_filters]
     except:
-        active_with_progress = []
         active_filters = []
 
 
@@ -345,11 +342,7 @@ def updateProgress(request, job_id):
 
     try:
         active_filters = ast.literal_eval(job.active_filters)
-        active_with_progress = [t for t in active_filters]
-        active_filters = [t[0] for t in active_filters]
-        print(active_filters)
     except:
-        active_with_progress = []
         active_filters = []
 
 
