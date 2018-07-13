@@ -73,7 +73,7 @@ class AlignFilter(AbstractFilter):
         my_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
         for video in video_ids:
-            vid_query = Video.objects.filter(id=id).get()
+            vid_query = Video.objects.filter(id=video).get()
             try:
                 passed_filters = ast.literal_eval(vid_query.passed_filters)
             except:
