@@ -67,7 +67,7 @@ class ExtractFrames(AbstractFilter):
                 vid_query.passed_filters = passed_filters
                 vid_query.save()
             else:
-                print("Error extracting frames video " + str(vid_query.id) + ": " + str(e))
+                print("Error extracting frames video " + str(vid_query.id))
                 if self.name() not in failed_filters:
                     failed_filters.append(self.name())
                 vid_query.failed_filters = failed_filters
@@ -197,7 +197,7 @@ class SceneChangeFilter(AbstractFilter):
             try:
                 failed_filters = ast.literal_eval(vid_query.failed_filters)
             except:
-                failed_filters = []                
+                failed_filters = []
             try:
                 succeeded = sceneChangeFilter(video, downloaded_path, 25, 100)
                 if succeeded:
