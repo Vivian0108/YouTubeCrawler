@@ -51,12 +51,11 @@ class ExtractFrames(AbstractFilter):
                 passed_filters = []
             try:
                 extractFrames(id, 1, vid_query.download_path)
-                    if self.name() not in passed_filters:
-                        passed_filters.append(self.name())
-                    print("Extracted " + str(vid_query.id))
-                    vid_query.passed_filters = passed_filters
-                    vid_query.save()
-
+                if self.name() not in passed_filters:
+                    passed_filters.append(self.name())
+                print("Extracted " + str(vid_query.id))
+                vid_query.passed_filters = passed_filters
+                vid_query.save()
             except Exception as e:
                 print("Error extracting frames video " + str(vid_query.id) + ": " + str(e))
 
