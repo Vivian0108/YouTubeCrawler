@@ -49,20 +49,6 @@ def detail(request, job_id):
     except:
         return render(request, 'crawlerapp/jobnotfound.html', {'jobid': job_id})
 
-
-    #Old way of finding applied filters
-    #Finds all applied filters
-    #num_filtered_videos = 0
-    #applied_filters = []
-    #try:
-    #    filtered = ast.literal_eval(job.filtered_videos)
-    #    num_filtered_videos = len(filtered)
-    #    for (video_id,applied) in filtered:
-    #        for f in applied:
-    #            if f not in applied_filters:
-    #                applied_filters.append(f)
-    #except:
-    #    pass
     try:
         applied_filters = ast.literal_eval(job.applied_filters)
     except:
@@ -89,13 +75,8 @@ def detail(request, job_id):
     index = 0
     for subclass in gen:
         filter_obj = subclass()
-        progress = -1
-        if len(active_with_progress) > 0:
-            for f,p in active_with_progress:
-                if f == filter_obj.name():
-                    progress = int(p)
         enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters()))
-        filters.append((filter_obj, index, enabled, progress))
+        filters.append((filter_obj, index, enabled))
         index += 1
 
 
@@ -162,7 +143,7 @@ def detail(request, job_id):
         if request.POST.get("filter"):
             filter_num = int(request.POST.get("filter"))
             filter_obj = filters[filter_num][0]
-            filters[filter_num] = (filter_obj, filters[filter_num][1], False, -1)
+            filters[filter_num] = (filter_obj, filters[filter_num][1], False)
             filter_async.delay(jsonpickle.encode(filter_obj), job_id)
         elif request.POST.get("remove"):
             filter_num = int(request.POST.get("remove"))
@@ -352,13 +333,8 @@ def updateProgress(request, job_id):
     filters = []
     for subclass in gen:
         filter_obj = subclass()
-        progress = -1
-        if len(active_with_progress) > 0:
-            for f,p in active_with_progress:
-                if f == filter_obj.name():
-                    progress = int(p)
         enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters())) and (job['download_finished'])
-        filters.append((filter_obj.name(), enabled, progress))
+        filters.append((filter_obj.name(), enabled))
 
 
 
@@ -397,7 +373,6 @@ def updateProgress(request, job_id):
             'num_frames_extracted': len(frames_extracted_list),
             'num_face_detected': len(face_detected_list),
             'num_scene_change_passed': len(scene_change_detected_list),
-            'filters': filters,
-            'active_filters': active_filters
+            'filters': filters
         }
     return HttpResponse(json.dumps(response_data), content_type='application/json')
