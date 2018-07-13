@@ -85,7 +85,7 @@
                     <p>{{ filter_dict.filter_obj.description }}</p>
                   </div>
                   <div class="card-action">
-                    {% if download_finished == True and filter_dict.enabled == True %}
+                    {% if filter_dict.enabled == True %}
                     <button id="{{ filter_name }}" class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% else %}
                     <button id="{{ filter_name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% endif %}
                     <button class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="remove">Clear this Filter</button>
