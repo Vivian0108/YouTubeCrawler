@@ -141,12 +141,13 @@
               } else if (!data[key][k]["enabled"]) {
                 document.getElementById(k).className = "btn waves-effect waves-light disabled";
               }
+              document.getElementById(k + "_passed").innerHTML = data[key][k]["num_passed"];
             }
           } else {
             try {
               document.getElementById(key).innerHTML = data[key]
             } catch (err) {
-              console.log("Couldn't do: " + err)
+              console.log("Couldn't do: " + key + ": " + err)
             }
           }
         }
