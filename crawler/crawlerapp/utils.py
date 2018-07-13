@@ -2,6 +2,7 @@ from celery.task.control import inspect, revoke
 from celery.result import AsyncResult
 import ast
 from .models import *
+from crawlerapp.filters import *
 
 def quit_filter(job_id, filter_name_str):
     filter_name = 'crawlerapp.filters.' + filter_name_str.replace(' ','')
