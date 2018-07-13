@@ -24,11 +24,11 @@
             </tr>
             <tr>
               <td>Number of videos crawled</td>
-              <td id="num_vids">{{ job_num_vids }}</td>
+              <td id="job_num_vids">{{ job_num_vids }}</td>
             </tr>
             <tr>
               <td>Number of videos downloaded</td>
-              <td id="downloaded">{{ num_downloaded }}</td>
+              <td id="num_downloaded">{{ num_downloaded }}</td>
             </tr>
             <tr>
               <td>Number of filtered (passed) videos</td>
@@ -36,7 +36,7 @@
             </tr>
             <tr>
               <td>Applied Filters (Logical OR'd)</td>
-              <td id="applied_filters">{{ job_applied_filters }}</td>
+              <td id="job_applied_filters">{{ job_applied_filters }}</td>
             </tr>
             <tr>
               <td>Query</td>
@@ -90,10 +90,10 @@
                     <button id="{{ filter_name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% endif %}
                     <button class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="remove">Clear this Filter</button>
 
-
+                    <!--
                     <div class="progress">
                       <div id="{{ filter_name }}_progress" class="determinate" style="width: {{ progress }}%"></div>
-                    </div>
+                    </div>-->
 
                   </div>
                 </div>
@@ -121,7 +121,7 @@
       </div>
     </div>
   </center>
-</div><!--
+</div>
 <script>
   window.onload = function() {
     updateProgress("{% url 'update-progress' 12345 %}".replace(/12345/, "{{ job_id }}"))
@@ -134,40 +134,25 @@
         // update the appropriate UI components
         for (var key in data) {
           //console.log("Getting " + key);
-          if (key == "job") {
-            for (var k in data.job) {
-              try {
-                document.getElementById(k).innerHTML = data.job[k];
-              } catch (error) {
-                //console.log("Error " + error);
-              }
-            }
-          } else if (key == "filters") {
-            for (var k in data.filters) {
-              var filter = data.filters[k]
-              try {
-                if (filter[1]) {
-                  document.getElementById(filter[0]).className = "btn waves-effect waves-light";
-                } else if (!(filter[1])) {
-                  document.getElementById(filter[0]).className = "btn waves-effect waves-light disabled";
-
-
-                }
-              } catch (error) {
-                //console.log("Error " + error);
+          if (key == "filters") {
+            for (var k in data[key]) {
+              if (data[key][k]["enabled"]) {
+                document.getElementById(k).className = "btn waves-effect waves-light";
+              } else if (!data[key][k]["enabled"]) {
+                document.getElementById(k).className = "btn waves-effect waves-light disabled";
               }
             }
           } else {
             try {
-              document.getElementById(key).innerHTML = data[key];
-            } catch (error) {
-              //console.log("Error " + error);
+              document.getElementById(key).innerHTML = data[key]
+            } catch (err) {
+              console.log("Couldn't do: " + err)
             }
           }
         }
-        setTimeout(updateProgress, 500, progressUrl);
+        setTimeout(updateProgress, 3000, progressUrl);
       });
     });
   }
-</script>-->
+</script>
 {% endblock %}
