@@ -218,6 +218,6 @@ def profile(request):
 def updateProgress(request, job_id):
     context = job_update(job_id)
     filters = context["filters"]
-    for filter_name,filter_dict in filters.iteritems()
+    for filter_name,filter_dict in filters.iteritems():
         filter_dict["filter_obj"] = None
     return HttpResponse(json.dumps(response_data), content_type='application/json')
