@@ -46,14 +46,17 @@ class ExtractFrames(AbstractFilter):
         for id in video_ids:
             vid_query = Video.objects.filter(id=id).get()
             try:
+                passed_filters = ast.literal_eval(vid_query.passed_filters)
+            except:
+                passed_filters = []
+            try:
                 extractFrames(id, 1, vid_query.download_path)
-                try:
-                    passed_filters = ast.literal_eval(vid_query.passed_filters)
                     if self.name() not in passed_filters:
                         passed_filters.append(self.name())
                     print("Extracted " + str(vid_query.id))
                     vid_query.passed_filters = passed_filters
                     vid_query.save()
+
             except Exception as e:
                 print("Error extracting frames video " + str(vid_query.id) + ": " + str(e))
 
@@ -114,7 +117,10 @@ class FaceDetectFilter(AbstractFilter):
         passed = []
         for video in video_ids:
             vid_query = Video.objects.filter(id=video).get()
-            passed_filters = ast.literal_eval(vid_query.passed_filters)
+            try:
+                passed_filters = ast.literal_eval(vid_query.passed_filters)
+            except:
+                passed_filters = []
 
             try:
                 truth_vals = faceDetect(video, downloaded_path)
@@ -142,7 +148,10 @@ class SceneChangeFilter(AbstractFilter):
         passed = []
         for video in video_ids:
             vid_query = Video.objects.filter(id=video).get()
-            passed_filters = ast.literal_eval(vid_query.passed_filters)
+            try:
+                passed_filters = ast.literal_eval(vid_query.passed_filters)
+            except:
+                passed_filters = []
             try:
                 succeeded = sceneChangeFilter(video, downloaded_path, 25, 100)
                 if succeeded:
