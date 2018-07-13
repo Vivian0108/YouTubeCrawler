@@ -220,4 +220,4 @@ def updateProgress(request, job_id):
     filters = context["filters"]
     for filter_name,filter_dict in filters.items():
         filter_dict["filter_obj"] = None
-    return HttpResponse(json.dumps(response_data), content_type='application/json')
+    return HttpResponse(json.dumps(context), content_type='application/json')
