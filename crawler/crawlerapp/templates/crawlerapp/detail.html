@@ -91,7 +91,7 @@
                     <button class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="remove">Clear this Filter</button>
 
 
-                    <div class="progress">
+                    <div class="progress" id="{{ filter_name }}_div" style="display: none;">
                       <div id="{{ filter_name }}_progress" class="determinate" style="display: none;"></div>
                     </div>
 
@@ -145,8 +145,9 @@
               var progress = data[key][k]["progress"];
               if (progress >= 0) {
                 document.getElementById(k + "_progress").style = "width: " + progress + "%;";
+                document.getElementById(k + "_div").style = "";
               } else {
-                document.getElementById(k + "_progress").style = "display: none;"
+                document.getElementById(k + "_div").style = "display: none;"
               }
 
             }
@@ -158,7 +159,7 @@
             }
           }
         }
-        setTimeout(updateProgress, 3000, progressUrl);
+        setTimeout(updateProgress, 500, progressUrl);
       });
     });
   }
