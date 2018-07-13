@@ -90,10 +90,10 @@
                     <button id="{{ filter_name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% endif %}
                     <button class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="remove">Clear this Filter</button>
 
-                    <!--
+
                     <div class="progress">
-                      <div id="{{ filter_name }}_progress" class="determinate" style="width: {{ progress }}%"></div>
-                    </div>-->
+                      <div id="{{ filter_name }}_progress" class="determinate" style="display: none;"></div>
+                    </div>
 
                   </div>
                 </div>
@@ -142,6 +142,13 @@
                 document.getElementById(k).className = "btn waves-effect waves-light disabled";
               }
               document.getElementById(k + "_passed").innerHTML = data[key][k]["num_passed"];
+              var progress = data[key][k]["progress"];
+              if (progress >= 0) {
+                document.getElementById(k + "_progress").style = "width: " + progress + "%;";
+              } else {
+                document.getElementById(k + "_progress").style = "display: none;"
+              }
+
             }
           } else {
             try {

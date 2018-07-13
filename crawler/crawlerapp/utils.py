@@ -56,10 +56,12 @@ def job_update(job_id):
         enabled = ((not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters))
                     and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters()))
                     and (bool(job.download_finished)))
+        progress = -1
         filters[filter_obj.name()] = {
             'filter_obj': filter_obj,
             'enabled': enabled,
-            'num_passed': 0
+            'num_passed': 0,
+            'progress': progress
         }
 
 
@@ -80,6 +82,12 @@ def job_update(job_id):
             for filter_str in passed_filters:
                 filters[filter_str]['num_passed'] += 1
     num_downloaded = len(downloaded)
+
+    #Update progress percentage
+    for filter_str in filters:
+        if filter_str in active_filters:
+            progress = (filters[filter_str]['num_passed'])/(num_downloaded)*100
+            filters[filter_str]['progress'] = progress
 
     try:
         sampled_video = random.sample(filtered, 1)
