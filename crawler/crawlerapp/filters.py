@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import random
-import time, os, subprocess
+import time, os, subprocess, ast
 from crawlerapp.Filters.faceDetectFilter import *
 from crawlerapp.Filters.sceneChangeFilter import *
 from crawlerapp.definitions import CONFIG_PATH
@@ -30,11 +30,6 @@ class AbstractFilter(ABC):
     def prefilters(self):
         return self.prefilters
 
-    # Returns function that queries database for the relevant true/false if video has passed filter
-    @abstractmethod
-    def database_query(self, args, video):
-        pass
-
     @abstractmethod
     def filter(self, video_ids, job):
         pass
@@ -46,22 +41,21 @@ class ExtractFrames(AbstractFilter):
         return "Extracts the frames from each video. Required before running FaceDetect or SceneChanges"
     def prefilters(self):
         return []
-    def database_query(self, args, video):
-        video.frames_extracted = args
-        video.save()
 
     def filter(self, video_ids, job):
         for id in video_ids:
             vid_query = Video.objects.filter(id=id).get()
             try:
                 extractFrames(id, 1, vid_query.download_path)
-                vid_query.frames_extracted = True
-                print("Extracted " + str(vid_query.id))
-                vid_query.save()
+                try:
+                    passed_filters = ast.literal_eval(vid_query.passed_filters)
+                    if self.name() not in passed_filters:
+                        passed_filters.append(self.name())
+                    print("Extracted " + str(vid_query.id))
+                    vid_query.passed_filters = passed_filters
+                    vid_query.save()
             except Exception as e:
                 print("Error extracting frames video " + str(vid_query.id) + ": " + str(e))
-                vid_query.frames_extracted = False
-                vid_query.save()
 
         return []
 
@@ -73,8 +67,6 @@ class AlignFilter(AbstractFilter):
         return "Uses P2FA to align the downloaded videos"
     def prefilters(self):
         return []
-    def database_query(self, args, video):
-        pass
     def filter(self, video_ids, task):
         my_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         for video in video_ids:
@@ -117,26 +109,24 @@ class FaceDetectFilter(AbstractFilter):
         return "Detects Faces. Extract Frames must be run first."
     def prefilters(self):
         return ["Extract Frames"]
-    def database_query(self,args,video):
-        video.face_detected = args
-        video.save()
     def filter(self, video_ids, task):
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
         for video in video_ids:
             vid_query = Video.objects.filter(id=video).get()
+            passed_filters = ast.literal_eval(vid_query.passed_filters)
 
             try:
                 truth_vals = faceDetect(video, downloaded_path)
                 if truth_vals[0]:
                     print("Passed " + str(video))
-                    vid_query.face_detected = True
+                    if self.name() not in passed_filters:
+                        passed_filters.append(self.name())
+                    vid_query.passed_filters = passed_filters
                     passed.append(video)
-                else:
-                    vid_query.face_detected = False
+
             except Exception as e:
                 print("Error face detecting video " + str(vid_query.id) + ": " + str(e))
-                vid_query.face_detected = False
             vid_query.save()
         return passed
 
@@ -147,26 +137,21 @@ class SceneChangeFilter(AbstractFilter):
         return "Detects if there are less than 10 scene changes. Extract Frames must be run first."
     def prefilters(self):
         return ["Extract Frames"]
-    def database_query(self,args,video):
-        video.scene_change_filter_passed = True
-        video.save()
     def filter(self, video_ids, task):
         downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
         for video in video_ids:
             vid_query = Video.objects.filter(id=video).get()
+            passed_filters = ast.literal_eval(vid_query.passed_filters)
             try:
                 succeeded = sceneChangeFilter(video, downloaded_path, 25, 100)
                 if succeeded:
                     print("Passed " + str(video))
-                    vid_query.scene_change_filter_passed = True
+                    if self.name() not in passed_filters:
+                        passed_filters.append(self.name())
+                    vid_query.passed_filters = passed_filters
                     passed.append(video)
-                    vid_query.save()
-                else:
-                    vid_query.scene_change_filter_passed = False
                     vid_query.save()
             except Exception as e:
                 print("Error scene change detecting video " + str(vid_query.id) + ": " + str(e))
-                vid_query.scene_change_filter_passed = False
-                vid_query.save()
         return passed

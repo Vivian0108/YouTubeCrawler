@@ -82,23 +82,23 @@
           <button class="btn-large disabled">Download</button> {% else %}
           <button class="btn-large waves-effect waves-light" type="submit" value="download" name="download">Download</button> {% endif %}-->
           <center>
-            {% for filter, index, enabled in filters %}
+            {% for filter_name,filter_dict in filters.items %}
             <div class="row">
               <div class="col s12">
                 <div class="card blue-grey darken-1">
                   <div class="card-content white-text">
-                    <span class="card-title">{{ filter.name }}</span>
-                    <p>{{ filter.description }}</p>
+                    <span class="card-title">{{ filter_name }}</span>
+                    <p>{{ filter_dict.filter_obj.description }}</p>
                   </div>
                   <div class="card-action">
-                    {% if download_finished == True and enabled == True %}
-                    <button id="{{ filter.name }}" class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% else %}
-                    <button id="{{ filter.name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ index }}" name="filter">Run Filter</button> {% endif %}
-                    <button class="btn waves-effect waves-light" type="submit" value="{{ index }}" name="remove">Clear this Filter</button>
+                    {% if download_finished == True and filter_dict.enabled == True %}
+                    <button id="{{ filter_name }}" class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% else %}
+                    <button id="{{ filter_name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% endif %}
+                    <button class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="remove">Clear this Filter</button>
 
 
                     <div class="progress">
-                      <div id="{{ filter.name }}_progress" class="determinate" style="width: {{ progress }}%"></div>
+                      <div id="{{ filter_name }}_progress" class="determinate" style="width: {{ progress }}%"></div>
                     </div>
 
                   </div>
@@ -127,7 +127,7 @@
       </div>
     </div>
   </center>
-</div>
+</div><!--
 <script>
   window.onload = function() {
     updateProgress("{% url 'update-progress' 12345 %}".replace(/12345/, "{{ job_id }}"))
@@ -175,5 +175,5 @@
       });
     });
   }
-</script>
+</script>-->
 {% endblock %}

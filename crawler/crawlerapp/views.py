@@ -12,6 +12,7 @@ from crawlerapp.filters import *
 import jsonpickle, io, ast, csv, os, json, random, datetime
 from crawlerapp.definitions import CONFIG_PATH
 from celery.task.control import revoke
+from crawlerapp.utils import job_update
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -44,110 +45,18 @@ def dataset_all(request):
 @login_required
 @permission_required('crawlerapp.can_crawl', raise_exception=True)
 def detail(request, job_id):
-    try:
-        job = Job.objects.filter(id=job_id).get()
-    except:
-        return render(request, 'crawlerapp/jobnotfound.html', {'jobid': job_id})
-
-    try:
-        applied_filters = ast.literal_eval(job.applied_filters)
-    except:
-        applied_filters = []
-
-    try:
-        filtered = ast.literal_eval(job.filtered_videos)
-        num_filtered_videos = len(filtered)
-    except:
-        filtered = []
-        num_filtered_videos = 0
-
-
-    try:
-        active_filters = ast.literal_eval(job.active_filters)
-    except:
-        active_filters = []
-
-
-
-    #Creates instances of all filters in filter.py
-    gen = (subclass for subclass in AbstractFilter.__subclasses__())
-    filters = []
-    index = 0
-    for subclass in gen:
-        filter_obj = subclass()
-        enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters()))
-        filters.append((filter_obj, index, enabled))
-        index += 1
-
-
-
-    downloaded = []
-    frames_extracted_list = []
-    face_detected_list = []
-    scene_change_detected_list = []
-    downloaded_query = Video.objects.filter(download_success="True").values()
-    for vid in downloaded_query:
-        jobs_list = ast.literal_eval(vid['job_ids'])
-        if str(job_id) in jobs_list:
-            downloaded.append(vid['id'])
-            try:
-                if vid['frames_extracted']:
-                    frames_extracted_list.append(vid['id'])
-            except Exception as e:
-                print("Error on video " + str(vid['id']) + ": " + str(e))
-            try:
-                if vid['face_detected']:
-                    face_detected_list.append(vid['id'])
-            except Exception as e:
-                print("Error on video " + str(vid['id']) + ": " + str(e))
-            try:
-                if vid['scene_change_filter_passed']:
-                    scene_change_detected_list.append(vid['id'])
-            except Exception as e:
-                print("Error on video " + str(vid['id']) + ": " + str(e))
-    num_downloaded = len(downloaded)
-
-    try:
-        sampled_video = random.sample(filtered, 1)
-        sampled_id = sampled_video[0][0]
-        url = "https://www.youtube.com/watch?v=" + str(sampled_id)
-    except:
-        url = "None"
-
-
-    context = {'job_name': job.name,
-               'job_num_vids': job.num_vids,
-               'job_videos': job.videos,
-               'job_language': job.language,
-               'job_channels': job.found_channels,
-               'job_query': job.query,
-               'job_created_date': job.created_date,
-               'job_user_id': job.user_id,
-               'job_filters': job.filters,
-               'cc': job.cc_enabled,
-               'executed': job.executed,
-               'download_started': job.download_started,
-               'download_finished': job.download_finished,
-               'job_id': job.id,
-               'filters': filters,
-               'job_num_filtered_videos': num_filtered_videos,
-               'job_applied_filters': applied_filters,
-               'num_downloaded': num_downloaded,
-               'active_filters': active_filters,
-               'num_frames_extracted': len(frames_extracted_list),
-               'num_face_detected': len(face_detected_list),
-               'num_scene_change_passed': len(scene_change_detected_list),
-               'sampled_url': url}
+    context = job_update(job_id)
+    filters = context["filters"]
     if request.method == "POST":
         form = DownloadForm(request.POST)
         if request.POST.get("filter"):
-            filter_num = int(request.POST.get("filter"))
-            filter_obj = filters[filter_num][0]
-            filters[filter_num] = (filter_obj, filters[filter_num][1], False)
+            filter_name = str(request.POST.get("filter"))
+            filter_obj = filters[filter_name]["filter_obj"]
+            filters[filter_obj.name()]["enabled"] = False
             filter_async.delay(jsonpickle.encode(filter_obj), job_id)
         elif request.POST.get("remove"):
-            filter_num = int(request.POST.get("remove"))
-            filter_obj = filters[filter_num][0]
+            filter_name = str(request.POST.get("remove"))
+            filter_obj = filters[filter_name]["filter_obj"]
             #Dont clear the filters asynchronously
             clear_filter_async(jsonpickle.encode(filter_obj), job_id)
         return render(request, 'crawlerapp/detail.html',context)
@@ -306,71 +215,6 @@ def profile(request):
     return render(request, 'crawlerapp/profile.html', context)
 
 
-def updateProgress(request, job_id):
-    job = Job.objects.filter(id=job_id).values('num_vids','executed','applied_filters','download_finished','active_filters','filtered_videos')[0]
-    downloaded_query = Video.objects.filter(download_success="True").values()
-    try:
-        applied_filters = ast.literal_eval(job['applied_filters'])
-    except:
-        applied_filters = []
-
-    try:
-        filtered = ast.literal_eval(job['filtered_videos'])
-        num_filtered_videos = len(filtered)
-    except:
-        num_filtered_videos = 0
-
-
-    try:
-        active_filters = ast.literal_eval(job.active_filters)
-    except:
-        active_filters = []
-
-
-
-    #Creates instances of all filters in filter.py
-    gen = (subclass for subclass in AbstractFilter.__subclasses__())
-    filters = []
-    for subclass in gen:
-        filter_obj = subclass()
-        enabled = (not (filter_obj.name() in applied_filters)) and (not (filter_obj.name() in active_filters)) and (len([x for x in filter_obj.prefilters() if x in applied_filters]) == len(filter_obj.prefilters())) and (job['download_finished'])
-        filters.append((filter_obj.name(), enabled))
-
-
-
-    downloaded = []
-    frames_extracted_list = []
-    face_detected_list = []
-    scene_change_detected_list = []
-    downloaded_query = Video.objects.filter(download_success="True").values()
-    for vid in downloaded_query:
-        jobs_list = ast.literal_eval(vid['job_ids'])
-        if str(job_id) in jobs_list:
-            downloaded.append(vid['id'])
-            try:
-                if vid['frames_extracted']:
-                    frames_extracted_list.append(vid['id'])
-            except Exception as e:
-                print("Error on video " + str(vid['id']) + ": " + str(e))
-            try:
-                if vid['face_detected']:
-                    face_detected_list.append(vid['id'])
-            except Exception as e:
-                print("Error on video " + str(vid['id']) + ": " + str(e))
-            try:
-                if vid['scene_change_filter_passed']:
-                    scene_change_detected_list.append(vid['id'])
-            except Exception as e:
-                print("Error on video " + str(vid['id']) + ": " + str(e))
-    num_downloaded = len(downloaded)
-
-    response_data = {
-            'job': job,
-            'downloaded': num_downloaded,
-            'job_num_filtered_videos': num_filtered_videos,
-            'num_frames_extracted': len(frames_extracted_list),
-            'num_face_detected': len(face_detected_list),
-            'num_scene_change_passed': len(scene_change_detected_list),
-            'filters': filters
-        }
-    return HttpResponse(json.dumps(response_data), content_type='application/json')
+#def updateProgress(request, job_id):
+#    context = job_update(job_id)
+#    return HttpResponse(json.dumps(response_data), content_type='application/json')
