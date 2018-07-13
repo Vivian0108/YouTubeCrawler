@@ -71,7 +71,10 @@ def job_update(job_id):
         jobs_list = ast.literal_eval(vid['job_ids'])
         if str(job_id) in jobs_list:
             downloaded.append(vid['id'])
-            passed_filters = ast.literal_eval(vid['passed_filters'])
+            try:
+                passed_filters = ast.literal_eval(vid['passed_filters'])
+            except:
+                passed_filters = []
             for filter_str in passed_filters:
                 filters[filter_str]['num_passed'] += 1
     num_downloaded = len(downloaded)
