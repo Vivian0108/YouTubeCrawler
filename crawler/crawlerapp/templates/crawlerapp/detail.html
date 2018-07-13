@@ -123,7 +123,7 @@
                     <p>Checks if celery is up and running properly, may take a while.</p>
                   </div>
                   <div class="card-action">
-                    <button id="check_celery" class="btn waves-effect waves-light" onclick="celeryStatus()">Check Celery</button>
+                    <button id="check_celery" class="btn waves-effect waves-light" onclick="celeryStatus({% url 'celery-info' %})">Check Celery</button>
                     <p id="celery_info">Click above to see celery status.</p>
                   </div>
                 </div>
@@ -178,7 +178,7 @@
     });
   }
 
-  function celeryStatus() {
+  function celeryStatus(celery_url) {
     document.getElementById("check_celery").className = "btn waves-effect waves-light disabled";
     document.getElementById("celery_info").innerHTML = "Getting info...";
     fetch(celery_url).then(function(response) {
