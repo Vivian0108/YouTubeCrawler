@@ -26,6 +26,23 @@ def quit_filter(job_id, filter_name_str):
         except Exception as e:
             print("Failed to quit task " + task['id'])
 
+def get_celery_worker_status():
+    ERROR_KEY = "ERROR"
+    try:
+        insp = inspect()
+        d = insp.stats()
+        if not d:
+            d = { ERROR_KEY: 'No running Celery workers were found.' }
+    except IOError as e:
+        from errno import errorcode
+        msg = "Error connecting to the backend: " + str(e)
+        if len(e.args) > 0 and errorcode.get(e.args[0]) == 'ECONNREFUSED':
+            msg += ' Check that the Redis server is running.'
+        d = { ERROR_KEY: msg }
+    except ImportError as e:
+        d = { ERROR_KEY: str(e)}
+    return d
+
 def job_update(job_id):
     job = Job.objects.filter(id=job_id).get()
     try:
@@ -124,4 +141,8 @@ def job_update(job_id):
                'num_downloaded': num_downloaded,
                'active_filters': active_filters,
                'sampled_url': url}
+
+
+    celery_status = get_celery_worker_status()
+    context["celery_status"] = celery_status               
     return context

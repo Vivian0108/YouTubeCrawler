@@ -12,7 +12,7 @@ from crawlerapp.filters import *
 import jsonpickle, io, ast, csv, os, json, random, datetime
 from crawlerapp.definitions import CONFIG_PATH
 from celery.task.control import revoke
-from crawlerapp.utils import job_update
+from crawlerapp.utils import job_update, get_celery_worker_status
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -216,8 +216,11 @@ def profile(request):
 
 
 def updateProgress(request, job_id):
+    #Can't encode filter object as json, have to get rid of it
     context = job_update(job_id)
     filters = context["filters"]
     for filter_name,filter_dict in filters.items():
         filter_dict["filter_obj"] = None
+
+
     return HttpResponse(json.dumps(context), content_type='application/json')

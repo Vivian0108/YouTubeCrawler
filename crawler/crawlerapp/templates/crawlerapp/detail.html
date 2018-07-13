@@ -64,6 +64,9 @@
               <td id="{{ filter_name }}_passed">{{ filter_dict.num_passed }}</td>
             </tr>
             {% endfor %}
+            <tr>
+              <td>Celery Status</td>
+              <td id="celery_status">{{ celery_status }}</td>
           </tbody>
         </table>
       </div>
