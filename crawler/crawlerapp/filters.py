@@ -71,7 +71,13 @@ class AlignFilter(AbstractFilter):
         return []
     def filter(self, video_ids, task):
         my_path = os.path.join(CONFIG_PATH, "downloaded_videos")
+        passed = []
         for video in video_ids:
+            vid_query = Video.objects.filter(id=id).get()
+            try:
+                passed_filters = ast.literal_eval(vid_query.passed_filters)
+            except:
+                passed_filters = []
             try:
                 video_dir = os.path.join(my_path, video)
                 mp4_path = os.path.join(video_dir, video + ".mp4")
@@ -99,9 +105,14 @@ class AlignFilter(AbstractFilter):
                                 % (wav_path, plaintext_path, pratt_path),
                                 shell=True)
                 print("Probably aligned " + str(video))
+                if self.name() not in passed_filters:
+                    passed_filters.append(self.name())
+                vid_query.passed_filters = passed_filters
+                passed.append(video)
+                vid_query.save()
             except Exception as e:
                 print("Error aligning " + str(vid_query.id) + ": " + str(e))
-        return []
+        return passed
 
 class FaceDetectFilter(AbstractFilter):
     def name(self):
