@@ -58,18 +58,12 @@
               <td>Active Filters</td>
               <td id="active_filters">{{ active_filters }}</td>
             </tr>
+            {% for filter_name,filter_dict in filters.items %}
             <tr>
-              <td>Number of videos with frames extracted</td>
-              <td id="num_frames_extracted">{{ num_frames_extracted }}</td>
+              <td>Number of videos that passed {{ filter_name }}</td>
+              <td id="{{ filter_name }}_passed">{{ filter_dict.num_passed }}</td>
             </tr>
-            <tr>
-              <td>Number of videos with faces detected</td>
-              <td id="num_face_detected">{{ num_face_detected }}</td>
-            </tr>
-            <tr>
-              <td>Number of videos that passed scene change filter</td>
-              <td id="num_scene_change_passed">{{ num_scene_change_passed }}</td>
-            </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
