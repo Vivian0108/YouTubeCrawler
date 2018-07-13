@@ -61,6 +61,7 @@ def job_update(job_id):
             'filter_obj': filter_obj,
             'enabled': enabled,
             'num_passed': 0,
+            'num_failed': 0,
             'progress': progress
         }
 
@@ -81,12 +82,18 @@ def job_update(job_id):
                 passed_filters = []
             for filter_str in passed_filters:
                 filters[filter_str]['num_passed'] += 1
+            try:
+                failed_filters = ast.literal_eval(vid['failed_filters'])
+            except:
+                failed_filters = []
+            for filter_str in failed_filters:
+                filters[filter_str]['num_failed'] += 1
     num_downloaded = len(downloaded)
 
     #Update progress percentage
     for filter_str in filters:
         if filter_str in active_filters:
-            progress = (filters[filter_str]['num_passed'])/(num_downloaded)*100
+            progress = (filters[filter_str]['num_passed'] + filters[filter_str]['num_failed'])/(num_downloaded)*100
             filters[filter_str]['progress'] = progress
 
     try:

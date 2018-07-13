@@ -111,10 +111,27 @@ def clear_filter_async(filter, job_id):
             final_filtered.append((video_id,filters))
 
         vid_query = Video.objects.filter(id=video_id).get()
-        passed_filters = ast.literal_eval(vid_query.passed_filters)
+
+        try:
+            passed_filters = ast.literal_eval(vid_query.passed_filters)
+        except:
+            passed_filters = []
+
+        try:
+            failed_filters = ast.literal_eval(vid_query.failed_filters)
+        except:
+            failed_filters = []
         if filter_name in passed_filters:
             passed_filters.remove(filter_name)
         vid_query.passed_filters = passed_filters
+
+        if filter_name in failed_filters:
+            failed_filters.remove(filter_name)
+
+        vid_query.passed_filters = passed_filters
+
+        vid_query.failed_filters = failed_filters
+        
         vid_query.save()
 
     job.filtered_videos = final_filtered

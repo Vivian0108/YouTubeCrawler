@@ -50,14 +50,28 @@ class ExtractFrames(AbstractFilter):
             except:
                 passed_filters = []
             try:
+                failed_filters = ast.literal_eval(vid_query.failed_filters)
+            except:
+                failed_filters = []
+            try:
                 extractFrames(id, 1, vid_query.download_path)
                 if self.name() not in passed_filters:
                     passed_filters.append(self.name())
                 print("Extracted " + str(vid_query.id))
                 vid_query.passed_filters = passed_filters
                 vid_query.save()
-            except Exception as e:
+            except FileExistsError:
+                if self.name() not in passed_filters:
+                    passed_filters.append(self.name())
+                print("Extracted " + str(vid_query.id) + ", file existed")
+                vid_query.passed_filters = passed_filters
+                vid_query.save()
+            else:
                 print("Error extracting frames video " + str(vid_query.id) + ": " + str(e))
+                if self.name() not in failed_filters:
+                    failed_filters.append(self.name())
+                vid_query.failed_filters = failed_filters
+                vid_query.save()
 
         return []
 
@@ -78,6 +92,10 @@ class AlignFilter(AbstractFilter):
                 passed_filters = ast.literal_eval(vid_query.passed_filters)
             except:
                 passed_filters = []
+            try:
+                failed_filters = ast.literal_eval(vid_query.failed_filters)
+            except:
+                failed_filters = []
             try:
                 video_dir = os.path.join(my_path, video)
                 mp4_path = os.path.join(video_dir, video + ".mp4")
@@ -112,6 +130,10 @@ class AlignFilter(AbstractFilter):
                 vid_query.save()
             except Exception as e:
                 print("Error aligning " + str(vid_query.id) + ": " + str(e))
+                if self.name() not in failed_filters:
+                    failed_filters.append(self.name())
+                vid_query.failed_filters = failed_filters
+                vid_query.save()
         return passed
 
 class FaceDetectFilter(AbstractFilter):
@@ -131,7 +153,10 @@ class FaceDetectFilter(AbstractFilter):
                 passed_filters = ast.literal_eval(vid_query.passed_filters)
             except:
                 passed_filters = []
-
+            try:
+                failed_filters = ast.literal_eval(vid_query.failed_filters)
+            except:
+                failed_filters = []
             try:
                 truth_vals = faceDetect(video, downloaded_path)
                 if truth_vals[0]:
@@ -140,9 +165,16 @@ class FaceDetectFilter(AbstractFilter):
                         passed_filters.append(self.name())
                     vid_query.passed_filters = passed_filters
                     passed.append(video)
+                else:
+                    if self.name() not in failed_filters:
+                        failed_filters.append(self.name())
+                    vid_query.failed_filters = failed_filters
 
             except Exception as e:
                 print("Error face detecting video " + str(vid_query.id) + ": " + str(e))
+                if self.name() not in failed_filters:
+                    failed_filters.append(self.name())
+                vid_query.failed_filters = failed_filters
             vid_query.save()
         return passed
 
@@ -163,6 +195,10 @@ class SceneChangeFilter(AbstractFilter):
             except:
                 passed_filters = []
             try:
+                failed_filters = ast.literal_eval(vid_query.failed_filters)
+            except:
+                failed_filters = []                
+            try:
                 succeeded = sceneChangeFilter(video, downloaded_path, 25, 100)
                 if succeeded:
                     print("Passed " + str(video))
@@ -171,6 +207,15 @@ class SceneChangeFilter(AbstractFilter):
                     vid_query.passed_filters = passed_filters
                     passed.append(video)
                     vid_query.save()
+                else:
+                    if self.name() not in failed_filters:
+                        failed_filters.append(self.name())
+                    vid_query.failed_filters = failed_filters
+                    vid_query.save()
             except Exception as e:
                 print("Error scene change detecting video " + str(vid_query.id) + ": " + str(e))
+                if self.name() not in failed_filters:
+                    failed_filters.append(self.name())
+                vid_query.failed_filters = failed_filters
+                vid_query.save()
         return passed

@@ -50,6 +50,7 @@ class Video(models.Model):
     #face_detected = models.NullBooleanField()
     #scene_change_filter_passed = models.NullBooleanField()
     passed_filters = models.TextField(default="",null=True)
+    failed_filters = models.TextField(default="", null=True)
     audio_extracted = models.NullBooleanField()
     #mturk_description = models.TextField(default="",null=True)
     #youtube_params = JSONField(default=list,null=True)
