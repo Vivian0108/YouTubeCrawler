@@ -224,3 +224,7 @@ def updateProgress(request, job_id):
 
 
     return HttpResponse(json.dumps(context), content_type='application/json')
+
+def celery_info(request):
+    data = get_celery_worker_status()
+    return HttpResponse(json.dumps(data),content_type='application/json')
