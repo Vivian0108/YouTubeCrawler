@@ -70,7 +70,7 @@ def detail(request, job_id):
 @permission_required('crawlerapp.can_crawl', raise_exception=True)
 def view_videos(request, job_id):
     face_detected = {}
-    downloaded_query = Video.objects.filter(download_success="True").values()
+    downloaded_query = Video.objects.filter(download_success="True").order_by('-id').values()
     for vid in downloaded_query:
         try:
             jobs_list = ast.literal_eval(vid['job_ids'])
