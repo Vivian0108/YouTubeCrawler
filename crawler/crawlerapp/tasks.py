@@ -22,6 +22,8 @@ def download_async(job_id):
 @shared_task(bind=True)
 def filter_async(self, filter, job_id):
     job = Job.objects.filter(id=job_id).get()
+    
+    filter_obj = jsonpickle.decode(filter)
 
     try:
         active_filters = ast.literal_eval(job.active_filters)
@@ -45,7 +47,6 @@ def filter_async(self, filter, job_id):
     except:
         video_ids = []
 
-    filter_obj = jsonpickle.decode(filter)
 
 
     total_filtered = filter_obj.filter(video_ids, job)
