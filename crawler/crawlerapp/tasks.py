@@ -51,8 +51,9 @@ def filter_async(self, filter, job_id):
         video_ids = []
 
     try:
-        total_filtered = filter_obj.filter(video_ids, job)
+        total_filtered = filter_obj.filter(video_ids)
     except Exception as e:
+        total_filtered = []
         print("FILTER FAILED FOR JOB " + str(job.id) + ": " + str(e))
 
     filtered = [(vid, filter_obj.name()) for vid in total_filtered]
