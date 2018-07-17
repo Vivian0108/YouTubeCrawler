@@ -60,7 +60,7 @@ def detail(request, job_id):
             #Dont clear the filters asynchronously
             clear_filter_async(jsonpickle.encode(filter_obj), job_id)
         #return render(request, 'crawlerapp/detail.html',context)
-        return HttpResponseRedirect('crawlerapp/jobs/' + str(job_id))
+        return redirect('detail', job_id)
     else:
         form = DownloadForm()
         context['form'] = form
