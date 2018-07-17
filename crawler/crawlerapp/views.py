@@ -50,9 +50,22 @@ def detail(request, job_id):
     if request.method == "POST":
         form = DownloadForm(request.POST)
         if request.POST.get("filter"):
+            job = Job.objects.filter(id=job_id).get()
+
             filter_name = str(request.POST.get("filter"))
             filter_obj = filters[filter_name]["filter_obj"]
             filters[filter_obj.name()]["enabled"] = False
+
+            try:
+                active_filters = ast.literal_eval(job.active_filters)
+                if filter_obj.name() not in active_filters:
+                    active_filters.append(filter_obj.name())
+                job.active_filters = active_filters
+            except:
+                active_filters = [filter_obj.name()]
+                job.active_filters = active_filters
+            job.save()
+
             filter_async.delay(jsonpickle.encode(filter_obj), job_id)
         elif request.POST.get("remove"):
             filter_name = str(request.POST.get("remove"))
