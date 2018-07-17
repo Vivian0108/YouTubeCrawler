@@ -76,8 +76,8 @@ class ExtractFrames(AbstractFilter):
                 print("Extracted " + str(vid_query.id) + ", file existed")
                 vid_query.passed_filters = passed_filters
                 vid_query.save()
-            else:
-                print("Error extracting frames video " + str(vid_query.id))
+            except Exception as e:
+                print("Error extracting frames video " + str(vid_query.id) + ": " + str(e))
                 if self.name() not in failed_filters:
                     failed_filters.append(self.name())
                 vid_query.failed_filters = failed_filters
