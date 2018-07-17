@@ -31,7 +31,7 @@ def readP2FAPhones(infile):
 			print("Length is not accurate")
 			time.sleep(100)
 		counter_phones=0
-		for i in xrange (0,len(phonecontent),3):
+		for i in range(0,len(phonecontent),3):
 			counter_phones+=1
 			timestamp=[phonecontent[i+2][1:-1].lower(),float(phonecontent[i]),float(phonecontent[i+1])]
 			timestamps.append(timestamp)

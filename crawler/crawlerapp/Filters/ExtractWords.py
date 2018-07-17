@@ -29,7 +29,7 @@ def readP2FA(infile):
 			print('Div not zero %s'%filename)
 		totalwords=int(wordcontent[2])
 		counter_words=0
-		for i in xrange (3,len(wordcontent),3):
+		for i in range(3,len(wordcontent),3):
 			counter_words+=1
 			timestamp=[wordcontent[i+2][1:-1].lower(),float(wordcontent[i]),float(wordcontent[i+1])]
 			allwordsP2FA[timestamp[0]]=None
