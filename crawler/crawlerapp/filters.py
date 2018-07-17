@@ -40,9 +40,6 @@ class AbstractFilter(ABC):
     def filter(self, video_ids):
         pass
 
-    @abstractmethod
-    def generate_hp5y(self, video_id, args):
-        pass
 
 
 class ExtractFrames(AbstractFilter):
