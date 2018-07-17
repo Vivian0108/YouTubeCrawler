@@ -1,0 +1,27 @@
+{% extends '../base.html' %} {% block title %}Videos for Job {{ job_name }}{% endblock %}{% block content %}
+<div class="container">
+  <center>
+    <table>
+      <thead>
+        <tr>
+          <th>Video ID</th>
+          <th>Language</th>
+          <th>Video Duration</th>
+          <th>Query</th>
+          <th>Link</th>
+        </tr>
+      </thead>
+    <tbody>
+    {% for vid,vid_dict in face_detected.items %}
+      <td>{{ vid }}</td>
+      <td>{{ vid_dict.language }}</td>
+      <td>{{ vid_dict.video_duration }}</td>
+      <td>{{ vid_dict.query }}</td>
+      <td><a href="https://www.youtube.com/watch?v={{ vid }}" target="_blank">Link</a></td>
+    {% endfor %}
+  </tbody>
+  </table>
+  </center>
+</div>
+
+{% endblock %}

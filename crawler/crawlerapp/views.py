@@ -59,11 +59,35 @@ def detail(request, job_id):
             filter_obj = filters[filter_name]["filter_obj"]
             #Dont clear the filters asynchronously
             clear_filter_async(jsonpickle.encode(filter_obj), job_id)
-        return render(request, 'crawlerapp/detail.html',context)
+        #return render(request, 'crawlerapp/detail.html',context)
+        return HttpResponseRedirect('crawlerapp/jobs/' + job_id)
     else:
         form = DownloadForm()
         context['form'] = form
         return render(request, 'crawlerapp/detail.html', context)
+
+@login_required
+@permission_required('crawlerapp.can_crawl', raise_exception=True)
+def view_videos(request, job_id):
+    face_detected = {}
+    downloaded_query = Video.objects.filter(download_success="True").values()
+    for vid in downloaded_query:
+        try:
+            jobs_list = ast.literal_eval(vid['job_ids'])
+        except:
+            jobs_list = []
+        if str(job_id) in jobs_list:
+            try:
+                passed_filters = ast.literal_eval(vid['passed_filters'])
+            except:
+                passed_filters = []
+            if "Face Detection" in passed_filters:
+                face_detected[str(vid['id'])] = vid
+    context = {
+        'face_detected': face_detected
+    }
+    return render(request,'crawlerapp/view_videos.html',context)
+
 
 def newcsv(data, csvheader, fieldnames):
     """
@@ -84,8 +108,6 @@ def newcsv(data, csvheader, fieldnames):
 @login_required
 @permission_required('crawlerapp.can_crawl', raise_exception=True)
 def dataset_detail(request, dataset_id):
-    if not (request.user.is_authenticated):
-        return HttpResponseRedirect('/accounts/login/')
     try:
         dataset = Dataset.objects.filter(id=dataset_id).get()
     except:

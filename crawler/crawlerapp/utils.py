@@ -90,7 +90,10 @@ def job_update(job_id):
     scene_change_detected_list = []
     downloaded_query = Video.objects.filter(download_success="True").values()
     for vid in downloaded_query:
-        jobs_list = ast.literal_eval(vid['job_ids'])
+        try:
+            jobs_list = ast.literal_eval(vid['job_ids'])
+        except:
+            jobs_list = []
         if str(job_id) in jobs_list:
             downloaded.append(vid['id'])
             try:

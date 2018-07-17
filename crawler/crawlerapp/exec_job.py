@@ -28,7 +28,7 @@ def videos_list_by_id(client, **kwargs):
     return response
 
 
-def process_search_response(job_id, job_name, query, search_response, client):
+def process_search_response(job_id, job_name, query, search_response, client, language):
     found = []
     for item in search_response['items']:
         video_id = item['id']['videoId']
@@ -50,7 +50,7 @@ def process_search_response(job_id, job_name, query, search_response, client):
             try:
                 default_lang = vid['snippet']['defaultLanguage']
             except:
-                pass
+                default_lang = language
                 #print("Couldn't find defaultLang")
             try:
                 published_date = vid['snippet']['publishedAt']
@@ -178,7 +178,7 @@ def query(job, job_id):
         if search_response is None:
             break
         (nextPageToken, found) = process_search_response(
-            job_id, job['name'], job['query'], search_response, youtube)
+            job_id, job['name'], job['query'], search_response, youtube, job['language'])
         total_found.extend(found)
         job_query.num_vids = len(total_found)
         job_query.videos = total_found
