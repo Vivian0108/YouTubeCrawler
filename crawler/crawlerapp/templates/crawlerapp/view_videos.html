@@ -12,16 +12,20 @@
           <th>Link</th>
         </tr>
       </thead>
-    <tbody>
-    {% for vid,vid_dict in face_detected.items %}
-      <td>{{ vid }}</td>
-      <td>{{ vid_dict.language }}</td>
-      <td>{{ vid_dict.video_duration }}</td>
-      <td>{{ vid_dict.query }}</td>
-      <td><a href="https://www.youtube.com/watch?v={{ vid }}" target="_blank">Link</a></td>
-    {% endfor %}
-  </tbody>
-  </table>
+
+      {% for vid,vid_dict in face_detected.items %}
+      <tbody>
+        <tr>
+          <td>{{ vid }}</td>
+          <td>{{ vid_dict.language }}</td>
+          <td>{{ vid_dict.video_duration }}</td>
+          <td>{{ vid_dict.query }}</td>
+          <td><a href="https://www.youtube.com/watch?v={{ vid }}" target="_blank">Link</a></td>
+        </tr>
+      </tbody>
+      {% endfor %}
+
+    </table>
   </center>
 </div>
 
