@@ -3,6 +3,7 @@ import sys
 import os
 import shutil
 import datetime
+from django.utils import timezone
 import youtube_dl
 import subprocess
 import atexit
@@ -111,7 +112,7 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 video.view_count=view_count
                 video.comment_count=comment_count
                 video.published_date=published_date
-                video.search_time=datetime.datetime.now()
+                video.search_time=timezone.now()
                 video.frames_extracted=False
                 video.save()
             else:
