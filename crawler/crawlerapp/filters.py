@@ -146,8 +146,6 @@ class AlignFilter(AbstractFilter):
                 subprocess.call("sudo python " + align_path + ' %s %s %s'
                                 % (wav_path, plaintext_path, pratt_path),
                                 shell=True)
-                print("Probably aligned " + str(video))
-
                 try:
                     h5py_file_phones = os.path.join(
                         filter_folder_dir, video + "_phones.hdf5")
@@ -156,6 +154,7 @@ class AlignFilter(AbstractFilter):
                         h5py_file_words = os.path.join(
                             filter_folder_dir, video + "_words.hdf5")
                         extractWords(pratt_path, h5py_file_words, video)
+                        print("Aligned " + str(video))
                         if self.name() not in passed_filters:
                             passed_filters.append(self.name())
                         vid_query.passed_filters = passed_filters
@@ -174,7 +173,7 @@ class AlignFilter(AbstractFilter):
                     if self.name() not in failed_filters:
                         failed_filters.append(self.name())
                     vid_query.failed_filters = failed_filters
-                    vid_query.save()                          
+                    vid_query.save()
 
             except Exception as e:
                 print("Error aligning " + str(vid_query.id) + ": " + str(e))
