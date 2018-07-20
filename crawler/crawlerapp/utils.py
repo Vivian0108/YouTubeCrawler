@@ -8,7 +8,11 @@ def quit_filter(job_id, filter_name_str):
     filter_name = 'crawlerapp.filters.' + filter_name_str.replace(' ','')
     # Grab all the current tasks from all the workers
     i = inspect()
-    active_list_names = [x for x in i.active()]
+    try:
+        active_list_names = [x for x in i.active()]
+    except:
+        print("Couldn't find any workers")
+        return
     all_tasks = [i.active()[active_list_names[z]] for z in range(len(active_list_names))]
     all_tasks_flatten = [task for sublist in all_tasks for task in sublist]
 
