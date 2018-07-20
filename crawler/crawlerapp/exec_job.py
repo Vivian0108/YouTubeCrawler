@@ -53,6 +53,11 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 default_lang = language
                 #print("Couldn't find defaultLang")
             try:
+                default_audio_lang = vid['snipped']['defaultAudioLanguage']
+                print(default_audio_lang)
+            except:
+                print("Can't find defaut audio language")
+            try:
                 published_date = vid['snippet']['publishedAt']
             except:
                 pass
