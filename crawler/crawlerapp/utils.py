@@ -103,7 +103,7 @@ def job_update(job_id):
             for filter_str in passed_filters:
                 filters[filter_str]['num_passed'] += 1
             try:
-                failed_filters = ast.literal_eval(vid_query.passed_filters])
+                failed_filters = ast.literal_eval(vid_query.passed_filters)
             except:
                 failed_filters = []
             for filter_str in failed_filters:
