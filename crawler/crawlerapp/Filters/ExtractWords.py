@@ -3,6 +3,7 @@ from os import listdir
 from os.path import isfile, join
 import time
 import numpy
+import h5py
 
 #SCRIPT TO CREATE PLAIN WORDS BASED ON THE GLOBAL TIMESTAMPS - words in each video and timestamps, only one segment that is the big video
 
