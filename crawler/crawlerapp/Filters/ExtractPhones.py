@@ -16,11 +16,11 @@ import h5py
 #data={}
 
 def readP2FAPhones(infile):
-	timestamp=[]
+	timestamps=[]
 	ss={}
 	es={}
 	with open(infile,'r') as fileptr:
-		timestamps=[]
+		timestamp=[]
 		content=fileptr.read().split('\n')
 		phonecontent=content[content.index("\"phone\"")+4:content.index("\"word\"")-1]
 		if((len(phonecontent)%3)!=0):
@@ -38,7 +38,7 @@ def readP2FAPhones(infile):
 		if(counter_phones!=totalphones):
 			print ("Phonecount inconsistency in %s"%file)
 			time.sleep(100)
-	return timestamp
+	return timestamps
 
 
 #count=0
@@ -85,7 +85,7 @@ def extractPhones(p2fa_file, destination, video_id):
 	data[video_id]['intervals']=intervals
 	data[video_id]['features']=featuresnp
 
-	writeh5Handle=h5py.File(destination,'w')
+	write5Handle=h5py.File(destination,'w')
 
 	vidHandle=write5Handle.create_group(video_id)
 	vidHandle.create_dataset("features",data=data[video_id]["features"])

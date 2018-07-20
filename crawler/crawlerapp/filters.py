@@ -143,6 +143,7 @@ class AlignFilter(AbstractFilter):
 
                 with open(plaintext_path, 'w') as f:
                     f.write(' '.join(lines))
+                print("Calling p2fa on " + str(video))
                 subprocess.call("sudo python " + align_path + ' %s %s %s'
                                 % (wav_path, plaintext_path, pratt_path),
                                 shell=True)
@@ -156,16 +157,16 @@ class AlignFilter(AbstractFilter):
                 try:
                     h5py_file_phones = os.path.join(filter_folder_dir, video + "_phones.hdf5")
                     extractPhones(pratt_path, h5py_file_phones,video)
-                except Exception as e:
-                    print("Couldn't extract phones on video " + video + ": " + str(e))
+                except OSError:
+                    print("Couldn't extract phones on video " + str(video) + ": OSError")
 
                 try:
                     h5py_file_words = os.path.join(filter_folder_dir, video + "_words.hdf5")
                     extractWords(pratt_path, h5py_file_words,video)
                 except Exception as e:
                     print("Couldn't extract words on video " + video + ": " + str(e))
-            except Exception as e:
-                print("Error aligning " + str(vid_query.id) + ": " + str(e))
+            except OSError:
+                print("Error aligning " + str(vid_query.id) + ": ")
                 if self.name() not in failed_filters:
                     failed_filters.append(self.name())
                 vid_query.failed_filters = failed_filters
