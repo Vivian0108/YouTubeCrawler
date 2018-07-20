@@ -41,7 +41,6 @@ class AbstractFilter(ABC):
         pass
 
 
-
 class ExtractFrames(AbstractFilter):
     def name(self):
         return "Extract Frames"
@@ -77,7 +76,8 @@ class ExtractFrames(AbstractFilter):
                 vid_query.passed_filters = passed_filters
                 vid_query.save()
             except Exception as e:
-                print("Error extracting frames video " + str(vid_query.id) + ": " + str(e))
+                print("Error extracting frames video " +
+                      str(vid_query.id) + ": " + str(e))
                 if self.name() not in failed_filters:
                     failed_filters.append(self.name())
                 vid_query.failed_filters = failed_filters
@@ -128,7 +128,6 @@ class AlignFilter(AbstractFilter):
                 align_path = os.path.join(CONFIG_PATH, os.path.join(
                     "AZP2FA", os.path.join("p2fa", os.path.join("align.py"))))
 
-
                 lines = []
                 with open(vtt_path, 'r') as f:
                     for line in f:
@@ -149,22 +148,26 @@ class AlignFilter(AbstractFilter):
                                 shell=True)
                 print("Probably aligned " + str(video))
 
-                if self.name() not in passed_filters:
-                    passed_filters.append(self.name())
-                vid_query.passed_filters = passed_filters
-                passed.append(video)
-                vid_query.save()
                 try:
-                    h5py_file_phones = os.path.join(filter_folder_dir, video + "_phones.hdf5")
-                    extractPhones(pratt_path, h5py_file_phones,video)
+                    h5py_file_phones = os.path.join(
+                        filter_folder_dir, video + "_phones.hdf5")
+                    extractPhones(pratt_path, h5py_file_phones, video)
+                    try:
+                        h5py_file_words = os.path.join(
+                            filter_folder_dir, video + "_words.hdf5")
+                        extractWords(pratt_path, h5py_file_words, video)
+                        if self.name() not in passed_filters:
+                            passed_filters.append(self.name())
+                        vid_query.passed_filters = passed_filters
+                        passed.append(video)
+                        vid_query.save()
+                    except Exception as e:
+                        print("Couldn't extract words on video " +
+                              video + ": " + str(e))
                 except Exception as e:
-                    print("Couldn't extract phones on video " + str(video) + ": " + str(e))
+                    print("Couldn't extract phones on video " +
+                          str(video) + ": " + str(e))
 
-                try:
-                    h5py_file_words = os.path.join(filter_folder_dir, video + "_words.hdf5")
-                    extractWords(pratt_path, h5py_file_words,video)
-                except Exception as e:
-                    print("Couldn't extract words on video " + video + ": " + str(e))
             except Exception as e:
                 print("Error aligning " + str(vid_query.id) + ": " + str(e))
                 if self.name() not in failed_filters:
