@@ -164,9 +164,17 @@ class AlignFilter(AbstractFilter):
                     except Exception as e:
                         print("Couldn't extract words on video " +
                               video + ": " + str(e))
+                        if self.name() not in failed_filters:
+                            failed_filters.append(self.name())
+                        vid_query.failed_filters = failed_filters
+                        vid_query.save()
                 except Exception as e:
                     print("Couldn't extract phones on video " +
                           str(video) + ": " + str(e))
+                    if self.name() not in failed_filters:
+                        failed_filters.append(self.name())
+                    vid_query.failed_filters = failed_filters
+                    vid_query.save()                          
 
             except Exception as e:
                 print("Error aligning " + str(vid_query.id) + ": " + str(e))

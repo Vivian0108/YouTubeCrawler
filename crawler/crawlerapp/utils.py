@@ -88,22 +88,22 @@ def job_update(job_id):
     frames_extracted_list = []
     face_detected_list = []
     scene_change_detected_list = []
-    downloaded_query = Video.objects.filter(download_success="True").values()
-    for vid in downloaded_query:
-        try:
-            jobs_list = ast.literal_eval(vid['job_ids'])
-        except:
-            jobs_list = []
-        if str(job_id) in jobs_list:
+    try:
+        job_videos = ast.literal_eval(job.videos)
+    except:
+        job_videos = []
+    for vid in job_videos:
+        vid_query = Video.objects.filter(id=vid).get()
+        if vid_query.download_success:
             downloaded.append(vid['id'])
             try:
-                passed_filters = ast.literal_eval(vid['passed_filters'])
+                passed_filters = ast.literal_eval(vid_query.passed_filters)
             except:
                 passed_filters = []
             for filter_str in passed_filters:
                 filters[filter_str]['num_passed'] += 1
             try:
-                failed_filters = ast.literal_eval(vid['failed_filters'])
+                failed_filters = ast.literal_eval(vid_query.passed_filters])
             except:
                 failed_filters = []
             for filter_str in failed_filters:

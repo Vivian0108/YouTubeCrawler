@@ -111,6 +111,37 @@ def clear_filter_async(filter, job_id):
     filter_name = filter_obj.name()
     job = Job.objects.filter(id=job_id).get()
     try:
+        videos = ast.literal_eval(job.videos)
+    except:
+        videos = []
+    for vid in videos:
+        vid_query = Video.objects.filter(id=vid).get()
+        if vid_query.download_success:
+            try:
+                passed_filters = ast.literal_eval(vid_query.passed_filters)
+            except:
+                passed_filters = []
+
+            try:
+                failed_filters = ast.literal_eval(vid_query.failed_filters)
+            except:
+                failed_filters = []
+            if filter_name in passed_filters:
+                passed_filters.remove(filter_name)
+            vid_query.passed_filters = passed_filters
+
+            if filter_name in failed_filters:
+                failed_filters.remove(filter_name)
+
+            vid_query.passed_filters = passed_filters
+
+            vid_query.failed_filters = failed_filters
+
+            vid_query.save()
+
+
+
+    try:
         filtered_videos = ast.literal_eval(job.filtered_videos)
     except:
         filtered_videos = []
