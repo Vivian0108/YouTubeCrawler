@@ -95,7 +95,7 @@ def job_update(job_id):
     for vid in job_videos:
         vid_query = Video.objects.filter(id=vid).get()
         if vid_query.download_success:
-            downloaded.append(vid['id'])
+            downloaded.append(vid_query.id)
             try:
                 passed_filters = ast.literal_eval(vid_query.passed_filters)
             except:
