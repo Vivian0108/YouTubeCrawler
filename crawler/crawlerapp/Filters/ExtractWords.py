@@ -94,7 +94,7 @@ def extractWords(p2fa_file, destination, video_id):
 	data[video_id]['intervals']=intervals
 	data[video_id]['features']=featuresnp
 
-	writeh5Handle=h5py.File(destination,'w')
+	write5Handle=h5py.File(destination,'w')
 
 	vidHandle=write5Handle.create_group(video_id)
 	vidHandle.create_dataset("features",data=data[vid]["features"])
