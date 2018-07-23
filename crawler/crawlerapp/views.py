@@ -260,6 +260,8 @@ def updateProgress(request, job_id):
 
     return HttpResponse(json.dumps(context), content_type='application/json')
 
-#def celery_info(request):
-#    data = get_celery_worker_status()
-#    return HttpResponse(json.dumps(data),content_type='application/json')
+@login_required
+def celery_worker_view(request):
+    d = get_celery_worker_status()
+    context = {'celery_status': d}
+    return render(request, 'crawlerapp/celery_status.html', context)

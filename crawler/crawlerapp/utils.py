@@ -37,6 +37,8 @@ def get_celery_worker_status():
         d = insp.stats()
         if not d:
             d = 'No running Celery workers were found.'
+        else:
+            d = str(d)
     except IOError as e:
         from errno import errorcode
         msg = "Error connecting to the backend: " + str(e)
