@@ -99,9 +99,13 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 #print("Couldn't find definition")
             try:
                 video_duration = vid['contentDetails']['duration']
+
             except:
                 pass
                 #print("Couldn't find duration")
+            video_time = int((video_duration.split('M')[0])[2:])
+            if video_time > 10:
+                break                
             video,created = Video.objects.get_or_create(id=video_id)
             if created:
                 video.channel_id=channel_id
