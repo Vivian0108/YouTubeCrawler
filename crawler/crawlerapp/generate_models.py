@@ -124,7 +124,15 @@ def i18n_languages_list(client, **kwargs):
 
     return response
 
+def i18n_regions_list(client,**kwargs):
+  # See full sample for function
+  #kwargs = remove_empty_kwargs(**kwargs)
 
+  response = client.i18nRegions().list(
+    **kwargs
+  ).execute()
+
+  return response
 
 def MakeFile(columns, name):
     filepath = os.getcwd()
@@ -174,4 +182,10 @@ def run_cmds():
     return snippets
 
 if __name__ == "__main__":
-    run_cmds()
+    client = get_authenticated_service()
+    resp = i18n_regions_list(client,part='snippet',hl='en_US')
+    snippets = []
+    for item in resp['items']:
+        tup = (item['snippet']['gl'], item['snippet']['name'])
+        snippets.append(tup)
+    print(snippets)
