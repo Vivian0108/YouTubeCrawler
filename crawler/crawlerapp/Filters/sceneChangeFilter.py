@@ -3,6 +3,7 @@ import glob
 import math
 from PIL import Image
 import numpy as np
+import os
 
 #videoID - also the name of the folder with the frames
 #frameStep - how frequently we check the frames (ex: if frameStep = 7,

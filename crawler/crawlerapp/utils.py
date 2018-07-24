@@ -83,7 +83,6 @@ def job_update(job_id):
     frames_extracted_list = []
     face_detected_list = []
     scene_change_detected_list = []
-    num_filtered_videos = 0
     job_videos = job.videos
     for vid in job_videos:
         vid_query = Video.objects.filter(id=vid).get()
@@ -93,7 +92,6 @@ def job_update(job_id):
             for filter_name,passed in vid_query.filters.items():
                 if passed:
                     filters[filter_name]['num_passed'] += 1
-                    num_filtered_videos += 1
                 else:
                     filters[filter_name]['num_failed'] += 1
 
@@ -119,7 +117,6 @@ def job_update(job_id):
                'download_finished': job.download_finished,
                'job_id': job.id,
                'filters': filters,
-               'job_num_filtered_videos': num_filtered_videos,
                'job_applied_filters': applied_filters,
                'num_downloaded': num_downloaded,
                'active_filters': active_filters}
