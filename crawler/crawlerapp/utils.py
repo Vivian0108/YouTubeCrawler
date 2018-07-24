@@ -107,7 +107,6 @@ def job_update(job_id):
                'job_num_vids': job.num_vids,
                'job_videos': job.videos,
                'job_language': job.language,
-               'job_channels': job.found_channels,
                'job_query': job.query,
                'job_created_date': str(job.created_date),
                'job_user_id': job.user_id,
