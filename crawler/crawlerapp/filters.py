@@ -62,7 +62,7 @@ class ExtractFrames(AbstractFilter):
                 vid_query.save()
             except FileExistsError:
                 print("Extracted " + str(vid_query.id) + ", file existed")
-                vid_query.filters[self.name()] = False
+                vid_query.filters[self.name()] = True
                 vid_query.save()
             except Exception as e:
                 print("Error extracting frames video " +
