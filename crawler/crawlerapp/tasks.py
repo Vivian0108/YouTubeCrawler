@@ -32,7 +32,7 @@ def filter_async(self, filter, job_id):
 
     active_filters = job.getActiveFilters()
     if filter_obj.name() not in active_filters:
-        job.filter_info[filter_obj.name()] = "Active"
+        job.filters[filter_obj.name()] = "Active"
     job.save()
 
     downloaded_video_ids = []
@@ -61,7 +61,7 @@ def filter_async(self, filter, job_id):
         vid_query.save()
 
 
-    job.filter_info[filter_obj.name()] = "Applied"
+    job.filters[filter_obj.name()] = "Applied"
     job.save()
 
 
