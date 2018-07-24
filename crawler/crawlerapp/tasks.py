@@ -30,9 +30,7 @@ def filter_async(self, filter, job_id):
     filter_obj = jsonpickle.decode(filter)
 
 
-    active_filters = job.getActiveFilters()
-    if filter_obj.name() not in active_filters:
-        job.filters[filter_obj.name()] = "Active"
+    job.filters[filter_obj.name()] = "Active"
     job.save()
 
     downloaded_video_ids = []
@@ -75,10 +73,12 @@ def clear_filter_async(filter, job_id):
     for vid in videos:
         vid_query = Video.objects.filter(id=vid).get()
         if vid_query.download_success:
-            del vid_query.filters[filter_name]
+            if filter_name in vid_query.filters:
+                del vid_query.filters[filter_name]
             vid_query.save()
 
-    del job.filters[filter_name]
+    if filter_name in job.filters:
+        del job.filters[filter_name]
     job.save()
 
     try:
