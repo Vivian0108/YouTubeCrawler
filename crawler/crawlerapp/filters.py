@@ -87,6 +87,7 @@ class AlignFilter(AbstractFilter):
         my_path = os.path.join(CONFIG_PATH, "downloaded_videos")
         passed = []
         for video in video_ids:
+            vid_query = Video.objects.filter(id=video).get()
             try:
                 video_dir = os.path.join(my_path, video)
                 filter_folder_dir = os.path.join(video_dir, "AlignFilter")
