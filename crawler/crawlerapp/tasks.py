@@ -78,7 +78,7 @@ def clear_filter_async(filter, job_id):
             del vid_query.filters[filter_name]
             vid_query.save()
 
-    del job.filters[filter_name] = None
+    del job.filters[filter_name]
     job.save()
 
     try:
