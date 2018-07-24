@@ -29,7 +29,7 @@ class Job(models.Model):
     # Returns a list of filters than are currently active on this job
     def getActiveFilters(self):
         filter_list = []
-        for filter,status in filters.items():
+        for filter,status in self.filters.items():
             if status == "Active":
                 filter_list.append(filter)
         return filter_list
@@ -37,7 +37,7 @@ class Job(models.Model):
     # Returns a list of filters than have been applied on this job
     def getAppliedFilters(self):
         filter_list = []
-        for filter,status in filters.items():
+        for filter,status in self.filters.items():
             if status == "Applied":
                 filter_list.append(filter)
         return filter_list
