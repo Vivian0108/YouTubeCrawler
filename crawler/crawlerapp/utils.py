@@ -90,7 +90,7 @@ def job_update(job_id):
         if vid_query.download_success:
             downloaded.append(vid_query.id)
 
-            for filter_name,passed in vid_query.filters:
+            for filter_name,passed in vid_query.filters.items():
                 if passed:
                     filters[filter_name]['num_passed'] += 1
                     num_filtered_videos += 1
