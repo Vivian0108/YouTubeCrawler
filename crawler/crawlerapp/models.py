@@ -8,18 +8,12 @@ class Job(models.Model):
     language = models.CharField(max_length=50)
     num_vids = models.IntegerField(default=None, blank=True, null=True)
     num_pages = models.IntegerField(default=None, blank=True, null=True)
-    # videos should be video ids seperated by commas
-    videos = models.TextField(default="")
-    filtered_videos = models.TextField(default="")
-    # channels should be channel ids seperated by commas
-    found_channels = models.TextField(default="")
-    channel_id = models.CharField(max_length=15,default="")
+    videos = models.JSONField(default=list)
     name = models.TextField(default="")
     query = models.TextField(default="")
+    region = models.TextField(default="")
     created_date = models.DateTimeField(default=None, blank=True, null=True)
     user_id = models.TextField(default="")
-    # filters should be filter ids seperated by commas
-    filters = models.TextField(default="")
     cc_enabled = models.CharField(default="",max_length=50)
     video_def = models.CharField(max_length=15,default="")
     video_duration = models.CharField(max_length=15,default="")
@@ -28,8 +22,24 @@ class Job(models.Model):
     executed = models.BooleanField(default=False)
     download_finished = models.BooleanField(default=False)
     download_started = models.BooleanField(default=False)
-    active_filters = models.TextField(default="",null=True)
-    applied_filters = models.TextField(default="",null=True)
+    #Format: job.filters[filter_name] = "Applied" or "Active" or None
+    filters = models.JSONField(default=dict)
+
+    # Returns a list of filters than are currently active on this job
+    def getActiveFilters(self):
+        filter_list = []
+        for filter,status in filters.items():
+            if status == "Active":
+                filter_list.append(filter)
+        return filter_list
+
+    # Returns a list of filters than have been applied on this job
+    def getAppliedFilters(self):
+        filter_list = []
+        for filter,status in filters.items():
+            if status == "Applied":
+                filter_list.append(filter)
+        return filter_list
 
     class Meta:
         permissions = [('can_crawl',"Can Crawl and Download")]
@@ -46,16 +56,11 @@ class Video(models.Model):
     download_time = models.DateTimeField(default=None, blank=True, null=True)
     download_path = models.TextField(default="",null=True)
     download_success = models.NullBooleanField()
-    #frames_extracted = models.NullBooleanField()
-    #face_detected = models.NullBooleanField()
-    #scene_change_filter_passed = models.NullBooleanField()
-    passed_filters = models.TextField(default="",null=True)
-    failed_filters = models.TextField(default="", null=True)
+    #Format: video.filters[filter_name] = True if passed or False if failed or None if not tested
+    filters = models.JSONField(default=dict)
     audio_extracted = models.NullBooleanField()
-    #mturk_description = models.TextField(default="",null=True)
-    #youtube_params = JSONField(default=list,null=True)
     query = models.TextField(default="",null=True)
-    job_ids = models.TextField(default="")
+    job_ids = models.JSONField(default=list)
     dislike_count = models.CharField(max_length=50,default="",null=True)
     like_count = models.CharField(max_length=50,default="",null=True)
     view_count = models.CharField(max_length=50,default="",null=True)

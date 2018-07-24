@@ -55,23 +55,8 @@ def get_celery_worker_status():
 
 def job_update(job_id):
     job = Job.objects.filter(id=job_id).get()
-    try:
-        applied_filters = ast.literal_eval(job.applied_filters)
-    except:
-        applied_filters = []
-
-    try:
-        filtered = ast.literal_eval(job.filtered_videos)
-        num_filtered_videos = len(filtered)
-    except:
-        filtered = []
-        num_filtered_videos = 0
-
-
-    try:
-        active_filters = ast.literal_eval(job.active_filters)
-    except:
-        active_filters = []
+    applied_filters = job.getApplFilters()
+    active_filters = job.getActiveFilters()
 
 
 
@@ -98,26 +83,18 @@ def job_update(job_id):
     frames_extracted_list = []
     face_detected_list = []
     scene_change_detected_list = []
-    try:
-        job_videos = ast.literal_eval(job.videos)
-    except:
-        job_videos = []
+    job_videos = job.videos
     for vid in job_videos:
         vid_query = Video.objects.filter(id=vid).get()
         if vid_query.download_success:
             downloaded.append(vid_query.id)
-            try:
-                passed_filters = ast.literal_eval(vid_query.passed_filters)
-            except:
-                passed_filters = []
-            for filter_str in passed_filters:
-                filters[filter_str]['num_passed'] += 1
-            try:
-                failed_filters = ast.literal_eval(vid_query.passed_filters)
-            except:
-                failed_filters = []
-            for filter_str in failed_filters:
-                filters[filter_str]['num_failed'] += 1
+
+            for filter_name,passed in vid_query.filters:
+                if passed:
+                    filters[filter_name]['num_passed'] += 1
+                else:
+                    filters[filter_name]['num_failed'] += 1
+
     num_downloaded = len(downloaded)
 
     #Update progress percentage
@@ -125,14 +102,6 @@ def job_update(job_id):
         if filter_str in active_filters:
             progress = (filters[filter_str]['num_passed'] + filters[filter_str]['num_failed'])/(num_downloaded)*100
             filters[filter_str]['progress'] = progress
-
-    try:
-        sampled_video = random.sample(filtered, 1)
-        sampled_id = sampled_video[0][0]
-        url = "https://www.youtube.com/watch?v=" + str(sampled_id)
-    except:
-        url = "None"
-
 
     context = {'job_name': job.name,
                'job_num_vids': job.num_vids,
@@ -152,7 +121,6 @@ def job_update(job_id):
                'job_num_filtered_videos': num_filtered_videos,
                'job_applied_filters': applied_filters,
                'num_downloaded': num_downloaded,
-               'active_filters': active_filters,
-               'sampled_url': url}
+               'active_filters': active_filters}
 
     return context

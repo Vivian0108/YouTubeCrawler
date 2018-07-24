@@ -56,14 +56,7 @@ def detail(request, job_id):
             filter_obj = filters[filter_name]["filter_obj"]
             filters[filter_obj.name()]["enabled"] = False
 
-            try:
-                active_filters = ast.literal_eval(job.active_filters)
-                if filter_obj.name() not in active_filters:
-                    active_filters.append(filter_obj.name())
-                job.active_filters = active_filters
-            except:
-                active_filters = [filter_obj.name()]
-                job.active_filters = active_filters
+            job.filters[filter_obj] = "Active"
             job.save()
 
             filter_async.delay(jsonpickle.encode(filter_obj), job_id)
@@ -85,17 +78,11 @@ def view_videos(request, job_id):
     face_detected = {}
     downloaded_query = Video.objects.filter(download_success="True").order_by('-id').values()
     for vid in downloaded_query:
-        try:
-            jobs_list = ast.literal_eval(vid['job_ids'])
-        except:
-            jobs_list = []
+        jobs_list = vid['job_ids']
         if str(job_id) in jobs_list:
-            try:
-                passed_filters = ast.literal_eval(vid['passed_filters'])
-            except:
-                passed_filters = []
-            if "Face Detection" in passed_filters:
-                face_detected[str(vid['id'])] = vid
+            if "Face Detection" in vid['filters']:
+                if vid['filters']['Face Detection']:
+                    face_detected[str(vid['id'])] = vid
     context = {
         'face_detected': face_detected
     }
