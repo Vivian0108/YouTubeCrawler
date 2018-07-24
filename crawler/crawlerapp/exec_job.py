@@ -185,10 +185,12 @@ def query(job_id):
             break
         (nextPageToken, found) = process_search_response(
             job_id, job.name, job.query, search_response, youtube, job.language)
+        #Refresh job
+        job = Job.objects.filter(id=job_id).get()
         total_found.extend(found)
-        job_query.num_vids = len(total_found)
-        job_query.videos = total_found
-        job_query.save()
+        job.num_vids = len(total_found)
+        job.videos = total_found
+        job.save()
         if nextPageToken:
             page_count += 1
     return total_found
