@@ -22,6 +22,7 @@ class Job(models.Model):
     executed = models.BooleanField(default=False)
     download_finished = models.BooleanField(default=False)
     download_started = models.BooleanField(default=False)
+    channel_id = models.TextField(default="")
     #Format: job.filters[filter_name] = "Applied" or "Active" or None
     filters = JSONField(default=dict)
 

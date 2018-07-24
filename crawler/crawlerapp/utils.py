@@ -55,7 +55,7 @@ def get_celery_worker_status():
 
 def job_update(job_id):
     job = Job.objects.filter(id=job_id).get()
-    applied_filters = job.getApplFilters()
+    applied_filters = job.getAppliedFilters()
     active_filters = job.getActiveFilters()
 
 
