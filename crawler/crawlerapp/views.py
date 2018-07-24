@@ -56,7 +56,7 @@ def detail(request, job_id):
             filter_obj = filters[filter_name]["filter_obj"]
             filters[filter_obj.name()]["enabled"] = False
 
-            job.filters[filter_obj] = "Active"
+            job.filters[filter_name] = "Active"
             job.save()
 
             filter_async.delay(jsonpickle.encode(filter_obj), job_id)
