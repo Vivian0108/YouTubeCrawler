@@ -8,7 +8,7 @@ class Job(models.Model):
     language = models.CharField(max_length=50)
     num_vids = models.IntegerField(default=None, blank=True, null=True)
     num_pages = models.IntegerField(default=None, blank=True, null=True)
-    videos = models.JSONField(default=list)
+    videos = JSONField(default=list)
     name = models.TextField(default="")
     query = models.TextField(default="")
     region = models.TextField(default="")
@@ -23,7 +23,7 @@ class Job(models.Model):
     download_finished = models.BooleanField(default=False)
     download_started = models.BooleanField(default=False)
     #Format: job.filters[filter_name] = "Applied" or "Active" or None
-    filters = models.JSONField(default=dict)
+    filters = JSONField(default=dict)
 
     # Returns a list of filters than are currently active on this job
     def getActiveFilters(self):
@@ -57,15 +57,19 @@ class Video(models.Model):
     download_path = models.TextField(default="",null=True)
     download_success = models.NullBooleanField()
     #Format: video.filters[filter_name] = True if passed or False if failed or None if not tested
-    filters = models.JSONField(default=dict)
+    filters = JSONField(default=dict)
     audio_extracted = models.NullBooleanField()
     query = models.TextField(default="",null=True)
-    job_ids = models.JSONField(default=list)
+    job_ids = JSONField(default=list)
     dislike_count = models.CharField(max_length=50,default="",null=True)
     like_count = models.CharField(max_length=50,default="",null=True)
     view_count = models.CharField(max_length=50,default="",null=True)
     comment_count = models.CharField(max_length=50,default="",null=True)
     published_date = models.CharField(max_length=50,default="",null=True)
+
+
+
+
 class Channel(models.Model):
     id = models.CharField(max_length=15,default="",primary_key=True)
     language = models.CharField(max_length=15,default="")
