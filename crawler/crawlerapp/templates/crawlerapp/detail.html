@@ -107,21 +107,6 @@
 
           </center>
         </form>
-        <div class="row">
-          <div class="col s12">
-            <div class="card blue-grey darken-1">
-              <div class="card-content white-text">
-                <span class="card-title">Sampled Video</span>
-                <p>Redirects to one of the videos in the filtered videos category</p>
-              </div>
-              <div class="card-action">
-                {% if sampled_url|stringformat:"s" == "None" %}
-                <a href="{% url 'detail' job_id %}">No videos found</a> {% else %}
-                <a href="{{ sampled_url }}" target="_blank">Sampled Video</a> {% endif %}
-              </div>
-            </div>
-          </div>
-        </div>
 
         <div class="row">
           <div class="col s12">
