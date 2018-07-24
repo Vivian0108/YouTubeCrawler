@@ -36,17 +36,21 @@ def get_celery_worker_status():
         insp = inspect()
         d = insp.stats()
         if not d:
-            d = 'No running Celery workers were found.'
-        else:
-            d = str(d)
+            d = {
+                ERROR_KEY: 'No running Celery workers were found.'
+            }
     except IOError as e:
         from errno import errorcode
         msg = "Error connecting to the backend: " + str(e)
         if len(e.args) > 0 and errorcode.get(e.args[0]) == 'ECONNREFUSED':
             msg += ' Check that the Redis server is running.'
-        d = msg
+        d = {
+            ERROR_KEY: msg
+        }
     except ImportError as e:
-        d = str(e)
+        d = {
+            ERROR_KEY: "Import error " + str(e)
+        }
     return d
 
 def job_update(job_id):
