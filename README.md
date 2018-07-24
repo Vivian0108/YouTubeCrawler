@@ -20,5 +20,8 @@ the project configuration matches your machine.
 
 # Improvements to Crawling:
 - Add list of regions generated from youtube api (crawler/crawlerapp/generate_models.py), pass info to crawler/crawlerapp/forms.py
-- Add region option to create job form (crawler/crawlerapp/forms.py) and search api call (crawler/crawlerapp/exec_job.py)
-- 
+- Add region option to create job form (crawler/crawlerapp/forms.py) and youtube search api call (crawler/crawlerapp/exec_job.py)
+- Once job creation form is submitted, translate query into relevant language before passing to youtube search api
+- Merge crawler/crawlerapp/download.py and crawler/crawlerapp/exec_job.py, download transcript of video immediately when
+video is crawled, check language of transcript, if correct, download and ffmpeg audio video immediately, if not, throw video out
+- Ensure all found transcriptions are downloaded (youtube_dl)
