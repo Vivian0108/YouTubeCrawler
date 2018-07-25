@@ -34,7 +34,7 @@ def download(download_data):
             ydl.download([YOUTUBE_BASE_URL + video_id])
         except:
             video = Video.objects.filter(id=video_id).get()
-            video.download_time=datetime.datetime.now()
+            video.download_time=timezone.now()
             video.download_path=download_to_path
             video.download_success=False
             video.save()
@@ -52,13 +52,13 @@ def download(download_data):
         except FileNotFoundError:
             pass
         video = Video.objects.filter(id=video_id).get()
-        video.download_time=datetime.datetime.now()
+        video.download_time=timezone.now()
         video.download_path=download_to_path
         video.download_success=False
         video.save()
     else:
         video = Video.objects.filter(id=video_id).get()
-        video.download_time=datetime.datetime.now()
+        video.download_time=timezone.now()
         video.download_path=download_to_path
         video.download_success=True
         input = os.path.join(video.download_path, video_id + ".mp4")
