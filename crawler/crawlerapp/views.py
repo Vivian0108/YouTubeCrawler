@@ -113,7 +113,7 @@ def dataset_detail(request, dataset_id):
     except:
         return render(request, 'crawlerapp/datasetnotfound.html', {'datasetid': dataset_id})
     #get list of jobs
-    job_str_list = ast.literal_eval(dataset.jobs_list)
+    job_str_list = dataset.jobs_list
     job_list = []
     video_sum = 0
     for str_job_id in job_str_list:
