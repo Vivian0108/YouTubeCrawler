@@ -17,6 +17,9 @@ the project configuration matches your machine.
 - Add queuing filters option to create job view
 - Get worker2 set up
 - Logical AND filters?
+- Write script that traverses downloaded_videos/, collects relevant hdf5 files, combines into one 
+hdf5 file, and downloads to user
+
 
 # Improvements to Crawling:
 - Add list of regions generated from youtube api (crawler/crawlerapp/generate_models.py), pass info to crawler/crawlerapp/forms.py
