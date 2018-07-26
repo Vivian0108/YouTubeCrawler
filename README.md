@@ -1,6 +1,6 @@
 # YouTubeCrawler
 Web Address:
-[mini.multicomp.cs.cmu.edu]
+[mini.multicomp.cs.cmu.edu](http://mini.multicomp.cs.cmu.edu)
 # Repo Information
 This branch contains the Django based webapp for the YouTubeCrawler, created by
 Alex Schneidman at Carnegie Mellon University. The crawler/ directory contains
