@@ -140,10 +140,7 @@ def query(job_id):
     job = Job.objects.filter(id=job_id).get()
     youtube = build("youtube", "v3",
                     developerKey="AIzaSyC485wtcaeL1yZrciuDWrliKSC74k8UODM")
-    initial = True
-    nextPageToken = None
 
-    page_count = 0
     total_found = []
     query_list = str(job.query).split(";")
     # Number of videos to search per query
@@ -153,8 +150,13 @@ def query(job_id):
         #TEMPORARY, CHANGE THIS IN THE FUTURE
         total_for_query = 100
     for q in query_list:
+
+        initial = True
+        nextPageToken = None
+        page_count = 0
+
         while (nextPageToken or initial):
-            if ((not (job.num_pages is None)) and total_for_query == int(job.num_pages)):
+            if ((not (job.num_pages is None)) and total_for_query == page_count):
                 break
             initial = False
             search_response = None
