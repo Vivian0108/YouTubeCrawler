@@ -68,62 +68,60 @@
         </table>
       </div>
       <div class="col s6">
-
-        {% if download_finished %}
-        <h4>Actions</h4>
-        <form id='form-id' method="post">
-          {% csrf_token %}
-          <!--
+        <div id="job_actions" style="display: none;">
+          <h4>Actions</h4>
+          <form id='form-id' method="post">
+            {% csrf_token %}
+            <!--
            {% if executed == False or download_started == True %}
           <button class="btn-large disabled">Download</button> {% else %}
           <button class="btn-large waves-effect waves-light" type="submit" value="download" name="download">Download</button> {% endif %}-->
-          <center>
-            {% for filter_name,filter_dict in filters.items %}
-            <div class="row">
-              <div class="col s12">
-                <div class="card blue-grey darken-1">
-                  <div class="card-content white-text">
-                    <span class="card-title">{{ filter_name }}</span>
-                    <p>{{ filter_dict.filter_obj.description }}</p>
-                  </div>
-                  <div class="card-action">
-                    {% if filter_dict.enabled == True %}
-                    <button id="{{ filter_name }}" class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% else %}
-                    <button id="{{ filter_name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% endif %}
-                    <button class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="remove">Clear this Filter</button>
-
-
-                    <div class="progress" id="{{ filter_name }}_div" style="display: none;">
-                      <div id="{{ filter_name }}_progress" class="determinate" style="display: none;"></div>
+            <center>
+              {% for filter_name,filter_dict in filters.items %}
+              <div class="row">
+                <div class="col s12">
+                  <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                      <span class="card-title">{{ filter_name }}</span>
+                      <p>{{ filter_dict.filter_obj.description }}</p>
                     </div>
+                    <div class="card-action">
+                      {% if filter_dict.enabled == True %}
+                      <button id="{{ filter_name }}" class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% else %}
+                      <button id="{{ filter_name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% endif %}
+                      <button class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="remove">Clear this Filter</button>
 
+
+                      <div class="progress" id="{{ filter_name }}_div" style="display: none;">
+                        <div id="{{ filter_name }}_progress" class="determinate" style="display: none;"></div>
+                      </div>
+
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            {% endfor %}
+              {% endfor %}
 
-          </center>
-        </form>
+            </center>
+          </form>
 
-        <div class="row">
-          <div class="col s12">
-            <div class="card blue-grey darken-1">
-              <div class="card-content white-text">
-                <span class="card-title">View Videos</span>
-                <p>Redirects to page with all the videos that passed Face Detect filter from this crawl</p>
-              </div>
-              <div class="card-action">
-                <a href="{% url 'view-videos' job_id %}">View Videos</a>
+          <div class="row">
+            <div class="col s12">
+              <div class="card blue-grey darken-1">
+                <div class="card-content white-text">
+                  <span class="card-title">View Videos</span>
+                  <p>Redirects to page with all the videos that passed Face Detect filter from this crawl</p>
+                </div>
+                <div class="card-action">
+                  <a href="{% url 'view-videos' job_id %}">View Videos</a>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        {% else %}
         <div class="progress" id="crawl_status_div">
           <div id="crawl_progress" class="determinate" style="width: {{ crawl_progress }};"></div>
         </div>
-        {% endif %}
       </div>
     </div>
   </center>
@@ -159,8 +157,9 @@
             }
           } else if (key == "crawl_progress") {
             document.getElementById(key).style = "width: " + data[key] + "%;";
-            if (data[key] > 99) {
-              location.reload(true);
+            if (data["download_finished"] == true) {
+              document.getElementById("crawl_status_div").style = "display: none;"
+              document.getElementById("job_actions").style = "";
             }
           } else {
             try {
