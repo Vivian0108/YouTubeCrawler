@@ -17,6 +17,78 @@ from apiclient.discovery import build
 from apiclient.discovery import HttpError
 from oauth2client.tools import argparser
 
+def download_video(download_data, requested_lang):
+    (download_to_path, video_id) = download_data
+    YOUTUBE_BASE_URL = 'https://www.youtube.com/watch?v='
+    # listsubtitles: True   lists all available subtitles
+    # allsubtitles: True    downloads all the subtitles of the video
+    # subtitleslangs: [langs]   list of languages of the subtitles to download
+    ydl_opts = {
+        'quiet': True,
+        'no_warnings': True,
+        'outtmpl': os.path.join(download_to_path, '%(id)s.%(ext)s'),
+        'subtitlesformat': 'vtt',
+        'writesubtitles': True,
+        'allsubtitles': True,
+        'format': 'mp4'
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        try:
+            ydl.download([YOUTUBE_BASE_URL + video_id])
+        except:
+            #Couldn't download...
+            return False
+    paths = os.listdir(download_to_path)
+    subs_and_vid = [False, False]
+    if len(requested_lang) == 0:
+        lang_path = '.vtt'
+    else:
+        lang_path = '.' + requested_lang + '.vtt'
+    for path in paths:
+        if lang_path in path:
+            subs_and_vid[0] = True
+        if '.mp4' in path:
+            subs_and_vid[1] = True
+    if not subs_and_vid[1]:
+        video = Video.objects.filter(id=video_id).get()
+        video.download_time=datetime.datetime.now()
+        video.download_path=download_to_path
+        video.download_success=False
+        video.save()
+        return False
+    elif not subs_and_vid[0]:
+        try:
+            shutil.rmtree(download_to_path)
+        except FileNotFoundError:
+            pass
+        video = Video.objects.filter(id=video_id).get()
+        video.download_time=datetime.datetime.now()
+        video.download_path=download_to_path
+        video.download_success=False
+        video.save()
+        return False
+    else:
+        video = Video.objects.filter(id=video_id).get()
+        video.download_time=datetime.datetime.now()
+        video.download_path=download_to_path
+        video.download_success=True
+        input = os.path.join(video.download_path, video_id + ".mp4")
+        output = os.path.join(video.download_path, video_id + ".wav")
+        try:
+            ff = ffmpy.FFmpeg(
+                inputs={input: None},
+                outputs={output: '-ar 11025 -ac 1 -s s16 -b:a 176k'}
+            )
+            ff.run()
+            video.audio_extracted = True
+        except:
+            print("Failed to extract audio for " + str(video.id))
+            video.audio_extracted = False
+        video.save()
+        return True
+    return True
+
+
 def download(download_data):
     (download_to_path, video_id) = download_data
     YOUTUBE_BASE_URL = 'https://www.youtube.com/watch?v='

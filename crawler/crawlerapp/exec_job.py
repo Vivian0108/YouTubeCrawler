@@ -10,8 +10,9 @@ import json
 from django.db import models
 from crawlerapp.models import *
 import ast
-from crawlerapp.download import ex_download
+from crawlerapp.download import ex_download, download_video
 from crawlerapp.tasks import *
+from crawlerapp.definitions import CONFIG_PATH
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -50,6 +51,7 @@ def process_search_response(job_id, job_name, query, search_response, client, la
             try:
                 default_lang = vid['snippet']['defaultLanguage']
             except:
+                print("Can't find default_lang, setting default lang to language")
                 default_lang = language
                 #print("Couldn't find defaultLang")
             try:
@@ -107,6 +109,7 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 video_time = int((video_duration.split('M')[0])[2:])
                 if video_time > 10:
                     break
+
             video,created = Video.objects.get_or_create(id=video_id)
             if created:
                 video.channel_id=channel_id
@@ -124,11 +127,17 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 video.search_time=datetime.datetime.now()
                 video.frames_extracted=False
                 video.save()
+
+                #Download to see if we should keep it
+                download_data = (os.path.join(os.path.join(CONFIG_PATH,'downloaded_videos'),video.id),video.id)
+                download_state = download_video(download_data,video.language)
+                if download_state:
+                    found.append(video_id)
             else:
                 video.job_ids.append(job_id)
                 video.job_ids=list(set(video.job_ids))
                 video.save()
-            found.append(video_id)
+                found.append(video_id)
 
     try:
         return (search_response['nextPageToken'], found)
@@ -213,5 +222,5 @@ def ex(job_id):
     job.videos = total_found
     job.executed = True
     job.save()
-    ex_download(job_id)
+    #ex_download(job_id)
     return total_found

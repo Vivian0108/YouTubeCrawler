@@ -30,8 +30,8 @@ class CreateJobForm(forms.Form):
     language = forms.ChoiceField(choices=yt_rawlangs, required=False)
     language.widget.attrs.update({'class': 'browser-default'})
     num_vids = forms.IntegerField(
-        help_text="What is the max number of videos you want to crawl (in multiples of 50)? Leave blank for as many as possible.", required=False)
-    query = forms.CharField(help_text="What you want youtube to search for")
+        help_text="What is the max number of videos you want to crawl? Leave blank for as many as possible.", required=False)
+    query = forms.CharField(help_text="What you want youtube to search for? For multiple queries, seperate queries by a ;")
     channel_id = forms.CharField(
         help_text="Only crawl this channel ID", required=False)
     ordering = forms.ChoiceField(choices=[("relevance", "relevance"), ("date", "date"), ("rating", "rating"), ("title", "title"), ("videoCount", "video count"), ("viewCount", "view count")],
