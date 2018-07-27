@@ -113,20 +113,19 @@ def dataset_detail(request, dataset_id):
     except:
         return render(request, 'crawlerapp/datasetnotfound.html', {'datasetid': dataset_id})
     #get list of jobs
-    job_str_list = dataset.jobs_list
-    job_list = []
     video_sum = 0
-    for str_job_id in job_str_list:
-        job = Job.objects.filter(id=int(str_job_id)).get()
-        job_list.append(job)
+    job_object_list = []
+    for job_id in dataset.jobs_list:
+        job = Job.objects.filter(id=job_id).get()
+        job_object_list.append(job)
         video_sum += int(job.num_vids)
     context = {'dataset_name': dataset.name,
                'dataset_num_vids': video_sum,
-               'dataset_num_jobs': len(job_list),
+               'dataset_num_jobs': len(dataset.jobs_list),
                'dataset_created_date': dataset.created_date,
                'dataset_user_id': dataset.user_id,
                'dataset_id': dataset.id,
-               'dataset_jobs': job_list}
+               'dataset_jobs': job_object_list}
     if request.method == "POST":
         if request.POST.get("submit_jobs"):
             form = ChangeDatasetJobs(request.user,dataset,request.POST)
