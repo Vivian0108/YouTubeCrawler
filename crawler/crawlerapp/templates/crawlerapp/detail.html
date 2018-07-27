@@ -68,6 +68,8 @@
         </table>
       </div>
       <div class="col s6">
+
+        {% if download_finished %}
         <h4>Actions</h4>
         <form id='form-id' method="post">
           {% csrf_token %}
@@ -117,7 +119,11 @@
             </div>
           </div>
         </div>
-
+        {% else %}
+        <div class="progress" id="crawl_status_div">
+          <div id="crawl_progress" class="determinate" style="width: {{ crawl_progress }};"></div>
+        </div>
+        {% endif %}
       </div>
     </div>
   </center>
