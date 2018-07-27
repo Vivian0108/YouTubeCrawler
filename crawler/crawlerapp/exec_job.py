@@ -51,14 +51,12 @@ def process_search_response(job_id, job_name, query, search_response, client, la
             try:
                 default_lang = vid['snippet']['defaultLanguage']
             except:
-                print("Can't find default_lang, setting default lang to language")
-                default_lang = language
                 #print("Couldn't find defaultLang")
             try:
                 default_audio_lang = vid['snipped']['defaultAudioLanguage']
-                print(default_audio_lang)
             except:
-                print("Can't find defaut audio language")
+                pass
+                #print("Can't find defaut audio language")
             try:
                 published_date = vid['snippet']['publishedAt']
             except:
@@ -130,7 +128,7 @@ def process_search_response(job_id, job_name, query, search_response, client, la
 
                 #Download to see if we should keep it
                 download_data = (os.path.join(os.path.join(CONFIG_PATH,'downloaded_videos'),video.id),video.id)
-                download_state = download_video(download_data,video.language)
+                download_state = download_video(download_data,language)
 
             else:
                 video.job_ids.append(job_id)
