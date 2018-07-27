@@ -221,6 +221,7 @@ def ex(job_id):
     job.num_vids = len(total_found)
     job.videos = total_found
     job.executed = True
+    job.download_finished = True
     job.save()
     #ex_download(job_id)
     return total_found
