@@ -20,6 +20,9 @@ from oauth2client.tools import argparser
 def download(download_data):
     (download_to_path, video_id) = download_data
     YOUTUBE_BASE_URL = 'https://www.youtube.com/watch?v='
+    # listsubtitles: True   lists all available subtitles
+    # allsubtitles: True    downloads all the subtitles of the video
+    # subtitleslangs: [langs]   list of languages of the subtitles to download
     ydl_opts = {
         'quiet': True,
         'no_warnings': True,
