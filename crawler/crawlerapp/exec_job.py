@@ -146,9 +146,15 @@ def query(job_id):
     page_count = 0
     total_found = []
     query_list = str(job.query).split(";")
+    # Number of videos to search per query
+    if not (job.num_pages is None):
+        total_for_query = int(job.num_pages)//len(query_list)
+    else:
+        #TEMPORARY, CHANGE THIS IN THE FUTURE
+        total_for_query = 100
     for q in query_list:
         while (nextPageToken or initial):
-            if ((not (job.num_pages is None)) and page_count == int(job.num_pages)):
+            if ((not (job.num_pages is None)) and total_for_query == int(job.num_pages)):
                 break
             initial = False
             search_response = None
@@ -164,7 +170,7 @@ def query(job_id):
                     part="id, snippet",
                     order=job.ordering,
                     # 50 is the maximum allowable value
-                    maxResults=50,
+                    maxResults=1,
                     pageToken=nextPageToken,
                 ).execute()
             else:
@@ -180,7 +186,7 @@ def query(job_id):
                     order=job.ordering,
                     channelId=job.channel_id,
                     # 50 is the maximum allowable value
-                    maxResults=50,
+                    maxResults=1,
                     pageToken=nextPageToken,
                 ).execute()
             if search_response is None:
