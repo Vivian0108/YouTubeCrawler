@@ -91,7 +91,7 @@ class ChangeDatasetJobs(forms.Form):
         super(ChangeDatasetJobs, self).__init__(*args, **kwargs)
         jobs = Job.objects.filter(user_id=user.username).values_list(
             'id', 'name')
-        preselected = ast.literal_eval(dataset.jobs_list)
+        preselected = dataset.jobs_list
         matching_jobs = []
         for job in jobs:
             matching_jobs.append((job[0], {'label': job[1], 'selected': (str(job[0]) in preselected)}))
