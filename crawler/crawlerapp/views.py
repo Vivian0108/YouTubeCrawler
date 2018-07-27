@@ -200,7 +200,7 @@ def dataset_create(request):
         form = CreateDatasetForm(request.user,request.POST)
         if form.is_valid():
             dataset = Dataset()
-            dataset.jobs_list = form.cleaned_data['jobs_list']
+            dataset.jobs_list = list(form.cleaned_data['jobs_list'])
             dataset.name = form.cleaned_data['name']
             dataset.description = form.cleaned_data['description']
             dataset.created_date = datetime.datetime.now()
