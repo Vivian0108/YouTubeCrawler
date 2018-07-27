@@ -53,7 +53,7 @@ def download_video(download_data, requested_lang):
         try:
             shutil.rmtree(download_to_path)
         except FileNotFoundError:
-            pass        
+            pass
         video = Video.objects.filter(id=video_id).get()
         video.download_time=datetime.datetime.now()
         video.download_path=download_to_path
@@ -76,6 +76,8 @@ def download_video(download_data, requested_lang):
         video.download_time=datetime.datetime.now()
         video.download_path=download_to_path
         video.download_success=True
+        if video.language is None:
+            video.language = requested_lang
         input = os.path.join(video.download_path, video_id + ".mp4")
         output = os.path.join(video.download_path, video_id + ".wav")
         try:
