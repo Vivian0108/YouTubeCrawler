@@ -131,13 +131,12 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 #Download to see if we should keep it
                 download_data = (os.path.join(os.path.join(CONFIG_PATH,'downloaded_videos'),video.id),video.id)
                 download_state = download_video(download_data,video.language)
-                if download_state:
-                    found.append(video_id)
+
             else:
                 video.job_ids.append(job_id)
                 video.job_ids=list(set(video.job_ids))
                 video.save()
-                found.append(video_id)
+            found.append(video_id)
 
     try:
         return (search_response['nextPageToken'], found)
