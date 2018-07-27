@@ -10,8 +10,9 @@ import json
 from django.db import models
 from crawlerapp.models import *
 import ast
-from crawlerapp.download import ex_download
+from crawlerapp.download import ex_download, download_video
 from crawlerapp.tasks import *
+from crawlerapp.definitions import CONFIG_PATH
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -30,6 +31,7 @@ def videos_list_by_id(client, **kwargs):
 
 def process_search_response(job_id, job_name, query, search_response, client, language):
     found = []
+    download_state = False
     for item in search_response['items']:
         video_id = item['id']['videoId']
         video_data = videos_list_by_id(
@@ -50,13 +52,13 @@ def process_search_response(job_id, job_name, query, search_response, client, la
             try:
                 default_lang = vid['snippet']['defaultLanguage']
             except:
-                default_lang = language
+                pass
                 #print("Couldn't find defaultLang")
             try:
                 default_audio_lang = vid['snipped']['defaultAudioLanguage']
-                print(default_audio_lang)
             except:
-                print("Can't find defaut audio language")
+                pass
+                #print("Can't find defaut audio language")
             try:
                 published_date = vid['snippet']['publishedAt']
             except:
@@ -107,6 +109,7 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 video_time = int((video_duration.split('M')[0])[2:])
                 if video_time > 10:
                     break
+
             video,created = Video.objects.get_or_create(id=video_id)
             if created:
                 video.channel_id=channel_id
@@ -124,14 +127,20 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 video.search_time=datetime.datetime.now()
                 video.frames_extracted=False
                 video.save()
+
+                #Download to see if we should keep it
+                download_data = (os.path.join(os.path.join(CONFIG_PATH,'downloaded_videos'),video.id),video.id)
+                download_state = download_video(download_data,language)
+
             else:
                 video.job_ids.append(job_id)
                 video.job_ids=list(set(video.job_ids))
                 video.save()
+                download_state = True
             found.append(video_id)
 
     try:
-        return (search_response['nextPageToken'], found)
+        return (search_response['nextPageToken'], found, download_state)
     except KeyError:
         return (None, found)
 
@@ -193,7 +202,7 @@ def query(job_id):
                 ).execute()
             if search_response is None:
                 break
-            (nextPageToken, found) = process_search_response(
+            (nextPageToken, found, download_state) = process_search_response(
                 job_id, job.name, q, search_response, youtube, job.language)
             #Refresh job
             job = Job.objects.filter(id=job_id).get()
@@ -201,7 +210,7 @@ def query(job_id):
             job.num_vids = len(total_found)
             job.videos = total_found
             job.save()
-            if nextPageToken:
+            if nextPageToken and download_state:
                 page_count += 1
     return total_found
 
@@ -212,6 +221,7 @@ def ex(job_id):
     job.num_vids = len(total_found)
     job.videos = total_found
     job.executed = True
+    job.download_finished = True
     job.save()
-    ex_download(job_id)
+    #ex_download(job_id)
     return total_found
