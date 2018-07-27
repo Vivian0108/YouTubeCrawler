@@ -50,6 +50,10 @@ def download_video(download_data, requested_lang):
         if '.mp4' in path:
             subs_and_vid[1] = True
     if not subs_and_vid[1]:
+        try:
+            shutil.rmtree(download_to_path)
+        except FileNotFoundError:
+            pass        
         video = Video.objects.filter(id=video_id).get()
         video.download_time=datetime.datetime.now()
         video.download_path=download_to_path
