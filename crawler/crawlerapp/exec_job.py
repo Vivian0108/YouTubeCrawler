@@ -145,54 +145,56 @@ def query(job_id):
 
     page_count = 0
     total_found = []
-    while (nextPageToken or initial):
-        if ((not (job.num_pages is None)) and page_count == int(job.num_pages)):
-            break
-        initial = False
-        search_response = None
-        if (len(job.channel_id) == 0):
-            search_response = youtube.search().list(
-                q=(job.query),
-                relevanceLanguage=(job.language),
-                safeSearch=job.safe_search,
-                videoCaption=job.cc_enabled,
-                videoDefinition=job.video_def,
-                videoDuration=job.video_duration,
-                type="video",
-                part="id, snippet",
-                order=job.ordering,
-                # 50 is the maximum allowable value
-                maxResults=50,
-                pageToken=nextPageToken,
-            ).execute()
-        else:
-            search_response = youtube.search().list(
-                q=job.query,
-                relevanceLanguage=job.language,
-                safeSearch=job.safe_search,
-                videoCaption=job.cc_enabled,
-                videoDefinition=job.video_def,
-                videoDuration=job.video_duration,
-                type="video",
-                part="id, snippet",
-                order=job.ordering,
-                channelId=job.channel_id,
-                # 50 is the maximum allowable value
-                maxResults=50,
-                pageToken=nextPageToken,
-            ).execute()
-        if search_response is None:
-            break
-        (nextPageToken, found) = process_search_response(
-            job_id, job.name, job.query, search_response, youtube, job.language)
-        #Refresh job
-        job = Job.objects.filter(id=job_id).get()
-        total_found.extend(found)
-        job.num_vids = len(total_found)
-        job.videos = total_found
-        job.save()
-        if nextPageToken:
-            page_count += 1
+    query_list = str(job.query).split(";")
+    for q in query_list:
+        while (nextPageToken or initial):
+            if ((not (job.num_pages is None)) and page_count == int(job.num_pages)):
+                break
+            initial = False
+            search_response = None
+            if (len(job.channel_id) == 0):
+                search_response = youtube.search().list(
+                    q=(q),
+                    relevanceLanguage=(job.language),
+                    safeSearch=job.safe_search,
+                    videoCaption=job.cc_enabled,
+                    videoDefinition=job.video_def,
+                    videoDuration=job.video_duration,
+                    type="video",
+                    part="id, snippet",
+                    order=job.ordering,
+                    # 50 is the maximum allowable value
+                    maxResults=50,
+                    pageToken=nextPageToken,
+                ).execute()
+            else:
+                search_response = youtube.search().list(
+                    q=q,
+                    relevanceLanguage=job.language,
+                    safeSearch=job.safe_search,
+                    videoCaption=job.cc_enabled,
+                    videoDefinition=job.video_def,
+                    videoDuration=job.video_duration,
+                    type="video",
+                    part="id, snippet",
+                    order=job.ordering,
+                    channelId=job.channel_id,
+                    # 50 is the maximum allowable value
+                    maxResults=50,
+                    pageToken=nextPageToken,
+                ).execute()
+            if search_response is None:
+                break
+            (nextPageToken, found) = process_search_response(
+                job_id, job.name, q, search_response, youtube, job.language)
+            #Refresh job
+            job = Job.objects.filter(id=job_id).get()
+            total_found.extend(found)
+            job.num_vids = len(total_found)
+            job.videos = total_found
+            job.save()
+            if nextPageToken:
+                page_count += 1
     return total_found
 
 
