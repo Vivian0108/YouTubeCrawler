@@ -31,6 +31,7 @@ def videos_list_by_id(client, **kwargs):
 
 def process_search_response(job_id, job_name, query, search_response, client, language):
     found = []
+    download_state = False
     for item in search_response['items']:
         video_id = item['id']['videoId']
         video_data = videos_list_by_id(
@@ -135,10 +136,11 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 video.job_ids.append(job_id)
                 video.job_ids=list(set(video.job_ids))
                 video.save()
+                download_state = True
             found.append(video_id)
 
     try:
-        return (search_response['nextPageToken'], found)
+        return (search_response['nextPageToken'], found, download_state)
     except KeyError:
         return (None, found)
 
@@ -200,7 +202,7 @@ def query(job_id):
                 ).execute()
             if search_response is None:
                 break
-            (nextPageToken, found) = process_search_response(
+            (nextPageToken, found, download_state) = process_search_response(
                 job_id, job.name, q, search_response, youtube, job.language)
             #Refresh job
             job = Job.objects.filter(id=job_id).get()
@@ -208,7 +210,7 @@ def query(job_id):
             job.num_vids = len(total_found)
             job.videos = total_found
             job.save()
-            if nextPageToken:
+            if nextPageToken and download_state:
                 page_count += 1
     return total_found
 
