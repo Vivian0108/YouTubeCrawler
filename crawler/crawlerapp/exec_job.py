@@ -51,6 +51,7 @@ def process_search_response(job_id, job_name, query, search_response, client, la
             try:
                 default_lang = vid['snippet']['defaultLanguage']
             except:
+                pass
                 #print("Couldn't find defaultLang")
             try:
                 default_audio_lang = vid['snipped']['defaultAudioLanguage']
