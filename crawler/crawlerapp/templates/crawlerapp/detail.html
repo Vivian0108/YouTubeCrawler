@@ -157,6 +157,11 @@
               }
 
             }
+          } else if (key == "crawl_progress") {
+            document.getElementById(key).style = "width: " + data[key] + "%;";
+            if (data[key] > 99) {
+              location.reload(true);
+            }
           } else {
             try {
               document.getElementById(key).innerHTML = data[key]
@@ -169,16 +174,16 @@
       });
     });
   }
-/*
-  function celeryStatus(celery_url) {
-    document.getElementById("check_celery").className = "btn waves-effect waves-light disabled";
-    document.getElementById("celery_info").innerHTML = "Getting info...";
-    fetch(celery_url).then(function(response) {
-      response.json().then(function(data) {
-        document.getElementById("celery_info").innerHTML = data;
+  /*
+    function celeryStatus(celery_url) {
+      document.getElementById("check_celery").className = "btn waves-effect waves-light disabled";
+      document.getElementById("celery_info").innerHTML = "Getting info...";
+      fetch(celery_url).then(function(response) {
+        response.json().then(function(data) {
+          document.getElementById("celery_info").innerHTML = data;
+        });
       });
-    });
-    document.getElementById("check_celery").className = "btn waves-effect waves-light";
-  }*/
+      document.getElementById("check_celery").className = "btn waves-effect waves-light";
+    }*/
 </script>
 {% endblock %}
