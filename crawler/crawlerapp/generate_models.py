@@ -181,6 +181,16 @@ def run_cmds():
         snippets.append(tup)
     return snippets
 
+def get_region_snippets():
+    client = get_authenticated_service()
+    col = []
+    resp = i18n_regions_list(client, part = 'snippet', hl='en_US')
+    snippets = []
+    for item in resp['items']:
+        tup = (item['snippet']['gl'],item['snippet']['name'])
+        snippets.append(tup)
+    return snippets
+
 if __name__ == "__main__":
     client = get_authenticated_service()
     resp = i18n_regions_list(client,part='snippet',hl='en_US')
