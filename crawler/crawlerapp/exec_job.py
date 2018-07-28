@@ -54,6 +54,11 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 default_lang = language
                 #print("Couldn't find defaultLang")
             try:
+                default_audio_lang = vid['snipped']['defaultAudioLanguage']
+                print(default_audio_lang)
+            except:
+                print("Can't find defaut audio language")
+            try:
                 published_date = vid['snippet']['publishedAt']
             except:
                 pass
@@ -95,9 +100,14 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 #print("Couldn't find definition")
             try:
                 video_duration = vid['contentDetails']['duration']
+
             except:
                 pass
                 #print("Couldn't find duration")
+            if "M" in video_duration:
+                video_time = int((video_duration.split('M')[0])[2:])
+                if video_time > 10:
+                    break
             video,created = Video.objects.get_or_create(id=video_id)
             if created:
                 video.channel_id=channel_id
@@ -106,7 +116,7 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 video.language=default_lang
                 video.video_def=video_def
                 video.video_duration=video_duration
-                video.job_ids=('''['%s']''' % (job_id))
+                video.job_ids=[job_id]
                 video.dislike_count=dislike_count
                 video.like_count=like_count
                 video.view_count=view_count
@@ -116,12 +126,8 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 video.frames_extracted=False
                 video.save()
             else:
-                try:
-                    job_ids = ast.literal_eval(video.job_ids)
-                except:
-                    job_ids = []
-                job_ids.append(job_id)
-                video.job_ids=list(set(job_ids))
+                video.job_ids.append(job_id)
+                video.job_ids=list(set(video.job_ids))
                 video.save()
             found.append(video_id)
 
@@ -131,8 +137,8 @@ def process_search_response(job_id, job_name, query, search_response, client, la
         return (None, found)
 
 
-def query(job, job_id):
-    job_query = Job.objects.filter(id=job_id).get()
+def query(job_id):
+    job = Job.objects.filter(id=job_id).get()
     youtube = build("youtube", "v3",
                     developerKey="AIzaSyC485wtcaeL1yZrciuDWrliKSC74k8UODM")
     initial = True
@@ -141,37 +147,37 @@ def query(job, job_id):
     page_count = 0
     total_found = []
     while (nextPageToken or initial):
-        if ((not (job['num_pages'] is None)) and page_count == int(job['num_pages'])):
+        if ((not (job.num_pages is None)) and page_count == int(job.num_pages)):
             break
         initial = False
         search_response = None
-        if (len(job['channel_id']) == 0):
+        if (len(job.channel_id) == 0):
             search_response = youtube.search().list(
-                q=(job['query']),
-                relevanceLanguage=(job['language']),
-                safeSearch=job['safe_search'],
-                videoCaption=job['cc_enabled'],
-                videoDefinition=job['video_def'],
-                videoDuration=job['video_duration'],
+                q=(job.query),
+                relevanceLanguage=(job.language),
+                safeSearch=job.safe_search,
+                videoCaption=job.cc_enabled,
+                videoDefinition=job.video_def,
+                videoDuration=job.video_duration,
                 type="video",
                 part="id, snippet",
-                order=job['ordering'],
+                order=job.ordering,
                 # 50 is the maximum allowable value
                 maxResults=50,
                 pageToken=nextPageToken,
             ).execute()
         else:
             search_response = youtube.search().list(
-                q=job['query'],
-                relevanceLanguage=job['language'],
-                safeSearch=job['safe_search'],
-                videoCaption=job['cc_enabled'],
-                videoDefinition=job['video_def'],
-                videoDuration=job['video_duration'],
+                q=job.query,
+                relevanceLanguage=job.language,
+                safeSearch=job.safe_search,
+                videoCaption=job.cc_enabled,
+                videoDefinition=job.video_def,
+                videoDuration=job.video_duration,
                 type="video",
                 part="id, snippet",
-                order=job['ordering'],
-                channelId=job['channel_id'],
+                order=job.ordering,
+                channelId=job.channel_id,
                 # 50 is the maximum allowable value
                 maxResults=50,
                 pageToken=nextPageToken,
@@ -179,21 +185,21 @@ def query(job, job_id):
         if search_response is None:
             break
         (nextPageToken, found) = process_search_response(
-            job_id, job['name'], job['query'], search_response, youtube, job['language'])
+            job_id, job.name, job.query, search_response, youtube, job.language)
+        #Refresh job
+        job = Job.objects.filter(id=job_id).get()
         total_found.extend(found)
-        job_query.num_vids = len(total_found)
-        job_query.videos = total_found
-        job_query.save()
+        job.num_vids = len(total_found)
+        job.videos = total_found
+        job.save()
         if nextPageToken:
             page_count += 1
     return total_found
 
 
 def ex(job_id):
-    print(job_id)
     job = Job.objects.filter(id=job_id).get()
-    job_vals = (Job.objects.filter(id=job_id).values())[0]
-    total_found = query(job_vals, job_id)
+    total_found = query(job_id)
     job.num_vids = len(total_found)
     job.videos = total_found
     job.executed = True

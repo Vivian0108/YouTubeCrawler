@@ -3,6 +3,7 @@ from os import listdir
 from os.path import isfile, join
 import time
 import numpy
+import h5py
 
 #SCRIPT TO CREATE PLAIN WORDS BASED ON THE GLOBAL TIMESTAMPS - words in each video and timestamps, only one segment that is the big video
 
@@ -93,9 +94,9 @@ def extractWords(p2fa_file, destination, video_id):
 	data[video_id]['intervals']=intervals
 	data[video_id]['features']=featuresnp
 
-	writeh5Handle=h5py.File(destination,'w')
+	write5Handle=h5py.File(destination,'w')
 
 	vidHandle=write5Handle.create_group(video_id)
-	vidHandle.create_dataset("features",data=data[vid]["features"])
-	vidHandle.create_dataset("intervals",data=data[vid]["intervals"])
+	vidHandle.create_dataset("features",data=data[video_id]["features"])
+	vidHandle.create_dataset("intervals",data=data[video_id]["intervals"])
 	write5Handle.close()

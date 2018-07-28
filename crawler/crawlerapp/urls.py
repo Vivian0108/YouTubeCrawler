@@ -19,5 +19,5 @@ urlpatterns = [
     path('mobile/',views.mobile,name='mobile'),
     path('update-progress/<int:job_id>',views.updateProgress,name='update-progress'),
     path('view_videos/<int:job_id>',views.view_videos,name='view-videos'),
-    #path('celery-info',views.celery_info,name="celery-info")
+    path('celery_status',views.celery_status,name='celery-status')
 ]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

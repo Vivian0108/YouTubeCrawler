@@ -80,8 +80,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'crawler_db',
-        'USER': 'crawler_usr',
-        'PASSWORD': 'rdGBOx7KSQJmIt6C',
+        'USER': 'Hongqian',
+        'PASSWORD': 'HQHQ202020',
         'HOST': 'localhost',
         'PORT': '5432',
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),

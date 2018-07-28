@@ -77,10 +77,7 @@ def download(download_data):
 
 def ex_download(job_id):
     job = Job.objects.filter(id=job_id).get()
-    try:
-        video_ids = ast.literal_eval(job.videos)
-    except:
-        video_ids = []
+    video_ids = job.videos
     download_data = [(os.path.join(os.path.join(
         (CONFIG_PATH), 'downloaded_videos'), video_id), video_id) for video_id in video_ids]
     num_download = len(download_data)

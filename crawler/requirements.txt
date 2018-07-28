@@ -11,3 +11,6 @@ jsonpickle==0.9.6
 Pillow==5.2.0
 google_api_python_client==1.7.4
 protobuf==3.6.0
+django_celery_results
+django_celery_beat
+oauth2client

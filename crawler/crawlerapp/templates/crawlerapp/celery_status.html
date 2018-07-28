@@ -1,0 +1,22 @@
+{% extends '../base.html' %} {% block title %}Celery Status{% endblock %}{% block content %}
+<div class="container">
+  <h4>Celery Status</h4>
+  <table>
+    <thread>
+      <tr>
+        <th>Item</th>
+        <th>Value</th>
+      </tr>
+    </thread>
+    {% for key,value in celery_status.items %}
+    <tbody>
+      <tr>
+        <td>{{ key }}</td>
+        <td>{{ value }}</td>
+      </tr>
+    </tbody>
+    {% endfor %}
+
+  </table>
+</div>
+{% endblock %}
