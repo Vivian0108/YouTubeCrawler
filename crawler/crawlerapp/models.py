@@ -51,6 +51,7 @@ class Video(models.Model):
     cc_enabled = models.CharField(max_length=50,default="",null=True)
     #transcript_download_success = models.NullBooleanField()
     language = models.CharField(max_length=15,default="",null=True)
+    region = models.CharField(max_length=15,default="",null=True)
     video_def = models.CharField(max_length=15,default="",null=True)
     video_duration = models.CharField(max_length=50,null=True)
     search_time = models.DateTimeField(default=None, blank=True, null=True)
@@ -79,6 +80,7 @@ class Channel(models.Model):
     search_time = models.DateTimeField(default=None, blank=True, null=True)
     owner = models.TextField(default="")
     youtube_params = JSONField(default=list,null=True)
+
 class PlayList(models.Model):
     id = models.CharField(max_length=15,default="",primary_key=True)
     search_time = models.DateTimeField(default=None, blank=True, null=True)

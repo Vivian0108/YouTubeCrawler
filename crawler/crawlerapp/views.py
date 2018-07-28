@@ -171,6 +171,7 @@ def job_create(request):
         if form.is_valid():
             job = Job()
             job.language = form.cleaned_data['language']
+            job.region = form.cleaned_data['region']
             job.name = form.cleaned_data['name']
             job.channel_id = form.cleaned_data['channel_id']
             job.query = form.cleaned_data['query']

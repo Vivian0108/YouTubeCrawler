@@ -154,6 +154,7 @@ def query(job_id):
         if (len(job.channel_id) == 0):
             search_response = youtube.search().list(
                 q=(job.query),
+                regionCode = job.region,
                 relevanceLanguage=(job.language),
                 safeSearch=job.safe_search,
                 videoCaption=job.cc_enabled,
@@ -169,6 +170,7 @@ def query(job_id):
         else:
             search_response = youtube.search().list(
                 q=job.query,
+                regionCode = job.region,
                 relevanceLanguage=job.language,
                 safeSearch=job.safe_search,
                 videoCaption=job.cc_enabled,
@@ -185,7 +187,7 @@ def query(job_id):
         if search_response is None:
             break
         (nextPageToken, found) = process_search_response(
-            job_id, job.name, job.query, search_response, youtube, job.language)
+            job_id, job.name, job.query, search_response, youtube, job.language, job.region)
         #Refresh job
         job = Job.objects.filter(id=job_id).get()
         total_found.extend(found)
