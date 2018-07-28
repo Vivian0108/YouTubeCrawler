@@ -29,12 +29,13 @@ def videos_list_by_id(client, **kwargs):
     return response
 
 
-def process_search_response(job_id, job_name, query, search_response, client, language):
+def process_search_response(job_id, job_name, query, search_response, client, language, region):
     found = []
     for item in search_response['items']:
         video_id = item['id']['videoId']
         video_data = videos_list_by_id(
-            client, part='snippet,contentDetails,statistics', id=video_id)
+            client, part='snippet,contentDetails,statistics',
+            chart='mostPopular', id=video_id, regionCode=region)
         for vid in video_data['items']:
             channel_id = vid['snippet']['channelId']
             default_lang = None
@@ -114,6 +115,7 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 video.query=query
                 video.cc_enabled=captions
                 video.language=default_lang
+                video.region=region
                 video.video_def=video_def
                 video.video_duration=video_duration
                 video.job_ids=[job_id]
