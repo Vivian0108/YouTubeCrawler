@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import *
-from crawlerapp.generate_models import run_cmds
+from crawlerapp.generate_models import run_cmds, get_region_snippets
 from django.forms.widgets import SelectMultiple
 import ast
 
@@ -29,6 +29,10 @@ class CreateJobForm(forms.Form):
     yt_rawlangs = [('', 'any')] + yt_rawlangs
     language = forms.ChoiceField(choices=yt_rawlangs, required=False)
     language.widget.attrs.update({'class': 'browser-default'})
+    yt_rawregions = get_region_snippets()
+    yt_rawregions = [('','any')] + yt_rawregions
+    region = forms.ChoiceField(choices=yt_rawregions, required=False)
+    region.widget.attrs.update({'class': 'browser-default'})
     num_vids = forms.IntegerField(
         help_text="What is the max number of videos you want to crawl (in multiples of 50)? Leave blank for as many as possible.", required=False)
     query = forms.CharField(help_text="What you want youtube to search for")
