@@ -29,7 +29,6 @@ def download_video(download_data, requested_lang):
         'outtmpl': os.path.join(download_to_path, '%(id)s.%(ext)s'),
         'subtitlesformat': 'vtt',
         'writesubtitles': True,
-        'allsubtitles': True,
         'format': 'mp4'
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
