@@ -13,7 +13,6 @@ import jsonpickle, io, ast, csv, os, json, random, datetime
 from crawlerapp.definitions import CONFIG_PATH
 from celery.task.control import revoke
 from crawlerapp.utils import job_update, get_celery_worker_status
-from crawlerapp.collect import collect_hdf5
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -157,7 +156,7 @@ def dataset_detail(request, dataset_id):
                 if 'P2FA Align Video' in vid_query.filters:
                     if vid_query.filters['P2FA Align Video']:
                         p2fa_list.append(vid_query.id)
-        collect_hdf5(p2fa_list)
+        collect(p2fa_list,dataset.id)
         return redirect('dataset-detail', dataset.id)
 
     else:

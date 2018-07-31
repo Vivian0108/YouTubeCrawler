@@ -8,6 +8,7 @@ from .models import *
 import jsonpickle
 import ast
 from crawlerapp.utils import quit_filter
+from crawlerapp.collect import collect_hdf5
 
 
 @shared_task
@@ -87,3 +88,8 @@ def clear_filter_async(filter, job_id):
         print("Couldn't clear filter: " + str(e))
 
     job.save()
+
+@shared_task
+def collect(video_ids,dataset_id):
+    collect_hdf5(video_ids,dataset_id)
+    
