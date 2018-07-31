@@ -68,135 +68,111 @@
         </table>
       </div>
       <div class="col s6">
-        {% if download_finished %}
-        <div id="job_actions">
-          {% else %}
-          <div id="job_actions" style="display: none;">
-            {% endif %}
-            <h4>Actions</h4>
-            <form id='form-id' method="post">
-              {% csrf_token %}
-              <!--
+        <h4>Actions</h4>
+        <form id='form-id' method="post">
+          {% csrf_token %}
+          <!--
            {% if executed == False or download_started == True %}
           <button class="btn-large disabled">Download</button> {% else %}
           <button class="btn-large waves-effect waves-light" type="submit" value="download" name="download">Download</button> {% endif %}-->
-              <center>
-                {% for filter_name,filter_dict in filters.items %}
-                <div class="row">
-                  <div class="col s12">
-                    <div class="card blue-grey darken-1">
-                      <div class="card-content white-text">
-                        <span class="card-title">{{ filter_name }}</span>
-                        <p>{{ filter_dict.filter_obj.description }}</p>
-                      </div>
-                      <div class="card-action">
-                        {% if filter_dict.enabled == True %}
-                        <button id="{{ filter_name }}" class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% else %}
-                        <button id="{{ filter_name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% endif %}
-                        <button class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="remove">Clear this Filter</button>
-
-
-                        <div class="progress" id="{{ filter_name }}_div" style="display: none;">
-                          <div id="{{ filter_name }}_progress" class="determinate" style="display: none;"></div>
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {% endfor %}
-
-              </center>
-            </form>
-
+          <center>
+            {% for filter_name,filter_dict in filters.items %}
             <div class="row">
               <div class="col s12">
                 <div class="card blue-grey darken-1">
                   <div class="card-content white-text">
-                    <span class="card-title">View Videos</span>
-                    <p>Redirects to page with all the videos that passed Face Detect filter from this crawl</p>
+                    <span class="card-title">{{ filter_name }}</span>
+                    <p>{{ filter_dict.filter_obj.description }}</p>
                   </div>
                   <div class="card-action">
-                    <a href="{% url 'view-videos' job_id %}">View Videos</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row" id="crawl_status_div">
-            <div class="col s12">
-              <div class="card blue-grey darken-1">
-                <div class="card-content white-text">
-                  <span class="card-title">Crawl Status</span>
-                  <div class="progress">
-                    <div id="crawl_progress" class="determinate" style="width: {{ crawl_progress }};"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                    {% if filter_dict.enabled == True %}
+                    <button id="{{ filter_name }}" class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% else %}
+                    <button id="{{ filter_name }}" class="btn waves-effect waves-light disabled" type="submit" value="{{ filter_name }}" name="filter">Run Filter</button> {% endif %}
+                    <button class="btn waves-effect waves-light" type="submit" value="{{ filter_name }}" name="remove">Clear this Filter</button>
 
+
+                    <div class="progress" id="{{ filter_name }}_div" style="display: none;">
+                      <div id="{{ filter_name }}_progress" class="determinate" style="display: none;"></div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+
+          </center>
+        </form>
+
+        <div class="row">
+          <div class="col s12">
+            <div class="card blue-grey darken-1">
+              <div class="card-content white-text">
+                <span class="card-title">View Videos</span>
+                <p>Redirects to page with all the videos that passed Face Detect filter from this crawl</p>
+              </div>
+              <div class="card-action">
+                <a href="{% url 'view-videos' job_id %}">View Videos</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+    </div>
   </center>
-  </div>
-  <script>
-    window.onload = function() {
-      updateProgress("{% url 'update-progress' 12345 %}".replace(/12345/, "{{ job_id }}"))
-    };
+</div>
+<script>
+  window.onload = function() {
+    updateProgress("{% url 'update-progress' 12345 %}".replace(/12345/, "{{ job_id }}"))
+  };
 
-    function updateProgress(progressUrl) {
-      //console.log("Go!");
-      fetch(progressUrl).then(function(response) {
-        response.json().then(function(data) {
-          // update the appropriate UI components
-          for (var key in data) {
-            //console.log("Getting " + key);
-            if (key == "filters") {
-              for (var k in data[key]) {
-                if (data[key][k]["enabled"]) {
-                  document.getElementById(k).className = "btn waves-effect waves-light";
-                } else if (!data[key][k]["enabled"]) {
-                  document.getElementById(k).className = "btn waves-effect waves-light disabled";
-                }
-                document.getElementById(k + "_passed").innerHTML = data[key][k]["num_passed"];
-                var progress = data[key][k]["progress"];
-                if (progress >= 0) {
-                  document.getElementById(k + "_progress").style = "width: " + progress + "%;";
-                  document.getElementById(k + "_div").style = "";
-                } else {
-                  document.getElementById(k + "_div").style = "display: none;"
-                }
+  function updateProgress(progressUrl) {
+    //console.log("Go!");
+    fetch(progressUrl).then(function(response) {
+      response.json().then(function(data) {
+        // update the appropriate UI components
+        for (var key in data) {
+          //console.log("Getting " + key);
+          if (key == "filters") {
+            for (var k in data[key]) {
+              if (data[key][k]["enabled"]) {
+                document.getElementById(k).className = "btn waves-effect waves-light";
+              } else if (!data[key][k]["enabled"]) {
+                document.getElementById(k).className = "btn waves-effect waves-light disabled";
+              }
+              document.getElementById(k + "_passed").innerHTML = data[key][k]["num_passed"];
+              var progress = data[key][k]["progress"];
+              if (progress >= 0) {
+                document.getElementById(k + "_progress").style = "width: " + progress + "%;";
+                document.getElementById(k + "_div").style = "";
+              } else {
+                document.getElementById(k + "_div").style = "display: none;"
+              }
 
-              }
-            } else if (key == "crawl_progress") {
-              document.getElementById(key).style = "width: " + data[key] + "%;";
-            } else {
-              try {
-                document.getElementById(key).innerHTML = data[key]
-              } catch (err) {
-                console.log("Couldn't do: " + key + ": " + err)
-              }
+            }
+          } else {
+            try {
+              document.getElementById(key).innerHTML = data[key]
+            } catch (err) {
+              console.log("Couldn't do: " + key + ": " + err)
             }
           }
-          if (data["download_finished"] == true) {
-            document.getElementById("crawl_status_div").style = "display: none;"
-            document.getElementById("job_actions").style = "";
-          }
-          setTimeout(updateProgress, 500, progressUrl);
+        }
+        setTimeout(updateProgress, 500, progressUrl);
+      });
+    });
+  }
+  /*
+    function celeryStatus(celery_url) {
+      document.getElementById("check_celery").className = "btn waves-effect waves-light disabled";
+      document.getElementById("celery_info").innerHTML = "Getting info...";
+      fetch(celery_url).then(function(response) {
+        response.json().then(function(data) {
+          document.getElementById("celery_info").innerHTML = data;
         });
       });
-    }
-    /*
-      function celeryStatus(celery_url) {
-        document.getElementById("check_celery").className = "btn waves-effect waves-light disabled";
-        document.getElementById("celery_info").innerHTML = "Getting info...";
-        fetch(celery_url).then(function(response) {
-          response.json().then(function(data) {
-            document.getElementById("celery_info").innerHTML = data;
-          });
-        });
-        document.getElementById("check_celery").className = "btn waves-effect waves-light";
-      }*/
-  </script>
-  {% endblock %}
+      document.getElementById("check_celery").className = "btn waves-effect waves-light";
+    }*/
+</script>
+{% endblock %}
