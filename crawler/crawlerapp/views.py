@@ -156,7 +156,7 @@ def dataset_detail(request, dataset_id):
                 if 'P2FA Align Video' in vid_query.filters:
                     if vid_query.filters['P2FA Align Video']:
                         p2fa_list.append(vid_query.id)
-        collect(p2fa_list,dataset.id)
+        collect.delay(p2fa_list,dataset.id)
         return redirect('dataset-detail', dataset.id)
 
     else:
