@@ -147,17 +147,17 @@ def dataset_detail(request, dataset_id):
             for job in job_list:
                 writer.writerow({'job_id': job.id, 'job_name': job.name, 'query': job.query, 'video_ids': job.videos})
             return response
-    elif request.POST.get("download_hdf5"):
-        p2fa_list = []
-        for job_id in dataset.jobs_list:
-            job = Job.objects.filter(id=job_id).get()
-            for vid in job.videos:
-                vid_query = Video.objects.filter(id=vid).get()
-                if 'P2FA Align Video' in vid_query.filters:
-                    if vid_query.filters['P2FA Align Video']:
-                        p2fa_list.append(vid_query.id)
-        collect.delay(p2fa_list,dataset.id)
-        return redirect('dataset-detail', dataset.id)
+        elif request.POST.get("download_hdf5"):
+            p2fa_list = []
+            for job_id in dataset.jobs_list:
+                job = Job.objects.filter(id=job_id).get()
+                for vid in job.videos:
+                    vid_query = Video.objects.filter(id=vid).get()
+                    if 'P2FA Align Video' in vid_query.filters:
+                        if vid_query.filters['P2FA Align Video']:
+                            p2fa_list.append(vid_query.id)
+            collect.delay(p2fa_list,dataset.id)
+            return redirect('dataset-detail', dataset.id)
 
     else:
         form = ChangeDatasetJobs(request.user,dataset)
