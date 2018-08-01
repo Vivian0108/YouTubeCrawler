@@ -65,6 +65,10 @@ def detail(request, job_id):
             filter_obj = filters[filter_name]["filter_obj"]
             #Dont clear the filters asynchronously
             clear_filter_async(jsonpickle.encode(filter_obj), job_id)
+        elif request.POST.get("delete_job"):
+            job = Job.objects.filter(id=job_id).get()
+            job.deleteJob()
+            return redirect('all')
         #return render(request, 'crawlerapp/detail.html',context)
         return redirect('detail', job_id)
     else:

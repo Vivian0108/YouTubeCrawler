@@ -42,6 +42,22 @@ class Job(models.Model):
                 filter_list.append(filter)
         return filter_list
 
+    # Deletes job and and videos crawled by job if that video only was crawled by this job
+    def deleteJob(self):
+        for video_id in self.videos:
+            vid_query = Video.objects.filter(id=video_id).get()
+            if (str(self.id) in vid_query.job_ids) and (len(vid_query.job_ids) > 1):
+                vid_query.job_ids.remove(str(self.id))
+                vid_query.save()
+            else:
+                vid_query.delete()
+        all_datasets = list(Dataset.objects.all())
+        for d in all_datasets:
+            if str(self.id) in d.jobs_list:
+                d.jobs_list.remove(str(self.id))
+            d.save()
+        self.delete()
+
     class Meta:
         permissions = [('can_crawl',"Can Crawl and Download")]
 
