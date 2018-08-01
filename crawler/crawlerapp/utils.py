@@ -85,15 +85,18 @@ def job_update(job_id):
     scene_change_detected_list = []
     job_videos = job.videos
     for vid in job_videos:
-        vid_query = Video.objects.filter(id=vid).get()
-        if vid_query.download_success:
-            downloaded.append(vid_query.id)
+        try:
+            vid_query = Video.objects.filter(id=vid).get()
+            if vid_query.download_success:
+                downloaded.append(vid_query.id)
 
-            for filter_name,passed in vid_query.filters.items():
-                if passed:
-                    filters[filter_name]['num_passed'] += 1
-                else:
-                    filters[filter_name]['num_failed'] += 1
+                for filter_name,passed in vid_query.filters.items():
+                    if passed:
+                        filters[filter_name]['num_passed'] += 1
+                    else:
+                        filters[filter_name]['num_failed'] += 1
+        except Exception as e:
+            print("Couldn't find video " + str(vid) + ": " + str(e))
 
     num_downloaded = len(downloaded)
 
