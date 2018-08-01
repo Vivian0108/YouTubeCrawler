@@ -51,7 +51,7 @@ class Job(models.Model):
                 v.save()
             else:
                 v.delete()
-        datasets = list(Dataset.objects.filter(job_ids__contains=[str(self.id)]))
+        datasets = list(Dataset.objects.filter(jobs_list__contains=[str(self.id)]))
         for d in datasets:
             d.jobs_list.remove(str(self.id))
             d.save()
