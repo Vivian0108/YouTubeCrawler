@@ -103,8 +103,6 @@ def job_update(job_id):
             progress = (filters[filter_str]['num_passed'] + filters[filter_str]['num_failed'])/(num_downloaded)*100
             filters[filter_str]['progress'] = progress
 
-    #Update crawl percentage
-    crawl_progress = (num_downloaded / int(job.num_pages))*100
 
     context = {'job_name': job.name,
                'job_num_vids': job.num_vids,
@@ -122,7 +120,6 @@ def job_update(job_id):
                'filters': filters,
                'job_applied_filters': applied_filters,
                'num_downloaded': num_downloaded,
-               'active_filters': active_filters,
-               'crawl_progress': crawl_progress}
+               'active_filters': active_filters}
 
     return context

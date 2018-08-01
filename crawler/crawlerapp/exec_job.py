@@ -197,7 +197,7 @@ def query(job_id):
         if search_response is None:
             break
         (nextPageToken, found, download_state) = process_search_response(
-            job_id, job.name, q, search_response, youtube, job.language)
+            job_id, job.name, query_list[current_query % len(query_list)], search_response, youtube, job.language)
         # Refresh job
         job = Job.objects.filter(id=job_id).get()
         total_found.extend(found)
