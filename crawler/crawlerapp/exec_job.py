@@ -163,7 +163,7 @@ def query(job_id):
     page_count = 0
 
     while (nextPageToken or initial):
-        if ((not (job.num_pages is None)) and total_for_query == page_count):
+        if ((not (job.num_pages is None)) and job.num_pages == page_count):
             break
         initial = False
         search_response = None
