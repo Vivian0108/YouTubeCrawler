@@ -106,7 +106,11 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 pass
                 #print("Couldn't find duration")
             if "M" in video_duration:
-                video_time = int((video_duration.split('M')[0])[2:])
+                try:
+                    video_time = int((video_duration.split('M')[0])[2:])
+                except Exception as e:
+                    print("Video too long, " + str(e))
+                    break
                 if video_time > 10:
                     break
 
