@@ -147,7 +147,7 @@ def process_search_response(job_id, job_name, query, search_response, client, la
     try:
         return (search_response['nextPageToken'], found, download_state)
     except KeyError:
-        return (None, found)
+        return (None, found, download_state)
 
 
 def query(job_id):
@@ -198,6 +198,7 @@ def query(job_id):
                 maxResults=1,
                 pageToken=nextPageToken,
             ).execute()
+        current_query +=1
         if search_response is None:
             break
         (nextPageToken, found, download_state) = process_search_response(
@@ -210,7 +211,6 @@ def query(job_id):
         job.save()
         if nextPageToken and download_state:
             page_count += 1
-            current_query +=1
     return total_found
 
 

@@ -86,8 +86,11 @@ def download_video(download_data, requested_lang):
             )
             ff.run()
             video.audio_extracted = True
-        except:
-            print("Failed to extract audio for " + str(video.id))
+        except FileExistsError:
+            print("Audio already extracted")
+            video.audio_extracted = True
+        except Exception as e:
+            print("Failed to extract audio for " + str(video.id) + ": " + str(e))
             video.audio_extracted = False
         video.save()
         return True
