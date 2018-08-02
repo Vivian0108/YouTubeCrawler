@@ -3,6 +3,7 @@ from celery.result import AsyncResult
 import ast
 from .models import *
 from crawlerapp.filters import *
+from googletrans import Translator
 
 def quit_filter(job_id, filter_name_str):
     filter_name = 'crawlerapp.filters.' + filter_name_str.replace(' ','')
@@ -150,3 +151,11 @@ def job_update(job_id):
                'sampled_url': url}
 
     return context
+
+def translate(query, language):
+    translator= Translator()
+    if((language = 'any') or (translator.detect(query.lang) = language))
+        return query
+    return translator.translate(query, dest=language)
+    
+
