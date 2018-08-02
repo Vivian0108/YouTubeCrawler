@@ -42,6 +42,21 @@ class Job(models.Model):
                 filter_list.append(filter)
         return filter_list
 
+    # Deletes job and and videos crawled by job if that video only was crawled by this job
+    def deleteJob(self):
+        videos = list(Video.objects.filter(job_ids__contains=[str(self.id)]))
+        for v in videos:
+            if len(v.job_ids) > 1:
+                v.job_ids.remove(str(self.id))
+                v.save()
+            else:
+                v.delete()
+        datasets = list(Dataset.objects.filter(jobs_list__contains=[str(self.id)]))
+        for d in datasets:
+            d.jobs_list.remove(str(self.id))
+            d.save()
+        self.delete()
+
     class Meta:
         permissions = [('can_crawl',"Can Crawl and Download")]
 
@@ -90,9 +105,9 @@ class PlayList(models.Model):
     youtube_params = JSONField(default=list,null=True)
 
 class Dataset(models.Model):
-    jobs_list = models.TextField(default="")
+    jobs_list = JSONField(default=list)
     name = models.TextField(default="")
     description = models.TextField(default="")
     created_date = models.DateTimeField(default=None, blank=True, null=True)
     user_id = models.TextField(default="")
-    filters = models.TextField(default="")
+    filters = JSONField(default=dict)

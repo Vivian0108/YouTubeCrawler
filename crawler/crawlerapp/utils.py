@@ -3,6 +3,7 @@ from celery.result import AsyncResult
 import ast
 from .models import *
 from crawlerapp.filters import *
+from googletrans import Translator
 
 def quit_filter(job_id, filter_name_str):
     filter_name = 'crawlerapp.filters.' + filter_name_str.replace(' ','')
@@ -85,15 +86,18 @@ def job_update(job_id):
     scene_change_detected_list = []
     job_videos = job.videos
     for vid in job_videos:
-        vid_query = Video.objects.filter(id=vid).get()
-        if vid_query.download_success:
-            downloaded.append(vid_query.id)
+        try:
+            vid_query = Video.objects.filter(id=vid).get()
+            if vid_query.download_success:
+                downloaded.append(vid_query.id)
 
-            for filter_name,passed in vid_query.filters.items():
-                if passed:
-                    filters[filter_name]['num_passed'] += 1
-                else:
-                    filters[filter_name]['num_failed'] += 1
+                for filter_name,passed in vid_query.filters.items():
+                    if passed:
+                        filters[filter_name]['num_passed'] += 1
+                    else:
+                        filters[filter_name]['num_failed'] += 1
+        except Exception as e:
+            print("Couldn't find video " + str(vid) + ": " + str(e))
 
     num_downloaded = len(downloaded)
 
@@ -102,6 +106,7 @@ def job_update(job_id):
         if filter_str in active_filters:
             progress = (filters[filter_str]['num_passed'] + filters[filter_str]['num_failed'])/(num_downloaded)*100
             filters[filter_str]['progress'] = progress
+
 
     context = {'job_name': job.name,
                'job_num_vids': job.num_vids,
@@ -123,3 +128,11 @@ def job_update(job_id):
                'active_filters': active_filters}
 
     return context
+
+def translate(query, language):
+    translator= Translator()
+    if((language = 'any') or (translator.detect(query.lang) = language))
+        return query
+    return translator.translate(query, dest=language)
+    
+

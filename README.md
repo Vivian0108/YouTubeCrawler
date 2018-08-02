@@ -1,5 +1,6 @@
 # YouTubeCrawler
-
+Web Address:
+[mini.multicomp.cs.cmu.edu](http://mini.multicomp.cs.cmu.edu)
 # Repo Information
 This branch contains the Django based webapp for the YouTubeCrawler, created by
 Alex Schneidman at Carnegie Mellon University. The crawler/ directory contains
@@ -17,8 +18,12 @@ the project configuration matches your machine.
 - Add queuing filters option to create job view
 - Get worker2 set up
 - Logical AND filters?
+- Write script that traverses downloaded_videos/, collects relevant hdf5 files, combines into one 
+hdf5 file, and downloads to user
+
 
 # Improvements to Crawling:
+- Implement multiple search terms in one job, comma seperated
 - Add list of regions generated from youtube api (crawler/crawlerapp/generate_models.py), pass info to crawler/crawlerapp/forms.py
 - Add region option to create job form (crawler/crawlerapp/forms.py) and youtube search api call (crawler/crawlerapp/exec_job.py)
 - Once job creation form is submitted, translate query into relevant language before passing to youtube search api

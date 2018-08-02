@@ -66,6 +66,10 @@ def detail(request, job_id):
             filter_obj = filters[filter_name]["filter_obj"]
             #Dont clear the filters asynchronously
             clear_filter_async(jsonpickle.encode(filter_obj), job_id)
+        elif request.POST.get("delete_job"):
+            job = Job.objects.filter(id=job_id).get()
+            job.deleteJob()
+            return redirect('all')
         #return render(request, 'crawlerapp/detail.html',context)
         return redirect('detail', job_id)
     else:
@@ -114,20 +118,22 @@ def dataset_detail(request, dataset_id):
     except:
         return render(request, 'crawlerapp/datasetnotfound.html', {'datasetid': dataset_id})
     #get list of jobs
-    job_str_list = ast.literal_eval(dataset.jobs_list)
-    job_list = []
     video_sum = 0
-    for str_job_id in job_str_list:
-        job = Job.objects.filter(id=int(str_job_id)).get()
-        job_list.append(job)
-        video_sum += int(job.num_vids)
+    job_object_list = []
+    for job_id in dataset.jobs_list:
+        job = Job.objects.filter(id=job_id).get()
+        job_object_list.append(job)
+        for vid in job.videos:
+            vid_query = Video.objects.filter(id=vid).get()
+            if vid_query.download_success:
+                video_sum += 1
     context = {'dataset_name': dataset.name,
                'dataset_num_vids': video_sum,
-               'dataset_num_jobs': len(job_list),
+               'dataset_num_jobs': len(dataset.jobs_list),
                'dataset_created_date': dataset.created_date,
                'dataset_user_id': dataset.user_id,
                'dataset_id': dataset.id,
-               'dataset_jobs': job_list}
+               'dataset_jobs': job_object_list}
     if request.method == "POST":
         if request.POST.get("submit_jobs"):
             form = ChangeDatasetJobs(request.user,dataset,request.POST)
@@ -146,6 +152,17 @@ def dataset_detail(request, dataset_id):
             for job in job_list:
                 writer.writerow({'job_id': job.id, 'job_name': job.name, 'query': job.query, 'video_ids': job.videos})
             return response
+        elif request.POST.get("download_hdf5"):
+            p2fa_list = []
+            for job_id in dataset.jobs_list:
+                job = Job.objects.filter(id=job_id).get()
+                for vid in job.videos:
+                    vid_query = Video.objects.filter(id=vid).get()
+                    if 'P2FA Align Video' in vid_query.filters:
+                        if vid_query.filters['P2FA Align Video']:
+                            p2fa_list.append(vid_query.id)
+            collect.delay(p2fa_list,dataset.id)
+            return redirect('dataset-detail', dataset.id)
 
     else:
         form = ChangeDatasetJobs(request.user,dataset)
@@ -202,7 +219,7 @@ def dataset_create(request):
         form = CreateDatasetForm(request.user,request.POST)
         if form.is_valid():
             dataset = Dataset()
-            dataset.jobs_list = form.cleaned_data['jobs_list']
+            dataset.jobs_list = list(form.cleaned_data['jobs_list'])
             dataset.name = form.cleaned_data['name']
             dataset.description = form.cleaned_data['description']
             dataset.created_date = timezone.now()

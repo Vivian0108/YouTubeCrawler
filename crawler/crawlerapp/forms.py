@@ -34,8 +34,8 @@ class CreateJobForm(forms.Form):
     region = forms.ChoiceField(choices=yt_rawregions, required=False)
     region.widget.attrs.update({'class': 'browser-default'})
     num_vids = forms.IntegerField(
-        help_text="What is the max number of videos you want to crawl (in multiples of 50)? Leave blank for as many as possible.", required=False)
-    query = forms.CharField(help_text="What you want youtube to search for")
+        help_text="What is the max number of videos you want to crawl? Leave blank for as many as possible.", required=False)
+    query = forms.CharField(help_text="What you want youtube to search for? For multiple queries, seperate queries by a ;")
     channel_id = forms.CharField(
         help_text="Only crawl this channel ID", required=False)
     ordering = forms.ChoiceField(choices=[("relevance", "relevance"), ("date", "date"), ("rating", "rating"), ("title", "title"), ("videoCount", "video count"), ("viewCount", "view count")],
@@ -95,7 +95,7 @@ class ChangeDatasetJobs(forms.Form):
         super(ChangeDatasetJobs, self).__init__(*args, **kwargs)
         jobs = Job.objects.filter(user_id=user.username).values_list(
             'id', 'name')
-        preselected = ast.literal_eval(dataset.jobs_list)
+        preselected = dataset.jobs_list
         matching_jobs = []
         for job in jobs:
             matching_jobs.append((job[0], {'label': job[1], 'selected': (str(job[0]) in preselected)}))
