@@ -173,12 +173,8 @@ def query(job_id):
         search_response = None
         if (len(job.channel_id) == 0):
             search_response = youtube.search().list(
-<<<<<<< HEAD
-                q=(job.query),
                 regionCode = job.region,
-=======
                 q=query_list[current_query % len(query_list)],
->>>>>>> master
                 relevanceLanguage=(job.language),
                 safeSearch=job.safe_search,
                 videoCaption=job.cc_enabled,
