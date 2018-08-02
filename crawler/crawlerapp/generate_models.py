@@ -181,11 +181,11 @@ def run_cmds():
         snippets.append(tup)
     return snippets
 
-if __name__ == "__main__":
+def get_regions():
     client = get_authenticated_service()
     resp = i18n_regions_list(client,part='snippet',hl='en_US')
     snippets = []
     for item in resp['items']:
         tup = (item['snippet']['gl'], item['snippet']['name'])
         snippets.append(tup)
-    print(snippets)
+    return snippets

@@ -13,7 +13,4 @@ google_api_python_client==1.7.4
 protobuf==3.6.0
 django_celery_results
 django_celery_beat
-pyscopg2
 oauth2client
-
-redis[celery]
