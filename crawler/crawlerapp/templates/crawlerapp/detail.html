@@ -108,12 +108,26 @@
                     <p>Deletes this job and all relevant information.</p>
                   </div>
                   <div class="card-action">
-                    <button class="btn waves-effect waves-light" type="submit" value="delete_job" name="delete_job">Delete Job</button>
+                    <button class="btn waves-effect waves-light" value="delete_prompt" name="delete_prompt" id="delete_prompt">Delete Job</button>
                   </div>
                 </div>
               </div>
             </div>
           </center>
+          <div id="delete_confirm" class="modal">
+            <div class="modal-content">
+              <div class="input-field col s6">
+                <center>
+                  <h4>Are you sure you want to delete this job??</h4>
+                </center>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn waves-effect waves-light" type="submit" value="delete_job" name="delete_job">Delete Job</button>
+              <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Go Back</a>
+            </div>
+          </div>
+
         </form>
 
         <div class="row">
@@ -176,6 +190,10 @@
       });
     });
   }
+  $('#delete_prompt').click(function() {
+    $('#delete_confirm').modal('open');
+  });
+
   /*
     function celeryStatus(celery_url) {
       document.getElementById("check_celery").className = "btn waves-effect waves-light disabled";
