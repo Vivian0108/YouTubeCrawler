@@ -36,8 +36,7 @@ def process_search_response(job_id, job_name, query, search_response, client, la
     for item in search_response['items']:
         video_id = item['id']['videoId']
         video_data = videos_list_by_id(
-            client, part='snippet,contentDetails,statistics',
-            chart='mostPopular', id=video_id, regionCode=region)
+            client, part='snippet,contentDetails,statistics', id=video_id)
         for vid in video_data['items']:
             channel_id = vid['snippet']['channelId']
             default_lang = None
