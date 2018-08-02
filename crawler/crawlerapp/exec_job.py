@@ -171,20 +171,20 @@ def query(job_id):
         initial = False
         search_response = None
         kwargs = {
-                'regionCode' = job.region,
-                'q'=query_list[current_query % len(query_list)],
-                'relevanceLanguage'=(job.language),
-                'safeSearch'=job.safe_search,
-                'videoCaption'=job.cc_enabled,
-                'videoDefinition'=job.video_def,
-                'videoDuration'=job.video_duration,
-                'channelId'=job.channel_id,
-                'type'="video",
-                'part'="id, snippet",
-                'order'=job.ordering,
+                'regionCode' : job.region,
+                'q':query_list[current_query % len(query_list)],
+                'relevanceLanguage':(job.language),
+                'safeSearch':job.safe_search,
+                'videoCaption':job.cc_enabled,
+                'videoDefinition':job.video_def,
+                'videoDuration':job.video_duration,
+                'channelId':job.channel_id,
+                'type':"video",
+                'part':"id, snippet",
+                'order':job.ordering,
                 # 50 is the maximum allowable value
-                'maxResults'=1,
-                'pageToken'=nextPageToken,
+                'maxResults':1,
+                'pageToken':nextPageToken,
         }
         if len(job.channel_id) == 0:
             del kwargs['channelId']
