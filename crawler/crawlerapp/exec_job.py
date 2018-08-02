@@ -3,6 +3,7 @@ import sys
 import os
 import shutil
 import datetime
+from django.utils import timezone
 import youtube_dl
 import subprocess
 import atexit
@@ -29,13 +30,14 @@ def videos_list_by_id(client, **kwargs):
     return response
 
 
-def process_search_response(job_id, job_name, query, search_response, client, language):
+def process_search_response(job_id, job_name, query, search_response, client, language, region):
     found = []
     download_state = False
     for item in search_response['items']:
         video_id = item['id']['videoId']
         video_data = videos_list_by_id(
-            client, part='snippet,contentDetails,statistics', id=video_id)
+            client, part='snippet,contentDetails,statistics',
+            chart='mostPopular', id=video_id, regionCode=region)
         for vid in video_data['items']:
             channel_id = vid['snippet']['channelId']
             default_lang = None
@@ -116,20 +118,22 @@ def process_search_response(job_id, job_name, query, search_response, client, la
 
             video, created = Video.objects.get_or_create(id=video_id)
             if created:
-                video.channel_id = channel_id
-                video.query = query
-                video.cc_enabled = captions
-                video.language = default_lang
-                video.video_def = video_def
-                video.video_duration = video_duration
-                video.job_ids = [job_id]
-                video.dislike_count = dislike_count
-                video.like_count = like_count
-                video.view_count = view_count
-                video.comment_count = comment_count
-                video.published_date = published_date
-                video.search_time = datetime.datetime.now()
-                video.frames_extracted = False
+                video.channel_id=channel_id
+                video.query=query
+                video.cc_enabled=captions
+                video.language=default_lang
+                video.region=region
+                video.video_def=video_def
+                video.video_duration=video_duration
+                video.job_ids=[job_id]
+                video.dislike_count=dislike_count
+                video.like_count=like_count
+                video.view_count=view_count
+                video.comment_count=comment_count
+                video.published_date=published_date
+                video.search_time=timezone.now()
+                video.frames_extracted=False
+
                 video.save()
 
                 # Download to see if we should keep it
@@ -169,7 +173,12 @@ def query(job_id):
         search_response = None
         if (len(job.channel_id) == 0):
             search_response = youtube.search().list(
+<<<<<<< HEAD
+                q=(job.query),
+                regionCode = job.region,
+=======
                 q=query_list[current_query % len(query_list)],
+>>>>>>> master
                 relevanceLanguage=(job.language),
                 safeSearch=job.safe_search,
                 videoCaption=job.cc_enabled,
@@ -184,6 +193,7 @@ def query(job_id):
             ).execute()
         else:
             search_response = youtube.search().list(
+                regionCode = job.region,
                 q=query_list[current_query % len(query_list)],
                 relevanceLanguage=job.language,
                 safeSearch=job.safe_search,
@@ -202,7 +212,7 @@ def query(job_id):
         if search_response is None:
             break
         (nextPageToken, found, download_state) = process_search_response(
-            job_id, job.name, query_list[current_query % len(query_list)], search_response, youtube, job.language)
+            job_id, job.name, query_list[current_query % len(query_list)], search_response, youtube, job.language,job.region)
         # Refresh job
         job = Job.objects.filter(id=job_id).get()
         total_found.extend(found)

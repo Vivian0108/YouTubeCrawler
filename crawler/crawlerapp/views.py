@@ -13,6 +13,7 @@ import jsonpickle, io, ast, csv, os, json, random, datetime
 from crawlerapp.definitions import CONFIG_PATH
 from celery.task.control import revoke
 from crawlerapp.utils import job_update, get_celery_worker_status
+from django.utils import timezone
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -187,6 +188,7 @@ def job_create(request):
         if form.is_valid():
             job = Job()
             job.language = form.cleaned_data['language']
+            job.region = form.cleaned_data['region']
             job.name = form.cleaned_data['name']
             job.channel_id = form.cleaned_data['channel_id']
             job.query = form.cleaned_data['query']
@@ -195,7 +197,7 @@ def job_create(request):
             job.cc_enabled = form.cleaned_data['cc']
             job.video_def = form.cleaned_data['video_def']
             job.video_duration = form.cleaned_data['video_duration']
-            job.created_date = datetime.datetime.now()
+            job.created_date = timezone.now()
             job.num_pages = form.cleaned_data['num_vids']
             job.num_vids = 0
             job.user_id = request.user.username
@@ -220,7 +222,7 @@ def dataset_create(request):
             dataset.jobs_list = list(form.cleaned_data['jobs_list'])
             dataset.name = form.cleaned_data['name']
             dataset.description = form.cleaned_data['description']
-            dataset.created_date = datetime.datetime.now()
+            dataset.created_date = timezone.now()
             dataset.user_id = request.user.username
             dataset.save()
             return redirect('dataset-detail', dataset.id)
