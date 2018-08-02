@@ -170,39 +170,27 @@ def query(job_id):
             break
         initial = False
         search_response = None
-        if (len(job.channel_id) == 0):
-            search_response = youtube.search().list(
-                regionCode = job.region,
-                q=query_list[current_query % len(query_list)],
-                relevanceLanguage=(job.language),
-                safeSearch=job.safe_search,
-                videoCaption=job.cc_enabled,
-                videoDefinition=job.video_def,
-                videoDuration=job.video_duration,
-                type="video",
-                part="id, snippet",
-                order=job.ordering,
+        kwargs = {
+                'regionCode' = job.region,
+                'q'=query_list[current_query % len(query_list)],
+                'relevanceLanguage'=(job.language),
+                'safeSearch'=job.safe_search,
+                'videoCaption'=job.cc_enabled,
+                'videoDefinition'=job.video_def,
+                'videoDuration'=job.video_duration,
+                'channelId'=job.channel_id,
+                'type'="video",
+                'part'="id, snippet",
+                'order'=job.ordering,
                 # 50 is the maximum allowable value
-                maxResults=1,
-                pageToken=nextPageToken,
-            ).execute()
-        else:
-            search_response = youtube.search().list(
-                regionCode = job.region,
-                q=query_list[current_query % len(query_list)],
-                relevanceLanguage=job.language,
-                safeSearch=job.safe_search,
-                videoCaption=job.cc_enabled,
-                videoDefinition=job.video_def,
-                videoDuration=job.video_duration,
-                type="video",
-                part="id, snippet",
-                order=job.ordering,
-                channelId=job.channel_id,
-                # 50 is the maximum allowable value
-                maxResults=1,
-                pageToken=nextPageToken,
-            ).execute()
+                'maxResults'=1,
+                'pageToken'=nextPageToken,
+        }
+        if len(job.channel_id) == 0:
+            del kwargs['channelId']
+        if len(job.region) == 0:
+            del kwargs['regionCode']
+        search_response = youtube.search().list(**kwargs).execute()
         current_query +=1
         if search_response is None:
             break
