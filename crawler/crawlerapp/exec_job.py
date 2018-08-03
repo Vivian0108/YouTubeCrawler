@@ -14,7 +14,7 @@ import ast
 from crawlerapp.download import ex_download, download_video
 from crawlerapp.tasks import *
 from crawlerapp.definitions import CONFIG_PATH
-
+from crawlerapp.utils import translate
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
@@ -170,9 +170,10 @@ def query(job_id):
             break
         initial = False
         search_response = None
+        query = translate(query_list[current_query % len(query_list)], job.language)
         kwargs = {
                 'regionCode' : job.region,
-                'q':query_list[current_query % len(query_list)],
+                'q':query,
                 'relevanceLanguage':(job.language),
                 'safeSearch':job.safe_search,
                 'videoCaption':job.cc_enabled,
