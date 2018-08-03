@@ -133,4 +133,4 @@ def translate(query, language):
     translator= Translator()
     if ((language == 'any') or (translator.detect(query) == language) or (language == '')):
         return query
-    return translator.translate(query, dest=language)
+    return (translator.translate(query, dest=language)).text
