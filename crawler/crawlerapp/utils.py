@@ -131,6 +131,6 @@ def job_update(job_id):
 
 def translate(query, language):
     translator= Translator()
-    if ((language == 'any') or (translator.detect(query) == language) or (language == '')):
+    if ((language == 'any') or (translator.detect(query).lang == language) or (language == '')):
         return query
-    return (translator.translate(query, dest=language)).text
+    return (translator.translate(query, dest=language, src=translator.detect(query).lang)).text
