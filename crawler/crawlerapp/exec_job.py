@@ -170,10 +170,11 @@ def query(job_id):
             break
         initial = False
         search_response = None
-        query = translate(query_list[current_query % len(query_list)], job.language)
+        query_translated = translate(query_list[current_query % len(query_list)], job.language)
+        print(query_translated)
         kwargs = {
                 'regionCode' : job.region,
-                'q':query,
+                'q':query_translated,
                 'relevanceLanguage':(job.language),
                 'safeSearch':job.safe_search,
                 'videoCaption':job.cc_enabled,
@@ -196,7 +197,7 @@ def query(job_id):
         if search_response is None:
             break
         (nextPageToken, found, download_state) = process_search_response(
-            job_id, job.name, query, search_response, youtube, job.language,job.region)
+            job_id, job.name, query_translated, search_response, youtube, job.language,job.region)
         # Refresh job
         job = Job.objects.filter(id=job_id).get()
         total_found.extend(found)
