@@ -15,15 +15,15 @@ the project configuration matches your machine.
 * Linux 
 * Python 3.6 
 
-1. Clone the repo
+#### 1. Clone the repo
 
-2. (Optional) [Create a virtual environment for Django](https://docs.djangoproject.com/en/2.1/intro/contributing/)
+#### 2. (Optional) [Create a virtual environment for Django](https://docs.djangoproject.com/en/2.1/intro/contributing/)
 Activate the virtualenv before continuing to the next steps
 ```console 
 $ source ~/.virtualenvs/[nameOfYourVirtualenv]/bin/activate 
 ```
 
-3. Install the following packages with `pip3 install [packageName]`: 
+#### 3. Install the following packages with `pip3 install [packageName]`: 
 * celery 
 * kombu
 * numpy 
@@ -38,7 +38,7 @@ $ source ~/.virtualenvs/[nameOfYourVirtualenv]/bin/activate
 * google-auth-oauthlib
 * jsonpickle 
 
-3. Install the following packages by clicking on the links and following the instructions: 
+#### 4. Install the following packages by clicking on the links and following the instructions: 
 * [Google API Client](https://developers.google.com/api-client-library/python/start/installation?hl=th) 
 * [openCV 3.* ](https://pypi.org/project/opencv-python/) 
 
