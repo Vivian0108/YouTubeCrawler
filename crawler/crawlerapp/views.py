@@ -81,13 +81,12 @@ def detail(request, job_id):
 @permission_required('crawlerapp.can_crawl', raise_exception=True)
 def view_videos(request, job_id):
     face_detected = {}
-    downloaded_query = Video.objects.filter(download_success="True").order_by('-id').values()
-    for vid in downloaded_query:
-        jobs_list = vid['job_ids']
-        if str(job_id) in jobs_list:
-            if "Face Detection" in vid['filters']:
-                if vid['filters']['Face Detection']:
-                    face_detected[str(vid['id'])] = vid
+    job = Job.objects.filter(id=job_id).get()
+    for vid in job.videos:
+        vid_query = Video.objects.filter(id=vid).get()
+        if "Face Detection" in vid_query.filters:
+            if vid_query.filters['Face Detection']:
+                face_detected[vid] = vid_query
     context = {
         'face_detected': face_detected
     }
