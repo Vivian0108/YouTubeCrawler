@@ -13,6 +13,5 @@ the project configuration matches your machine.
 # TODO:
 - Documentation (setup, etc)
 - QA testing
-- Add queuing filters option to create job view
 - Get worker2 set up
 - Write script to nieave p2fa
