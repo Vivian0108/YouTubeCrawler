@@ -40,7 +40,9 @@ def filter_async(self, filter, job_id):
     for video_id in video_ids:
         video = Video.objects.filter(id=video_id).get()
         if str(video.download_success) == "True":
-            downloaded_video_ids.append(video_id)
+            #Check if video has already been filtered
+            if filter_obj.name() not in video.filters:
+                downloaded_video_ids.append(video_id)
     video_ids = downloaded_video_ids
 
     try:
@@ -92,4 +94,3 @@ def clear_filter_async(filter, job_id):
 @shared_task
 def collect(video_ids,dataset_id):
     collect_hdf5(video_ids,dataset_id)
-    

@@ -144,7 +144,10 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 video.job_ids.append(job_id)
                 video.job_ids = list(set(video.job_ids))
                 video.save()
-                download_state = True
+                if video.language is None or (not (video.language == language)):
+                    download_state = False
+                else:
+                    download_state = video.download_success
             found.append(video_id)
 
     try:
@@ -200,7 +203,8 @@ def query(job_id):
             job_id, job.name, query_translated, search_response, youtube, job.language,job.region)
         # Refresh job
         job = Job.objects.filter(id=job_id).get()
-        total_found.extend(found)
+        if download_state:
+            total_found.extend(found)
         job.num_vids = len(total_found)
         job.videos = total_found
         job.save()
