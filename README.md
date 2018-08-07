@@ -18,7 +18,7 @@ the project configuration matches your machine.
 #### 1. Clone the repo
 #### 2. Install Django
 Install Django by following the [instructions](https://docs.djangoproject.com/en/2.0/topics/install/#database-installation). 
-The crawler is implemented with PostgreSQL. To intall PostgreSQL, which can be downloaded from [here](https://www.postgresql.org/download/). 
+The crawler is implemented with PostgreSQL. To intall PostgreSQL, which can be downloaded from [here](https://www.postgresql.org/download/). Check [here](https://www.codementor.io/engineerapart/getting-started-with-postgresql-on-mac-osx-are8jcopb) for more information about setting up PostgreSQL database 
 For PostgreSQL to function normally, you'll also need to install psycopg2 using `pip3 install psycopg2`. If you only wanna install the package in the virtualenv, call the command after activating the virtualenv (see Step 3 for virtualenv activation). 
 #### 3. (Optional) [Create a virtual environment for Django](https://docs.djangoproject.com/en/2.1/intro/contributing/)
 Activate the virtualenv before continuing to the next steps
@@ -43,6 +43,25 @@ $ source ~/.virtualenvs/[nameOfYourVirtualenv]/bin/activate
 * jsonpickle 
 * opencv-python  
 * googletrans  
+
+#### 5. Create postgreSQL database and user 
+
+#### 6. Change settings.py 
+In settings.py, change the values of both `CELERY_BROKER_URL` and `CELERY_RESULT_BACKEND` to `redis://localhost:6379`. 
+Set the `DATABASES` dictionary to the following value: 
+```python 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'crawler_db',
+        'USER': 'your database user name',
+        'PASSWORD': 'your database password,
+        'HOST': 'localhost',
+        'PORT': '5432',
+    } 
+}
+```
+
 
 ## Run YouTubeCrawler Locally 
 
