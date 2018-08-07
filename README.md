@@ -26,26 +26,23 @@ Activate the virtualenv before continuing to the next steps
 $ source ~/.virtualenvs/[nameOfYourVirtualenv]/bin/activate 
 ```
 #### 4. Install the following packages with `pip3 install [packageName]`: 
-* celery (check) 
-* django-celery-results (check) 
-* django-celery-beat (c) 
-* kombu
+* celery 
+* django-celery-results 
+* django-celery-beat 
+* kombu 
 * numpy 
-* h5py 
-* PIL 
+* h5py   
+* Pillow
 * torch 
-* youtube_dl (c) 
-* ffmpy (c)
+* youtube_dl 
+* ffmpy 
 * apiclient 
-* oauth2client
-* google-api-python-client (c) 
-* google-auth-oauthlib (c) 
+* oauth2client 
+* google-api-python-client 
+* google-auth-oauthlib  
 * jsonpickle 
-* opencv-python (c) 
-#### 4. Install the following packages by clicking on the links and following the instructions: 
-* [Google API Client](https://developers.google.com/api-client-library/python/start/installation?hl=th) 
-* [openCV 3.* ](https://pypi.org/project/opencv-python/) 
-
+* opencv-python  
+* googletrans  
 
 ## Run YouTubeCrawler Locally 
 
