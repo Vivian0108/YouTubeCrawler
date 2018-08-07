@@ -45,6 +45,16 @@ $ source ~/.virtualenvs/[nameOfYourVirtualenv]/bin/activate
 * googletrans  
 
 #### 5. Create postgreSQL database and user 
+During postgreSQL installation, a default administrative user named `postgres` was created. 
+On command line, log in by typing 
+```console 
+$ psql postgres 
+```
+Then, create the database with name `crawler_db`: 
+```sql 
+postgres=# CREATE DATABASE crawler_db; 
+```
+
 
 #### 6. Change settings.py 
 In settings.py, change the values of both `CELERY_BROKER_URL` and `CELERY_RESULT_BACKEND` to `redis://localhost:6379`. 
