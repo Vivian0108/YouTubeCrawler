@@ -18,9 +18,6 @@ def crawl_async(job_id):
 
 @shared_task
 def download_async(job_id):
-    job = Job.objects.filter(id=job_id).get()
-    job.download_started = True
-    job.save()
     ex_download(job_id)
 
 

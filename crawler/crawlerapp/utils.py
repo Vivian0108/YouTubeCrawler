@@ -119,7 +119,6 @@ def job_update(job_id):
                'job_filters': job.filters,
                'cc': job.cc_enabled,
                'executed': job.executed,
-               'download_started': job.download_started,
                'download_finished': job.download_finished,
                'job_id': job.id,
                'filters': filters,
