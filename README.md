@@ -98,8 +98,15 @@ Try running the server:
 ```consle 
 $ python3 manage.py runserver 
 ```
-Open the brower, go to `localhost:8000`, you should see the following page: 
-(homepage pic) 
+Open the brower, go to `localhost:8000`, you should see the YouTubeCrawler homepage. 
+
+## Create Superuser 
+A superuser can access the admin site after logging in the account.
+Create a superuser on command line: 
+```consle 
+$ python3 manage.py createsuperuser 
+```
+Enter the username, email address, and password according to the prompt. 
 
 
 ## TODO:
