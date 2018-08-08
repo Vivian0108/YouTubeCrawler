@@ -44,36 +44,62 @@ $ source ~/.virtualenvs/[nameOfYourVirtualenv]/bin/activate
 * opencv-python  
 * googletrans  
 
-#### 5. Create postgreSQL database and user 
-During postgreSQL installation, a default administrative user named `postgres` was created. 
-On command line, log in by typing 
+#### 5. Clean up development remnants: 
+Since the cloned repository contains old migraion files from the development process. You should first clean up those migration files to avoid undesirable effects:
 ```console 
-$ psql postgres 
+$ find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+$ find . -path "*/migrations/*.pyc"  -delete
 ```
-Then, create the database with name `crawler_db`: 
+Then, you need to drop the old `crawler_db` database we created during development. Start the `psql` process on command line: 
+```console 
+$ psql postgres
+```
+Then: 
 ```sql 
-postgres=# CREATE DATABASE crawler_db; 
+postgres=# DROP DATABASE drawler_db 
 ```
+If the database is dropped succesfully, you should get the response `DROP DATABASE`. 
 
+#### 6. Create new postgreSQL database and user 
+In `psql`, create a new user `username`: 
+```sql 
+postgres=# CREATE USER username; 
+```
+If a new user is created correctly, you'll get a `CREATE ROLE` response. 
+Create a new database `userdb`: 
+```sql 
+postgres=# CREATE DATABASE userdb OWNER username; 
+```
+If a new database is created correctly, you'll get a `CREATE DATABASE` response. 
 
-#### 6. Change settings.py 
+#### 7. Change settings.py 
 In settings.py, change the values of both `CELERY_BROKER_URL` and `CELERY_RESULT_BACKEND` to `redis://localhost:6379`. 
 Set the `DATABASES` dictionary to the following value: 
 ```python 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'crawler_db',
-        'USER': 'your database user name',
-        'PASSWORD': 'your database password,
+        'NAME': 'username',
+        'USER': 'userdb',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '5432',
     } 
 }
 ```
 
-
-## Run YouTubeCrawler Locally 
+#### 8. Make new migrations: 
+On command line: 
+```console 
+$ python3 manage.py makemigrations 
+$ python3 manage.py migrate 
+```
+Try running the server: 
+```consle 
+$ python3 manage.py runserver 
+```
+Open the brower, go to `localhost:8000`, you should see the following page: 
+(homepage pic) 
 
 
 ## TODO:
