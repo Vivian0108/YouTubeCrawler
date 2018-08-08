@@ -15,17 +15,17 @@ the project configuration matches your machine.
 * Linux 
 * Python 3.6 
 
-#### 1. Clone the repo
-#### 2. Install Django
+### 1. Clone the repo
+### 2. Install Django
 Install Django by following the [instructions](https://docs.djangoproject.com/en/2.0/topics/install/#database-installation). 
 The crawler is implemented with PostgreSQL. To intall PostgreSQL, which can be downloaded from [here](https://www.postgresql.org/download/). Check [here](https://www.codementor.io/engineerapart/getting-started-with-postgresql-on-mac-osx-are8jcopb) for more information about setting up PostgreSQL database 
 For PostgreSQL to function normally, you'll also need to install psycopg2 using `pip3 install psycopg2`. If you only wanna install the package in the virtualenv, call the command after activating the virtualenv (see Step 3 for virtualenv activation). 
-#### 3. (Optional) [Create a virtual environment for Django](https://docs.djangoproject.com/en/2.1/intro/contributing/)
+### 3. (Optional) [Create a virtual environment for Django](https://docs.djangoproject.com/en/2.1/intro/contributing/)
 Activate the virtualenv before continuing to the next steps
 ```console 
 $ source ~/.virtualenvs/[nameOfYourVirtualenv]/bin/activate 
 ```
-#### 4. Install the following packages with `pip3 install [packageName]`: 
+### 4. Install the following packages with `pip3 install [packageName]`: 
 * celery 
 * django-celery-results 
 * django-celery-beat 
@@ -43,8 +43,9 @@ $ source ~/.virtualenvs/[nameOfYourVirtualenv]/bin/activate
 * jsonpickle 
 * opencv-python  
 * googletrans  
+* redis 
 
-#### 5. Clean up development remnants: 
+### 5. Clean up development remnants: 
 Since the cloned repository contains old migraion files from the development process. You should first clean up those migration files to avoid undesirable effects:
 ```console 
 $ find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
@@ -60,7 +61,7 @@ postgres=# DROP DATABASE drawler_db
 ```
 If the database is dropped succesfully, you should get the response `DROP DATABASE`. 
 
-#### 6. Create new postgreSQL database and user 
+### 6. Create new postgreSQL database and user 
 In `psql`, create a new user `username`: 
 ```sql 
 postgres=# CREATE USER username; 
@@ -72,7 +73,7 @@ postgres=# CREATE DATABASE userdb OWNER username;
 ```
 If a new database is created correctly, you'll get a `CREATE DATABASE` response. 
 
-#### 7. Change settings.py 
+### 7. Change settings.py 
 In settings.py, change the values of both `CELERY_BROKER_URL` and `CELERY_RESULT_BACKEND` to `redis://localhost:6379`. 
 Set the `DATABASES` dictionary to the following value: 
 ```python 
@@ -88,7 +89,7 @@ DATABASES = {
 }
 ```
 
-#### 8. Make new migrations: 
+### 8. Make new migrations: 
 On command line: 
 ```console 
 $ python3 manage.py makemigrations 
@@ -100,13 +101,27 @@ $ python3 manage.py runserver
 ```
 Open the brower, go to `localhost:8000`, you should see the YouTubeCrawler homepage. 
 
-## Create Superuser 
+## Run Crawler 
+### 1. Create a superuser 
 A superuser can access the admin site after logging in the account.
 Create a superuser on command line: 
 ```consle 
 $ python3 manage.py createsuperuser 
 ```
 Enter the username, email address, and password according to the prompt. 
+
+### 2. Run celery 
+On command line, run celery: 
+```console 
+$ celery -A crawler worker -l info
+```
+
+### 3. Run crawler 
+Keep the celery running while running the server: 
+```console 
+$ python3 manage.py runserver 
+``` 
+Now, you should be able to create a new job on the website. 
 
 
 ## TODO:
