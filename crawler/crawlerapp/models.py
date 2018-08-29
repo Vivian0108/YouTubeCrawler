@@ -134,6 +134,10 @@ class Video(models.Model):
     #Format: video.filters[filter_name] = True if passed or False if failed or None if not tested
     filters = JSONField(default=dict)
 
+    #Dict of questions that have been manually answered on this video
+    #Format: video.questions[question] = answer
+    questions = JSONField(default=dict)
+
     #True iff audio was succesfully extracted
     audio_extracted = models.NullBooleanField()
 
