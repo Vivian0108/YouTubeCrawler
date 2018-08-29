@@ -93,7 +93,7 @@ class Job(models.Model):
         self.delete()
 
     class Meta:
-        permissions = [('can_crawl',"Can Crawl and Download")]
+        permissions = [('can_crawl',"Can Crawl and Download"), ('can_view', "Can Review the passed videos and answer relevant questions")]
 
 class Video(models.Model):
     #Youtube specified unique video id
