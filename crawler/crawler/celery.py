@@ -21,7 +21,7 @@ app.autodiscover_tasks()
 
 
 task_routes = {
-    'crawler.tasks.*': {'queue': 'celery', 'delivery_mode': 'transient'}
+    'crawler.tasks.*': {'queue': 'celery'}
 }
 
 @app.task(bind=True)

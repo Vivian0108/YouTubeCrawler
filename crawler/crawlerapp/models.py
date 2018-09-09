@@ -20,6 +20,9 @@ class Job(models.Model):
     #Name of Job
     name = models.TextField(default="")
 
+    #Failed Crawl status, if empty, hasn't failed, if text in it, has failed
+    failed_status = models.TextField(default="")
+
     #Query(ies) specified by client. Multiple queries should be seperated by ;
     query = models.TextField(default="")
 

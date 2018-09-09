@@ -1,6 +1,6 @@
 # Create your tasks here
 from __future__ import absolute_import, unicode_literals
-from celery import shared_task
+import celery
 from crawlerapp.exec_job import ex
 from crawlerapp.download import ex_download
 from django.db import models, transaction
@@ -13,12 +13,22 @@ from crawlerapp.collect import collect_hdf5
 
 @shared_task
 def crawl_async(job_id):
-    ex(job_id)
+    try:
+        ex(job_id)
+    except Exception as e:
+        job = Job.objects.filter(id=job_id).get()
+        job.failed_status = str(e)
+        job.save()
 
 
 @shared_task
 def download_async(job_id):
-    ex_download(job_id)
+    try:
+        ex_download(job_id)
+    except Exception as e:
+        job = Job.objects.filter(id=job_id).get()
+        job.failed_status = str(e)
+        job.save()
 
 
 @shared_task(bind=True)
