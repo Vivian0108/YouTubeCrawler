@@ -11,7 +11,7 @@ from crawlerapp.utils import quit_filter
 from crawlerapp.collect import collect_hdf5
 
 
-@shared_task
+@celery.shared_task
 def crawl_async(job_id):
     try:
         ex(job_id)
@@ -21,7 +21,7 @@ def crawl_async(job_id):
         job.save()
 
 
-@shared_task
+@celery.shared_task
 def download_async(job_id):
     try:
         ex_download(job_id)
@@ -31,7 +31,7 @@ def download_async(job_id):
         job.save()
 
 
-@shared_task(bind=True)
+@celery.shared_task(bind=True)
 def filter_async(self, filter, job_id):
     job = Job.objects.filter(id=job_id).get()
 
@@ -73,7 +73,7 @@ def filter_async(self, filter, job_id):
     job.save()
 
 
-@shared_task
+@celery.shared_task
 def clear_filter_async(filter, job_id):
     filter_obj = jsonpickle.decode(filter)
     filter_name = filter_obj.name()
@@ -98,6 +98,6 @@ def clear_filter_async(filter, job_id):
 
     job.save()
 
-@shared_task
+@celery.shared_task
 def collect(video_ids,dataset_id):
     collect_hdf5(video_ids,dataset_id)
