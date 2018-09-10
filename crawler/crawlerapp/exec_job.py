@@ -163,6 +163,8 @@ def process_search_response(job_id, job_name, query, search_response, client, la
 
 def query(job_id):
     job = Job.objects.filter(id=job_id).get()
+    job.work_status = "Starting crawl..."
+    job.save()
     youtube = build("youtube", "v3",
                     developerKey="AIzaSyC485wtcaeL1yZrciuDWrliKSC74k8UODM")
 
@@ -225,6 +227,7 @@ def ex(job_id):
     job.videos = total_found
     job.executed = True
     job.download_finished = True
+    job.work_status = "Finished crawl"
     job.save()
     # ex_download(job_id)
     return total_found
