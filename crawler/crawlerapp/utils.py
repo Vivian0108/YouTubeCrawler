@@ -125,7 +125,7 @@ def job_update(job_id):
                'job_applied_filters': applied_filters,
                'num_downloaded': num_downloaded,
                'active_filters': active_filters,
-               'job_failed_status': job.failed_status}
+               'job_work_status': job.work_status}
 
     return context
 

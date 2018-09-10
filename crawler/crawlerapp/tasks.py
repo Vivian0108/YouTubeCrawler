@@ -17,7 +17,7 @@ def crawl_async(job_id):
         ex(job_id)
     except Exception as e:
         job = Job.objects.filter(id=job_id).get()
-        job.failed_status = str(e)
+        job.work_status = str(e)
         job.save()
 
 
@@ -27,7 +27,7 @@ def download_async(job_id):
         ex_download(job_id)
     except Exception as e:
         job = Job.objects.filter(id=job_id).get()
-        job.failed_status = str(e)
+        job.work_status = str(e)
         job.save()
 
 

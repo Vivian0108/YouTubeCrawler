@@ -33,8 +33,11 @@ def videos_list_by_id(client, **kwargs):
 def process_search_response(job_id, job_name, query, search_response, client, language, region):
     found = []
     download_state = False
+    job = Job.object.filter(id=job_id).get()
     for item in search_response['items']:
         video_id = item['id']['videoId']
+        job.work_status = "Found video " + str(video_id)
+        job.save()
         video_data = videos_list_by_id(
             client, part='snippet,contentDetails,statistics', id=video_id)
         for vid in video_data['items']:
@@ -117,6 +120,8 @@ def process_search_response(job_id, job_name, query, search_response, client, la
 
             video, created = Video.objects.get_or_create(id=video_id)
             if created:
+                job.work_status = str(video_id) + " is new, processing..."
+                job.save()
                 video.channel_id=channel_id
                 video.query=query
                 video.cc_enabled=captions
@@ -138,7 +143,7 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 # Download to see if we should keep it
                 download_data = (os.path.join(os.path.join(
                     CONFIG_PATH, 'downloaded_videos'), video.id), video.id)
-                download_state = download_video(download_data, language)
+                download_state = download_video(download_data, language, job_id)
 
             else:
                 video.job_ids.append(job_id)
