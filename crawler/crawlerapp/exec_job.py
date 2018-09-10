@@ -33,7 +33,7 @@ def videos_list_by_id(client, **kwargs):
 def process_search_response(job_id, job_name, query, search_response, client, language, region):
     found = []
     download_state = False
-    job = Job.object.filter(id=job_id).get()
+    job = Job.objects.filter(id=job_id).get()
     for item in search_response['items']:
         video_id = item['id']['videoId']
         job.work_status = "Found video " + str(video_id)
