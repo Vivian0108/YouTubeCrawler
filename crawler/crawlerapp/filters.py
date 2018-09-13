@@ -10,7 +10,7 @@ from crawlerapp.Filters.ExtractPhones import extractPhones
 from crawlerapp.Filters.ExtractWords import extractWords
 from crawlerapp.definitions import CONFIG_PATH
 from crawlerapp.Filters.extractFrames import extractFrames
-from crawlerapp.Filters.NaiveAlign import generate_h5py
+from crawlerapp.Filters.NaiveAlign import generate_h5py_phones,generate_h5py_words
 from django.db import models
 from .models import *
 from celery import task
@@ -101,13 +101,21 @@ class AlignFilter(AbstractFilter):
                     vtt_path = os.path.join(video_dir, video + lang)
                     h5py_file_phones = os.path.join(filter_folder_dir, video + "_phones.hdf5")
                     generate_h5py(vtt_path,h5py_file_phones,video)
-                    print("Aligned " + str(video))
-                    vid_query.filters[self.name()] = True
-                    vid_query.save()
+                    try:
+                        h5py_file_words = os.path.join(filter_folder_dir, video + "_words.hdf5")
+                        generate_h5py_words(vtt_path,h5py_file_words,video)
+                        print("Aligned " + str(video))
+                        vid_query.filters[self.name()] = True
+                        vid_query.save()
+                    except Exception as e:
+                        print("Couldn't extract phones from video " + str(video) + ": " + str(e))
+                        vid_query.filters[self.name()] = False
+                        vid_query.save()
                 except Exception as e:
                     print("Couldn't extract phones from video " + str(video) + ": " + str(e))
                     vid_query.filters[self.name()] = False
                     vid_query.save()
+                #skips the rest of this iteration of the loop
                 continue
 
 
