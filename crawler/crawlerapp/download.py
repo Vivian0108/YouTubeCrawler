@@ -86,11 +86,11 @@ def download_video(download_data, requested_lang, job_id):
 
         job.work_status = str(video_id) + ": download successful, extracting audio"
         job.save()
-        
+
         if video.language is None:
             video.language = requested_lang
             if (len(video.language) == 0):
-                all = glob.glob("*.vtt")
+                all = glob.glob(os.path.join(download_to_path,"*.vtt"))
                 video.language = all[0].split(".")[1]
 
         input = os.path.join(video.download_path, video_id + ".mp4")
