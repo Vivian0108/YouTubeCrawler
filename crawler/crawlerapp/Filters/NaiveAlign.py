@@ -1,3 +1,6 @@
+import numpy as np
+import h5py
+import os
 
 def align(file):
     raw_transcript = open(file,"r")
@@ -46,8 +49,35 @@ def align(file):
             for index,letter in enumerate(letters):
                 interval = [start,end]
                 intervals.append(interval)
-                features.append(letter)
+                features.append(letter.encode("utf8"))
                 start = end
                 end = end+increment
 
     return intervals,features
+
+def generate_h5py(transcript,destination,video_id):
+    intervals,features = align(transcript)
+    features_l = [[f] for f in features]
+    featuresnp = np.array(features_l,dtype="a8")
+    intervalsnp = np.array(intervals)
+
+    data = {}
+    data[video_id]={}
+    data[video_id]['intervals']=intervalsnp
+    data[video_id]['features']=featuresnp
+
+    write5Handle=h5py.File(destination,'w')
+
+    vidHandle=write5Handle.create_group(video_id)
+    vidHandle.create_dataset("features",data=data[video_id]["features"])
+    vidHandle.create_dataset("intervals",data=data[video_id]["intervals"])
+    write5Handle.close()
+
+#def read(file):
+#    f = h5py.File(file, "r")
+#    dset = f['test']
+#    print(dset)
+#    print(dset['features'])
+#    print(dset['intervals'])
+#    print(dset['features'][0:10])
+#    print(dset['intervals'][0:10])
