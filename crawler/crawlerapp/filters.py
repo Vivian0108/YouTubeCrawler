@@ -100,7 +100,7 @@ class AlignFilter(AbstractFilter):
                     lang = "." + str(vid_query.language) + ".vtt"
                     vtt_path = os.path.join(video_dir, video + lang)
                     h5py_file_phones = os.path.join(filter_folder_dir, video + "_phones.hdf5")
-                    generate_h5py(vtt_path,h5h5py_file_phones,video)
+                    generate_h5py(vtt_path,h5py_file_phones,video)
                     print("Aligned " + str(video))
                     vid_query.filters[self.name()] = True
                     vid_query.save()
