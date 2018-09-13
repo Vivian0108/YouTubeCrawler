@@ -92,7 +92,7 @@ def align_words(file):
 
             line_time = end_total - start_total
 
-            if len(letters) == 0:
+            if len(words) == 0:
                 continue
             increment = line_time/len(words)
 
@@ -101,7 +101,7 @@ def align_words(file):
             for index,word in enumerate(word):
                 interval = [start,end]
                 intervals.append(interval)
-                features.append(letter.encode("utf8"))
+                features.append(word.encode("utf8"))
                 start = end
                 end = end+increment
 
