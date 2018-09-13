@@ -98,7 +98,7 @@ def align_words(file):
 
             start = start_total
             end = start_total + increment
-            for index,word in enumerate(word):
+            for index,word in enumerate(words):
                 interval = [start,end]
                 intervals.append(interval)
                 features.append(word.encode("utf8"))
