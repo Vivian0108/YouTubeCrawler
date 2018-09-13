@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import sys
-import os
+import os, glob
 import shutil
 import datetime
 from django.utils import timezone
@@ -83,10 +83,16 @@ def download_video(download_data, requested_lang, job_id):
         video.download_time=datetime.datetime.now()
         video.download_path=download_to_path
         video.download_success=True
+
         job.work_status = str(video_id) + ": download successful, extracting audio"
         job.save()
+        
         if video.language is None:
             video.language = requested_lang
+            if (len(video.language) == 0):
+                all = glob.glob("*.vtt")
+                video.language = all[0].split(".")[1]
+
         input = os.path.join(video.download_path, video_id + ".mp4")
         output = os.path.join(video.download_path, video_id + ".wav")
         try:
