@@ -10,6 +10,7 @@ from crawlerapp.Filters.ExtractPhones import extractPhones
 from crawlerapp.Filters.ExtractWords import extractWords
 from crawlerapp.definitions import CONFIG_PATH
 from crawlerapp.Filters.extractFrames import extractFrames
+from crawlerapp.Filters.NaiveFilter import generate_h5py
 from django.db import models
 from .models import *
 from celery import task
@@ -88,6 +89,27 @@ class AlignFilter(AbstractFilter):
         passed = []
         for video in video_ids:
             vid_query = Video.objects.filter(id=video).get()
+
+            #Naive Filter if language isn't english
+            if not vid_query.language == 'en':
+                try:
+                    video_dir = os.path.join(my_path, video)
+                    filter_folder_dir = os.path.join(video_dir, "AlignFilter")
+                    if not os.path.exists(filter_folder_dir):
+                        os.makedirs(filter_folder_dir)
+                    vtt_path = os.path.join(video_dir, video + lang)
+                    h5py_file_phones = os.path.join(filter_folder_dir, video + "_phones.hdf5")
+                    generate_h5py(vtt_path,h5h5py_file_phones,video)
+                    print("Aligned " + str(video))
+                    vid_query.filters[self.name()] = True
+                    vid_query.save()
+                except Exception as e:
+                    print("Couldn't extract phones from video " + str(video) + ": " + str(e))
+                    vid_query.filters[self.name()] = False
+                    vid_query.save()
+                continue
+
+
             try:
                 video_dir = os.path.join(my_path, video)
                 filter_folder_dir = os.path.join(video_dir, "AlignFilter")
