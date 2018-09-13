@@ -97,6 +97,7 @@ class AlignFilter(AbstractFilter):
                     filter_folder_dir = os.path.join(video_dir, "AlignFilter")
                     if not os.path.exists(filter_folder_dir):
                         os.makedirs(filter_folder_dir)
+                    lang = "." + str(vid_query.language) + ".vtt"
                     vtt_path = os.path.join(video_dir, video + lang)
                     h5py_file_phones = os.path.join(filter_folder_dir, video + "_phones.hdf5")
                     generate_h5py(vtt_path,h5h5py_file_phones,video)
