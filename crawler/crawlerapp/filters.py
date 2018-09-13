@@ -10,7 +10,7 @@ from crawlerapp.Filters.ExtractPhones import extractPhones
 from crawlerapp.Filters.ExtractWords import extractWords
 from crawlerapp.definitions import CONFIG_PATH
 from crawlerapp.Filters.extractFrames import extractFrames
-from crawlerapp.Filters.NaiveFilter import generate_h5py
+from crawlerapp.Filters.NaiveAlign import generate_h5py
 from django.db import models
 from .models import *
 from celery import task
