@@ -202,7 +202,12 @@ def query(job_id):
             del kwargs['channelId']
         if len(job.region) == 0:
             del kwargs['regionCode']
-        search_response = youtube.search().list(**kwargs).execute()
+        try:
+            search_response = youtube.search().list(**kwargs).execute()
+        except Exception as e:
+            job.work_status = "Couldn't search: " + str(e)
+            job.save()
+            search_response = None
         current_query +=1
         if search_response is None:
             break
