@@ -206,10 +206,19 @@ def query(job_id):
         current_query +=1
         if search_response is None:
             break
-        (nextPageToken, found, download_state) = process_search_response(
-            job_id, job.name, query_translated, search_response, youtube, job.language,job.region)
-        # Refresh job
-        job = Job.objects.filter(id=job_id).get()
+        try:
+            (nextPageToken, found, download_state) = process_search_response(
+                job_id, job.name, query_translated, search_response, youtube, job.language,job.region)
+            # Refresh job
+            job = Job.objects.filter(id=job_id).get()
+        except Exception as e:
+            # Refresh job
+            job = Job.objects.filter(id=job_id).get()
+            job.work_status = "Couldn't crawl video: " + str(e)
+            job.save()
+            nextPageToken = True
+            found = []
+            download_state = False
         if download_state:
             total_found.extend(found)
         job.num_vids = len(total_found)
