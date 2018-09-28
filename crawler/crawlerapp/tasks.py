@@ -18,6 +18,8 @@ def crawl_async(job_id):
     except Exception as e:
         job = Job.objects.filter(id=job_id).get()
         job.work_status = str(e)
+        job.executed = True
+        job.download_finished = True
         job.save()
 
 

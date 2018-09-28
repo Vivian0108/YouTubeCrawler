@@ -108,7 +108,7 @@ class AlignFilter(AbstractFilter):
                         vid_query.filters[self.name()] = True
                         vid_query.save()
                     except Exception as e:
-                        print("Couldn't extract phones from video " + str(video) + ": " + str(e))
+                        print("Couldn't extract words from video " + str(video) + ": " + str(e))
                         vid_query.filters[self.name()] = False
                         vid_query.save()
                 except Exception as e:

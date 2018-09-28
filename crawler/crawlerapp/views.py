@@ -247,8 +247,6 @@ def signup(request):
 
 @login_required
 def profile(request):
-    if not (request.user.is_authenticated):
-        return HttpResponseRedirect('/accounts/login/')
     jobs = Job.objects.filter(user_id=request.user.username)
     datasets = Dataset.objects.filter(user_id=request.user.username)
     context = {'jobs': jobs, 'datasets': datasets, 'user': request.user}
