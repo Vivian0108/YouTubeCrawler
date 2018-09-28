@@ -23,6 +23,7 @@ def crawl_async(job_id):
         job.save()
 
 
+
 @celery.shared_task
 def download_async(job_id):
     try:
