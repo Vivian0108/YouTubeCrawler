@@ -6,3 +6,7 @@
 __pycache__/*
 crawler/settings.py
 crawlercelery.py
+
+*.pyc
+crawler/__pycache__/*.pyc
+crawler/crawlerapp/__pycache__/*.pyc

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .models import *
 from crawlerapp.generate_models import run_cmds, get_region_snippets
 from django.forms.widgets import SelectMultiple
+from uploads.core.models import Document
 import ast
 
 
@@ -105,3 +106,8 @@ class ChangeDatasetJobs(forms.Form):
 
 class DownloadForm(forms.Form):
     download_path = "downloaded_videos/"
+
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ('description', 'document', )

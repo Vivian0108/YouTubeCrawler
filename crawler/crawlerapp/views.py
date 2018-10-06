@@ -268,3 +268,16 @@ def celery_status(request):
     d = get_celery_worker_status()
     context = {'celery_status': d}
     return render(request, 'crawlerapp/celery_status.html', context)
+
+@login_required
+def upload(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = DocumentForm()
+    return render(request, 'crawlerapp/upload.html', {
+        'form': form
+    })

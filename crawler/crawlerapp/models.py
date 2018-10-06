@@ -204,3 +204,8 @@ class Dataset(models.Model):
 
     #Dict of filters that have been applied to underlying jobs (WIP)
     filters = JSONField(default=dict)
+
+class Document(models.Model):
+    description = models.CharField(max_length=255, blank=True)
+    document = models.FileField(upload_to='crawlerapp/downloaded_videos/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
