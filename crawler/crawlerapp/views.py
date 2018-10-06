@@ -14,6 +14,7 @@ from crawlerapp.definitions import CONFIG_PATH
 from celery.task.control import revoke
 from crawlerapp.utils import job_update, get_celery_worker_status
 from django.utils import timezone
+import tarfile,re
 
 def home(request):
     return render(request, 'crawlerapp/landing.html')
@@ -273,8 +274,47 @@ def celery_status(request):
 def upload(request):
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
+        fname = request.FILES['document'].name
+        if (form.is_valid() and fname.endswith("tar")):
+            doc = form.save()
+            with tarfile.open(str(doc.document), "r") as tar:
+                all_dirs = [f for f in tar.getmembers() if f.isdir() and f.name.count("/") == 0]
+                for member in all_dirs:
+                    #Check if we've gotten this video already
+                    found = Video.objects.filter(id=str(member.name)).count()
+                    if (found > 0):
+                        print("Already have " + str(member.name))
+                    else:
+                        reg_vtt = re.compile(".*.vtt")
+                        #If not, check to make sure it's properly formatted
+                        all_relevant_files = [f.name for f in tar.getmembers() if f.name.startswith(member.name)]
+                        has_mp4 = (member.name + "/" + member.name + ".mp4" in all_relevant_files)
+                        has_wav = (member.name + "/" + member.name + ".wav" in all_relevant_files)
+                        vtts = list(filter(reg_vtt.match,all_relevant_files))
+                        try:
+                            lang = vtts[0].split(".")[1]
+                        except Exception as e:
+                            #Couldn't find a language...
+                            continue
+                        has_frames = (member.name + "/Frames" in all_relevant_files)
+                        has_align = (member.name + "/AlignFilter" in all_relevant_files)
+                        if (has_mp4 and has_wav):
+                            video = Video(id=str(member.name))
+                            video.cc_enabled = True
+                            video.language = lang
+                            video.search_time = timezone.now()
+                            video.audio_extracted = has_wav
+                            video.download_success = True
+                            video.download_time = timezone.now()
+                            video.download_path = os.path.join(os.path.join((CONFIG_PATH), 'downloaded_videos'), member.name)
+                            if has_frames:
+                                video.filters['Extract Frames'] = True
+                            if has_align:
+                                video.filters['P2FA Align Video'] = True
+                            video.save()
+                            tar.extractall(path="crawlerapp/downloaded_videos/",members=[f for f in tar.getmembers() if f.name.startswith(member.name)])
+                        
+                    
             return redirect('home')
     else:
         form = DocumentForm()
