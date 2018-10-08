@@ -71,9 +71,7 @@ def detail(request, job_id):
             job = Job.objects.filter(id=job_id).get()
             job.deleteJob()
             return redirect('all')
-        elif request.POST.get("upload"):
 
-        #return render(request, 'crawlerapp/detail.html',context)
         return redirect('detail', job_id)
     else:
         form = DownloadForm()
