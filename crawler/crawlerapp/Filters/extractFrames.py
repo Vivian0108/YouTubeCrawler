@@ -1,6 +1,6 @@
 import cv2
 import os
-from crawlerapp.definitions import CONFIG_PATH
+from crawlerapp.definitions import *
 
 def extractFrames(videoID, FPS, video_path):
 	frames_path = os.path.join(video_path, "Frames")

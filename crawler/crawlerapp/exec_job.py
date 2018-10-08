@@ -13,7 +13,7 @@ from crawlerapp.models import *
 import ast
 from crawlerapp.download import ex_download, download_video
 from crawlerapp.tasks import *
-from crawlerapp.definitions import CONFIG_PATH
+from crawlerapp.definitions import *
 from crawlerapp.utils import translate
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -141,8 +141,7 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 video.save()
 
                 # Download to see if we should keep it
-                download_data = (os.path.join(os.path.join(
-                    CONFIG_PATH, 'downloaded_videos'), video.id), video.id)
+                download_data = (os.path.join(CRAWLED_VIDEOS_DIR, video.id), video.id)
                 download_state = download_video(download_data, language, job_id)
 
             else:

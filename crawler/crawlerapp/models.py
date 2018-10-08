@@ -1,5 +1,6 @@
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from crawlerapp.definitions import *
 
 # Create your models here.
 
@@ -207,5 +208,5 @@ class Dataset(models.Model):
 
 class Document(models.Model):
     description = models.CharField(max_length=255, blank=True)
-    document = models.FileField(upload_to='crawlerapp/downloaded_videos/')
+    document = models.FileField(upload_to=CRAWLED_VIDEOS_DIR)
     uploaded_at = models.DateTimeField(auto_now_add=True)

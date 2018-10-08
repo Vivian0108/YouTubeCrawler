@@ -5,6 +5,7 @@ from .models import *
 from crawlerapp.generate_models import run_cmds, get_region_snippets
 from django.forms.widgets import SelectMultiple
 import ast
+from crawlerapp.definitions import *
 
 
 class SignUpForm(UserCreationForm):
@@ -104,7 +105,7 @@ class ChangeDatasetJobs(forms.Form):
 
 
 class DownloadForm(forms.Form):
-    download_path = "downloaded_videos/"
+    download_path = CRAWLED_VIDEOS_DIR
 
 class DocumentForm(forms.ModelForm):
     class Meta:

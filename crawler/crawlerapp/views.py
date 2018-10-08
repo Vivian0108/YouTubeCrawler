@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from crawlerapp.tasks import *
 from crawlerapp.filters import *
 import jsonpickle, io, ast, csv, os, json, random, datetime
-from crawlerapp.definitions import CONFIG_PATH
+from crawlerapp.definitions import *
 from celery.task.control import revoke
 from crawlerapp.utils import job_update, get_celery_worker_status
 from django.utils import timezone
@@ -71,6 +71,8 @@ def detail(request, job_id):
             job = Job.objects.filter(id=job_id).get()
             job.deleteJob()
             return redirect('all')
+        elif request.POST.get("upload"):
+
         #return render(request, 'crawlerapp/detail.html',context)
         return redirect('detail', job_id)
     else:
@@ -306,15 +308,15 @@ def upload(request):
                             video.audio_extracted = has_wav
                             video.download_success = True
                             video.download_time = timezone.now()
-                            video.download_path = os.path.join(os.path.join((CONFIG_PATH), 'downloaded_videos'), member.name)
+                            video.download_path = os.path.join(CRAWLED_VIDEOS_DIR, member.name)
                             if has_frames:
                                 video.filters['Extract Frames'] = True
                             if has_align:
                                 video.filters['P2FA Align Video'] = True
                             video.save()
-                            tar.extractall(path="crawlerapp/downloaded_videos/",members=[f for f in tar.getmembers() if f.name.startswith(member.name)])
-                        
-                    
+                            tar.extractall(path=CRAWLED_VIDEOS_DIR,members=[f for f in tar.getmembers() if f.name.startswith(member.name)])
+
+
             return redirect('home')
     else:
         form = DocumentForm()

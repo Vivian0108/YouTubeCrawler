@@ -10,7 +10,7 @@ import atexit
 import json, ast
 import ffmpy
 from crawlerapp.Filters.extractFrames import extractFrames
-from crawlerapp.definitions import CONFIG_PATH
+from crawlerapp.definitions import *
 from crawlerapp.models import *
 from django.db import models
 
@@ -180,8 +180,7 @@ def download(download_data):
 def ex_download(job_id):
     job = Job.objects.filter(id=job_id).get()
     video_ids = job.videos
-    download_data = [(os.path.join(os.path.join(
-        (CONFIG_PATH), 'downloaded_videos'), video_id), video_id) for video_id in video_ids]
+    download_data = [(os.path.join(CRAWLED_VIDEOS_DIR, video_id), video_id) for video_id in video_ids]
     num_download = len(download_data)
     # Code to restrict number downloaded, if you want
     if (len(sys.argv) == 3):

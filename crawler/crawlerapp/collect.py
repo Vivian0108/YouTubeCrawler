@@ -1,14 +1,13 @@
 import h5py
 import numpy
 import os
-from crawlerapp.definitions import CONFIG_PATH
+from crawlerapp.definitions import *
 
 
 def collect_hdf5(video_ids,dataset_id):
 
-    download_path = os.path.join(CONFIG_PATH,'downloaded_videos')
+    download_path = CRAWLED_VIDEOS_DIR
     os.mkdir(os.path.join(download_path, str(dataset_id)))
-    #'downloaded_videos/[dataset_id]/[dataset_id].hdf5'
     output_file_path = os.path.join(download_path,os.path.join(str(dataset_id),str(dataset_id) + ".hdf5"))
     data_file = h5py.File(output_file_path,'w')
     found_folders = [d for d in os.listdir(download_path) if d in video_ids]

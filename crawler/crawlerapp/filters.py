@@ -8,7 +8,6 @@ from crawlerapp.Filters.faceDetectFilter import *
 from crawlerapp.Filters.sceneChangeFilter import *
 from crawlerapp.Filters.ExtractPhones import extractPhones
 from crawlerapp.Filters.ExtractWords import extractWords
-from crawlerapp.definitions import CONFIG_PATH
 from crawlerapp.Filters.extractFrames import extractFrames
 from crawlerapp.Filters.NaiveAlign import generate_h5py_phones,generate_h5py_words
 from django.db import models
@@ -16,6 +15,7 @@ from .models import *
 from celery import task
 import numpy as np
 import h5py
+from crawlerapp.definitions import *
 #from AZP2FA.p2fa.align_mod import align
 
 
@@ -85,7 +85,7 @@ class AlignFilter(AbstractFilter):
         return []
 
     def filter(self, video_ids):
-        my_path = os.path.join(CONFIG_PATH, "downloaded_videos")
+        my_path = CRAWLED_VIDEOS_DIR
         passed = []
         for video in video_ids:
             vid_query = Video.objects.filter(id=video).get()
@@ -198,7 +198,7 @@ class FaceDetectFilter(AbstractFilter):
         return ["Extract Frames"]
 
     def filter(self, video_ids):
-        downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
+        downloaded_path = CRAWLED_VIDEOS_DIR
         passed = []
         for video in video_ids:
             vid_query = Video.objects.filter(id=video).get()
@@ -230,7 +230,7 @@ class SceneChangeFilter(AbstractFilter):
         return ["Extract Frames"]
 
     def filter(self, video_ids):
-        downloaded_path = os.path.join(CONFIG_PATH, "downloaded_videos")
+        downloaded_path = CRAWLED_VIDEOS_DIR
         passed = []
         for video in video_ids:
             vid_query = Video.objects.filter(id=video).get()
