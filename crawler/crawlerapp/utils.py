@@ -131,10 +131,9 @@ def job_update(job_id):
 
 def translate(query, language):
     translator= Translator()
-    try:
-        if ((language == 'any') or (translator.detect(query).lang == language) or (language == '')):
-            return query
-        return (translator.translate(query, dest=language, src=translator.detect(query).lang)).text
-    except Exception as e:
-        print(str(e))
+    print("about")
+    if ((language == 'any') or (translator.detect(query).lang == language) or (language == '')):
         return query
+    translated_query = (translator.translate(query, dest=language, src=translator.detect(query).lang)).text
+    print(translated_query)
+    return translated_query
