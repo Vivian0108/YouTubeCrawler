@@ -156,6 +156,23 @@
           <div class="col s12">
             <div class="card blue-grey darken-1">
               <div class="card-content white-text">
+                <span class="card-title">Restart Crawl</span>
+                <p>Reruns the crawl with the current job data</p>
+              </div>
+              <div class="card-action">
+                {% if download_finished %}
+                <button class="btn waves-effect waves-light" type="submit" value="restart_crawl" name="restart_crawl">Restart</button>
+                {% else %}
+                <button class="btn waves-effect waves-light disabled" type="" value="" name="">Restart</button>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <div class="card blue-grey darken-1">
+              <div class="card-content white-text">
                 <span class="card-title">Upload Videos</span>
                 <p>Upload video data to this job, ensure that it is properly formatted</p>
               </div>

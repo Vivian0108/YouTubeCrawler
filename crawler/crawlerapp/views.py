@@ -71,6 +71,14 @@ def detail(request, job_id):
             job = Job.objects.filter(id=job_id).get()
             job.deleteJob()
             return redirect('all')
+        elif request.POST.get("restart_crawl"):
+            #Refresh job
+            job = Job.objects.filter(id=job_id).get()
+            job.executed = False
+            job.download_finished = False
+            job.work_status = "Restarting crawl..."
+            job.save()
+            crawl_async(job.id)
 
         return redirect('detail', job_id)
     else:
