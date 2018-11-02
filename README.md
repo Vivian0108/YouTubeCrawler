@@ -42,7 +42,7 @@ $ source ~/.virtualenvs/[nameOfYourVirtualenv]/bin/activate
 * google-auth-oauthlib  
 * jsonpickle 
 * opencv-python  
-* googletrans  
+* googletrans (Note: current googletrans might be broken, if so, install through https://stackoverflow.com/questions/52455774/googletrans-stopped-working-with-error-nonetype-object-has-no-attribute-group)
 * redis 
 
 ### 5. Clean up development remnants: 
