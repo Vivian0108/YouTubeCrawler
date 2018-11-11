@@ -20,7 +20,7 @@
           <td>{{ vid_dict.language }}</td>
           <td>{{ vid_dict.video_duration }}</td>
           <td>{{ vid_dict.query }}</td>
-          <td><a href="https://www.youtube.com/watch?v={{ vid }}" target="_blank">Link</a></td>
+          <td><a href="{% url 'video-poll' vid %}" target="_blank">Link</a></td>
         </tr>
       </tbody>
       {% endfor %}

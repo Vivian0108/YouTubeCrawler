@@ -1,0 +1,30 @@
+{% extends '../base.html' %}{% block title %}Video Poll{% endblock %} {% block content %}
+<div class="container">
+  <center>
+    <h2>Video Poll</h2>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ video.id }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <form method="post">
+      {% csrf_token %} {% for field in form %}
+      <p>
+        <br>
+        {% if field.field.widget.input_type == "checkbox" %}
+          <label>
+        {% endif %}
+        {{ field }}
+        {% if field.field.widget.input_type == "checkbox" %}
+          <span>{{field.label}}</span>
+          </label>
+        {% endif %}
+        {% if field.help_text %}
+        <br />
+        <small style="color: grey">{{ field.help_text }}</small> {% endif %} {% for error in field.errors %}
+        <br />
+        <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+      {% endfor %}
+      <button class="btn-large waves-effect waves-light" type="submit"> <i class="material-icons right">send</i>Submit</button>
+    </form>
+  </center>
+</div>
+{% endblock %}

@@ -111,3 +111,8 @@ class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
         fields = ('description', 'document', )
+
+class VideoQuestionForm(forms.Form):
+    correct_language = forms.BooleanField(help_text='Select if the video is in the correct language throughout',label='Correct Language',required=False)
+    is_monologue = forms.BooleanField(help_text='Select if the video is a monologue (1 speaker)',label='Monologue',required=False)
+    transcript_correct = forms.BooleanField(help_text='Select if the videos transcript is in the proper language and matches the audio',label='Correct Transcript',required=False)

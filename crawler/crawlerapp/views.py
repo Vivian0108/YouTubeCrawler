@@ -79,7 +79,6 @@ def detail(request, job_id):
             job.work_status = "Restarting crawl..."
             job.save()
             crawl_async.delay(job.id)
-            print("restart")
 
         return redirect('detail', job_id)
     else:
