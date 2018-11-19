@@ -169,6 +169,7 @@ def query(job_id):
 
     total_found = []
     query_list = str(job.query).split(";")
+    query_list = [translate(w,job.language) for w in query_list]
     current_query = 0
     initial = True
     nextPageToken = None
@@ -179,7 +180,7 @@ def query(job_id):
             break
         initial = False
         search_response = None
-        query_translated = translate(query_list[current_query % len(query_list)], job.language)
+        query_translated = query_list[current_query % len(query_list)]
         print(query_translated)
         kwargs = {
                 'regionCode' : job.region,
