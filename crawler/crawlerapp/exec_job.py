@@ -225,7 +225,7 @@ def query(job_id):
             download_state = False
         if download_state:
             total_found.extend(found)
-        job.num_vids = len(total_found)
+        job.num_vids = len(total_found) + job.num_vids
         job.videos = total_found
         job.save()
         if nextPageToken and download_state:

@@ -3,7 +3,7 @@ from celery.result import AsyncResult
 import ast
 from .models import *
 from crawlerapp.filters import *
-from googletrans import Translator
+import goslate
 
 def quit_filter(job_id, filter_name_str):
     filter_name = 'crawlerapp.filters.' + filter_name_str.replace(' ','')
@@ -130,10 +130,9 @@ def job_update(job_id):
     return context
 
 def translate(query, language):
-    translator= Translator()
-    print("about")
-    if ((language == 'any') or (translator.detect(query).lang == language) or (language == '')):
+    gs = goslate.Goslate()
+
+    if ((language == 'any') or (gs.detect(query) == language) or (language == '')):
         return query
-    translated_query = (translator.translate(query, dest=language, src=translator.detect(query).lang)).text
-    print(translated_query)
+    translated_query = gs.translate(query,language)
     return translated_query
