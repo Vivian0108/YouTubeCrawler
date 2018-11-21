@@ -169,7 +169,8 @@ def query(job_id):
 
     total_found = []
     query_list = str(job.query).split(";")
-    query_list = [translate(w,job.language) for w in query_list]
+    #query_list = [translate(w,job.language) for w in query_list]
+    print(query_list)
     current_query = 0
     initial = True
     nextPageToken = None
