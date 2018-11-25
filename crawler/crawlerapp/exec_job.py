@@ -170,68 +170,66 @@ def query(job_id):
     total_found = []
     query_list = str(job.query).split(";")
     #query_list = [translate(w,job.language) for w in query_list]
-    print(query_list)
     current_query = 0
     initial = True
     nextPageToken = None
     page_count = 0
-
-    while (nextPageToken or initial):
-        if ((not (job.num_pages is None)) and job.num_pages == page_count):
-            break
-        initial = False
-        search_response = None
-        query_translated = query_list[current_query % len(query_list)]
-        print(query_translated)
-        kwargs = {
-                'regionCode' : job.region,
-                'q':query_translated,
-                'relevanceLanguage':(job.language),
-                'safeSearch':job.safe_search,
-                'videoCaption':job.cc_enabled,
-                'videoDefinition':job.video_def,
-                'videoDuration':job.video_duration,
-                'channelId':job.channel_id,
-                'type':"video",
-                'part':"id, snippet",
-                'order':job.ordering,
-                # 50 is the maximum allowable value
-                'maxResults':1,
-                'pageToken':nextPageToken,
-        }
-        if len(job.channel_id) == 0:
-            del kwargs['channelId']
-        if len(job.region) == 0:
-            del kwargs['regionCode']
-        try:
-            search_response = youtube.search().list(**kwargs).execute()
-        except Exception as e:
-            job.work_status = "Couldn't search: " + str(e)
-            job.save()
+    while (current_query < len(query_list)):
+        while (nextPageToken or initial):
+            if ((not (job.num_pages is None)) and job.num_pages == page_count):
+                break
+            initial = False
             search_response = None
-        current_query +=1
-        if search_response is None:
-            break
-        try:
-            (nextPageToken, found, download_state) = process_search_response(
-                job_id, job.name, query_translated, search_response, youtube, job.language,job.region)
-            # Refresh job
-            job = Job.objects.filter(id=job_id).get()
-        except Exception as e:
-            # Refresh job
-            job = Job.objects.filter(id=job_id).get()
-            job.work_status = "Couldn't crawl video: " + str(e)
+            query_translated = query_list[current_query]
+            kwargs = {
+                    'regionCode' : job.region,
+                    'q':query_translated,
+                    'relevanceLanguage':(job.language),
+                    'safeSearch':job.safe_search,
+                    'videoCaption':job.cc_enabled,
+                    'videoDefinition':job.video_def,
+                    'videoDuration':job.video_duration,
+                    'channelId':job.channel_id,
+                    'type':"video",
+                    'part':"id, snippet",
+                    'order':job.ordering,
+                    # 50 is the maximum allowable value
+                    'maxResults':1,
+                    'pageToken':nextPageToken,
+            }
+            if len(job.channel_id) == 0:
+                del kwargs['channelId']
+            if len(job.region) == 0:
+                del kwargs['regionCode']
+            try:
+                search_response = youtube.search().list(**kwargs).execute()
+            except Exception as e:
+                job.work_status = "Couldn't search: " + str(e)
+                job.save()
+                search_response = None
+            if search_response is None:
+                break
+            try:
+                (nextPageToken, found, download_state) = process_search_response(
+                    job_id, job.name, query_translated, search_response, youtube, job.language,job.region)
+                # Refresh job
+                job = Job.objects.filter(id=job_id).get()
+            except Exception as e:
+                # Refresh job
+                job = Job.objects.filter(id=job_id).get()
+                job.work_status = "Couldn't crawl video: " + str(e)
+                job.save()
+                nextPageToken = True
+                found = []
+                download_state = False
+            if download_state:
+                total_found.extend(found)
+            job.num_vids = len(total_found) + job.num_vids
+            job.videos = total_found
             job.save()
-            nextPageToken = True
-            found = []
-            download_state = False
-        if download_state:
-            total_found.extend(found)
-        job.num_vids = len(total_found) + job.num_vids
-        job.videos = total_found
-        job.save()
-        if nextPageToken and download_state:
-            page_count += 1
+            if nextPageToken and download_state:
+                page_count += 1
+        current_query += 1
     return total_found
 
 
