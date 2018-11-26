@@ -171,10 +171,10 @@ def query(job_id):
     query_list = str(job.query).split(";")
     #query_list = [translate(w,job.language) for w in query_list]
     current_query = 0
-    initial = True
-    nextPageToken = None
-    page_count = 0
     while (current_query < len(query_list)):
+        initial = True
+        nextPageToken = None
+        page_count = 0
         while (nextPageToken or initial):
             if ((not (job.num_pages is None)) and job.num_pages == page_count):
                 break
