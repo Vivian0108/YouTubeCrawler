@@ -1,14 +1,13 @@
-secrets.py
-secrets.pyc
-.DS_Store
 
-# exclude everything
-downloaded_videos/*
-
-# exception to the rule
-!downloaded_videos/.gitkeep
-
-crawler/__pycache__/*
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
 __pycache__/*
-crawler/crawler/settings.py
-crawler/crawler/celery.py
+crawler/settings.py
+crawlercelery.py
+
+*.pyc
+crawler/__pycache__/*.pyc
+crawler/crawlerapp/__pycache__/*.pyc
+crawlerapp/downloaded_videos/
