@@ -5,6 +5,7 @@
 !.elasticbeanstalk/*.global.yml
 __pycache__/*
 crawlercelery.py
+crawlerapp/Filters/MFA_Aligner/montreal-forced-aligner/*
 
 *.pyc
 crawler/__pycache__/*.pyc
