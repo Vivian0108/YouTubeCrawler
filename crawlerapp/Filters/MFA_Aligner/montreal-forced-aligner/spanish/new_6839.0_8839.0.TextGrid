@@ -1,0 +1,124 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 2.0
+tiers? <exists>
+size = 2
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "words"
+		xmin = 0.0
+		xmax = 2.0
+		intervals: size = 6
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.060
+				text = ""
+			intervals [2]:
+				xmin = 0.060
+				xmax = 0.190
+				text = "la"
+			intervals [3]:
+				xmin = 0.190
+				xmax = 0.590
+				text = "ecuación"
+			intervals [4]:
+				xmin = 0.590
+				xmax = 0.660
+				text = "de"
+			intervals [5]:
+				xmin = 0.660
+				xmax = 1.140
+				text = "dirac"
+			intervals [6]:
+				xmin = 1.140
+				xmax = 2.0
+				text = ""
+	item [2]:
+		class = "IntervalTier"
+		name = "phones"
+		xmin = 0.0
+		xmax = 2.0
+		intervals: size = 20
+			intervals [1]:
+				xmin = 0.000
+				xmax = 0.060
+				text = "sil"
+			intervals [2]:
+				xmin = 0.060
+				xmax = 0.140
+				text = "l"
+			intervals [3]:
+				xmin = 0.140
+				xmax = 0.190
+				text = "a"
+			intervals [4]:
+				xmin = 0.190
+				xmax = 0.270
+				text = "e"
+			intervals [5]:
+				xmin = 0.270
+				xmax = 0.300
+				text = "k"
+			intervals [6]:
+				xmin = 0.300
+				xmax = 0.350
+				text = "w"
+			intervals [7]:
+				xmin = 0.350
+				xmax = 0.380
+				text = "a"
+			intervals [8]:
+				xmin = 0.380
+				xmax = 0.470
+				text = "s"
+			intervals [9]:
+				xmin = 0.470
+				xmax = 0.500
+				text = "j"
+			intervals [10]:
+				xmin = 0.500
+				xmax = 0.540
+				text = "o+"
+			intervals [11]:
+				xmin = 0.540
+				xmax = 0.590
+				text = "ng"
+			intervals [12]:
+				xmin = 0.590
+				xmax = 0.620
+				text = "d"
+			intervals [13]:
+				xmin = 0.620
+				xmax = 0.660
+				text = "e"
+			intervals [14]:
+				xmin = 0.660
+				xmax = 0.760
+				text = "d"
+			intervals [15]:
+				xmin = 0.760
+				xmax = 0.800
+				text = "i"
+			intervals [16]:
+				xmin = 0.800
+				xmax = 0.860
+				text = "rf"
+			intervals [17]:
+				xmin = 0.860
+				xmax = 0.950
+				text = "a"
+			intervals [18]:
+				xmin = 0.950
+				xmax = 1.140
+				text = "k"
+			intervals [19]:
+				xmin = 1.140
+				xmax = 1.980
+				text = "sp"
+			intervals [20]:
+				xmin = 1.980
+				xmax = 2.0
+				text = ""

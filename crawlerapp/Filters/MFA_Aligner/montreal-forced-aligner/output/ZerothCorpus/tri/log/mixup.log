@@ -1,0 +1,4 @@
+gmm-mixup --mix-up=2000 output/ZerothCorpus/tri/0.mdl output/ZerothCorpus/tri/0.occs output/ZerothCorpus/tri/0.mdl 
+WARNING (gmm-mixup[5.4.251~1-094d2]:GetSplitTargets():model-common.cc:134) Could not split up to 2000 due to min-count = 20 (or no counts at all)
+LOG (gmm-mixup[5.4.251~1-094d2]:SplitByCount():am-diag-gmm.cc:116) Split 22 states with target = 2000, power = 0.2, perturb_factor = 0.01 and min_count = 20, split #Gauss from 22 to 32
+LOG (gmm-mixup[5.4.251~1-094d2]:main():gmm-mixup.cc:103) Written model to output/ZerothCorpus/tri/0.mdl

@@ -1,0 +1,7 @@
+extract-segments scp,p:output/ZerothCorpus/corpus_data/split1/wav.0.scp output/ZerothCorpus/corpus_data/split1/segments.0 ark:- 
+compute-mfcc-feats --verbose=2 --config=output/ZerothCorpus/corpus_data/split1/config/mfcc.0.conf ark:- ark:- 
+copy-feats --compress=true ark:- ark,scp:output/ZerothCorpus/corpus_data/split1/raw_mfcc.0.ark,output/ZerothCorpus/corpus_data/split1/feats.0.scp 
+LOG (extract-segments[5.4.251~1-094d2]:main():extract-segments.cc:193) Successfully processed 1 lines out of 1 in the segments file. 
+VLOG[2] (compute-mfcc-feats[5.4.251~1-094d2]:main():compute-mfcc-feats.cc:173) Processed features for key silences_new_wav_segment_0_0_0000_6_3590_A
+LOG (compute-mfcc-feats[5.4.251~1-094d2]:main():compute-mfcc-feats.cc:176)  Done 1 out of 1 utterances.
+LOG (copy-feats[5.4.251~1-094d2]:main():copy-feats.cc:143) Copied 1 feature matrices.

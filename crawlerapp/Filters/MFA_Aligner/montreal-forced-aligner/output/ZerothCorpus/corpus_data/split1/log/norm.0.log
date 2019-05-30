@@ -1,0 +1,2 @@
+apply-cmvn --utt2spk=ark:output/ZerothCorpus/corpus_data/split1/utt2spk.0 scp:output/ZerothCorpus/corpus_data/split1/cmvn.0.scp scp:output/ZerothCorpus/corpus_data/split1/feats.0.scp ark,scp:output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn.0.ark,output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn.0.scp 
+LOG (apply-cmvn[5.4.251~1-094d2]:main():apply-cmvn.cc:162) Applied cepstral mean normalization to 1 utterances, errors on 0

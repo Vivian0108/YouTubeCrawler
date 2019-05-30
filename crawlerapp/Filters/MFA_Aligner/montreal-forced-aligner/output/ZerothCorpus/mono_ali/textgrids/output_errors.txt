@@ -1,0 +1,10 @@
+The following exceptions were encountered during the ouput of the alignments to TextGrids:
+
+new_wav_segment_0:
+Traceback (most recent call last):
+
+  File "aligner/textgrid.py", line 100, in ctm_to_textgrid
+
+KeyError: 'new_wav_segment_0'
+
+

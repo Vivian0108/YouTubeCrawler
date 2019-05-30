@@ -1,0 +1,2 @@
+compile-train-graphs --read-disambig-syms=output/ZerothCorpus/dictionary/phones/disambig.int output/ZerothCorpus/mono/tree output/ZerothCorpus/mono/0.mdl output/ZerothCorpus/dictionary/L.fst ark:- ark:- 
+LOG (compile-train-graphs[5.4.251~1-094d2]:main():compile-train-graphs.cc:147) compile-train-graphs: succeeded for 1 graphs, failed for 0

@@ -12,11 +12,7 @@ import ffmpy
 from crawlerapp.Filters.extractFrames import extractFrames
 from crawlerapp.definitions import *
 from crawlerapp.models import *
-from django.db import models
 
-from apiclient.discovery import build
-from apiclient.discovery import HttpError
-from oauth2client.tools import argparser
 
 def download_video(download_data, requested_lang, job_id):
     job = Job.objects.filter(id=job_id).get()
@@ -119,6 +115,7 @@ def download_video(download_data, requested_lang, job_id):
 
 def download(download_data):
     (download_to_path, video_id) = download_data
+
     YOUTUBE_BASE_URL = 'https://www.youtube.com/watch?v='
     # listsubtitles: True   lists all available subtitles
     # allsubtitles: True    downloads all the subtitles of the video
@@ -180,7 +177,7 @@ def download(download_data):
 def ex_download(job_id):
     job = Job.objects.filter(id=job_id).get()
     video_ids = job.videos
-    download_data = [(os.path.join(CRAWLED_VIDEOS_DIR, video_id), video_id) for video_id in video_ids]
+    download_data = [(os.path.join(CRAWLED_VIDEOS_ABSOLUTE, video_id), video_id) for video_id in video_ids]
     num_download = len(download_data)
     # Code to restrict number downloaded, if you want
     if (len(sys.argv) == 3):

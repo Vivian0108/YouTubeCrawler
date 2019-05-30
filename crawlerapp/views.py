@@ -11,7 +11,6 @@ from crawlerapp.tasks import *
 from crawlerapp.filters import *
 import jsonpickle, io, ast, csv, os, json, random, datetime
 from crawlerapp.definitions import *
-from celery.task.control import revoke
 from crawlerapp.utils import job_update, get_celery_worker_status
 from django.utils import timezone
 import tarfile,re

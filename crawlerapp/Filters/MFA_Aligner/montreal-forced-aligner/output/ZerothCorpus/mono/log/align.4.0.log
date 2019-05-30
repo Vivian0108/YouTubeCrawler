@@ -1,0 +1,9 @@
+gmm-align-compiled --transition-scale=1.0 --acoustic-scale=0.1 --self-loop-scale=0.1 --beam=10 --retry-beam=40 --careful=false 'gmm-boost-silence --boost=1.25 6 "output/ZerothCorpus/mono/4.mdl" - |' ark:output/ZerothCorpus/mono/fsts.0 scp:output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn_deltas.0.scp ark:output/ZerothCorpus/mono/ali.0 ark,t:output/ZerothCorpus/mono/ali.0.scores 
+gmm-boost-silence --boost=1.25 6 output/ZerothCorpus/mono/4.mdl - 
+WARNING (gmm-boost-silence[5.4.251~1-094d2]:main():gmm-boost-silence.cc:82) The pdfs for the silence phones may be shared by other phones (note: this probably does not matter.)
+LOG (gmm-boost-silence[5.4.251~1-094d2]:main():gmm-boost-silence.cc:93) Boosted weights for 5 pdfs, by factor of 1.25
+LOG (gmm-boost-silence[5.4.251~1-094d2]:main():gmm-boost-silence.cc:103) Wrote model to -
+LOG (gmm-align-compiled[5.4.251~1-094d2]:main():gmm-align-compiled.cc:127) silences_new_wav_segment_0_0_0000_6_3590_A
+LOG (gmm-align-compiled[5.4.251~1-094d2]:main():gmm-align-compiled.cc:135) Overall log-likelihood per frame is -105.983 over 634 frames.
+LOG (gmm-align-compiled[5.4.251~1-094d2]:main():gmm-align-compiled.cc:137) Retried 0 out of 1 utterances.
+LOG (gmm-align-compiled[5.4.251~1-094d2]:main():gmm-align-compiled.cc:139) Done 1, errors on 0

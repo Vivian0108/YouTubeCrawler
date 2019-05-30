@@ -1,0 +1,8 @@
+lattice-align-words output/ZerothCorpus/dictionary/phones/word_boundary.int output/ZerothCorpus/mono/0.mdl ark:- ark:- 
+lattice-to-phone-lattice output/ZerothCorpus/mono/0.mdl ark:- ark:- 
+linear-to-nbest ark:output/ZerothCorpus/mono/ali.0 ark:output/ZerothCorpus/corpus_data/split1/text.0.int '' '' ark:- 
+LOG (linear-to-nbest[5.4.251~1-094d2]:main():linear-to-nbest.cc:130) Done 1 n-best entries ,0 had errors.
+nbest-to-ctm --frame-shift=0.01 ark:- output/ZerothCorpus/mono/phone.0.0.ctm 
+LOG (lattice-align-words[5.4.251~1-094d2]:main():lattice-align-words.cc:125) Successfully aligned 1 lattices; 0 had errors.
+LOG (lattice-to-phone-lattice[5.4.251~1-094d2]:main():lattice-to-phone-lattice.cc:94) Done converting 1 lattices.
+LOG (nbest-to-ctm[5.4.251~1-094d2]:main():nbest-to-ctm.cc:119) Converted 1 linear lattices to ctm format; 0 had errors.

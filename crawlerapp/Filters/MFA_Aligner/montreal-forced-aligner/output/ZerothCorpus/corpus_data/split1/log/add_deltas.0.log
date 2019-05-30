@@ -1,0 +1,1 @@
+add-deltas scp:output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn.0.scp ark,scp:output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn_deltas.0.ark,output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn_deltas.0.scp 

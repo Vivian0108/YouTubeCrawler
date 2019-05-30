@@ -1,0 +1,2 @@
+convert-ali output/ZerothCorpus/mono_ali/final.mdl output/ZerothCorpus/tri/1.mdl output/ZerothCorpus/tri/tree ark:output/ZerothCorpus/mono_ali/ali.0 ark:output/ZerothCorpus/tri/ali.0 
+LOG (convert-ali[5.4.251~1-094d2]:main():convert-ali.cc:120) Succeeded converting alignments for 1 files, failed for 0

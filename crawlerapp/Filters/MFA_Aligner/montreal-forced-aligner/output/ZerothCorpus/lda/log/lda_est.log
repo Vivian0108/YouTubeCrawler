@@ -1,0 +1,14 @@
+est-lda --write-full-matrix=output/ZerothCorpus/lda/full.mat --dim=40 output/ZerothCorpus/lda/lda.mat output/ZerothCorpus/lda/lda.0.acc 
+ASSERTION_FAILED (est-lda[5.4.251~1-094d2]:Estimate():lda-estimate.cc:91) : 'target_dim <= Dim() && (target_dim < NumClasses() || opts.allow_large_dim)' 
+
+[ Stack-Trace: ]
+0   libkaldi-base.dylib                 0x0000000106029dd4 _ZN5kaldiL18KaldiGetStackTraceEv + 292
+1   libkaldi-base.dylib                 0x0000000106029984 _ZN5kaldi13MessageLogger13HandleMessageERKNS_18LogMessageEnvelopeEPKc + 2996
+2   libkaldi-base.dylib                 0x0000000106028d87 _ZN5kaldi13MessageLoggerD2Ev + 1447
+3   libkaldi-base.dylib                 0x0000000106029c25 _ZN5kaldi13MessageLoggerD1Ev + 21
+4   libkaldi-base.dylib                 0x000000010602b041 _ZN5kaldi19KaldiAssertFailure_EPKcS1_iS1_ + 193
+5   libkaldi-transform.dylib            0x0000000105b8ddf0 _ZNK5kaldi11LdaEstimate8EstimateERKNS_18LdaEstimateOptionsEPNS_6MatrixIfEES6_ + 224
+6   est-lda                             0x00000001048c24c0 main + 2000
+7   libdyld.dylib                       0x00007fff7d1133d5 start + 1
+8   ???                                 0x0000000000000005 0x0 + 5
+

@@ -1,0 +1,2 @@
+compute-cmvn-stats --spk2utt=ark:output/ZerothCorpus/corpus_data/spk2utt scp:output/ZerothCorpus/corpus_data/feats.scp ark,scp:output/ZerothCorpus/corpus_data/features/cmvn/cmvn.ark,output/ZerothCorpus/corpus_data/features/cmvn/cmvn.scp 
+LOG (compute-cmvn-stats[5.4.251~1-094d2]:main():compute-cmvn-stats.cc:171) Done accumulating CMVN stats for 1 utterances; 0 had errors.

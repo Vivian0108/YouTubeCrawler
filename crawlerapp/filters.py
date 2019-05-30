@@ -17,6 +17,7 @@ import numpy as np
 import h5py
 from crawlerapp.definitions import *
 #from AZP2FA.p2fa.align_mod import align
+from crawlerapp.Filters.MFA_Aligner.align import align
 
 
 class AbstractFilter(ABC):
@@ -185,6 +186,18 @@ class AlignFilter(AbstractFilter):
                 vid_query.filters[self.name()] = False
                 vid_query.save()
         return passed
+
+class MFAAlignerFilter(AbstractFilter):
+    def name(self):
+        return "MFA Aligner"
+    def description(self):
+        return "Aligns via MFA Aligner"
+    def prefilters(self):
+        return []
+    def filter(self, video_ids):
+        for video in video_ids:
+            vid_query = Video.objects.filter(id=video).get()
+            align(vid_query.id, vid_query.language)
 
 
 class FaceDetectFilter(AbstractFilter):

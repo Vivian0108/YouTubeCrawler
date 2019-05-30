@@ -1,0 +1,1 @@
+gmm-init-mono --shared-phones=output/ZerothCorpus/dictionary/phones/sets.int --train-feats=scp:output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn_deltas.0.scp output/ZerothCorpus/dictionary/topo 39 output/ZerothCorpus/mono/0.mdl output/ZerothCorpus/mono/tree 

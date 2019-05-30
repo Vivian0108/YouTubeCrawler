@@ -1,0 +1,10 @@
+linear-to-nbest ark:output/ZerothCorpus/tri_ali/ali.0 ark:output/ZerothCorpus/corpus_data/split1/text.0.int '' '' ark:- 
+lattice-align-words output/ZerothCorpus/dictionary/phones/word_boundary.int output/ZerothCorpus/tri_ali/final.mdl ark:- ark:output/ZerothCorpus/tri_ali/aligned.0 
+LOG (linear-to-nbest[5.4.251~1-094d2]:main():linear-to-nbest.cc:130) Done 1 n-best entries ,0 had errors.
+LOG (lattice-align-words[5.4.251~1-094d2]:main():lattice-align-words.cc:125) Successfully aligned 1 lattices; 0 had errors.
+nbest-to-ctm --frame-shift=0.01 ark:output/ZerothCorpus/tri_ali/aligned.0 output/ZerothCorpus/tri_ali/word_ctm.0 
+LOG (nbest-to-ctm[5.4.251~1-094d2]:main():nbest-to-ctm.cc:119) Converted 1 linear lattices to ctm format; 0 had errors.
+lattice-to-phone-lattice output/ZerothCorpus/tri_ali/final.mdl ark:output/ZerothCorpus/tri_ali/aligned.0 ark:- 
+nbest-to-ctm --frame-shift=0.01 ark:- output/ZerothCorpus/tri_ali/phone_ctm.0 
+LOG (lattice-to-phone-lattice[5.4.251~1-094d2]:main():lattice-to-phone-lattice.cc:94) Done converting 1 lattices.
+LOG (nbest-to-ctm[5.4.251~1-094d2]:main():nbest-to-ctm.cc:119) Converted 1 linear lattices to ctm format; 0 had errors.

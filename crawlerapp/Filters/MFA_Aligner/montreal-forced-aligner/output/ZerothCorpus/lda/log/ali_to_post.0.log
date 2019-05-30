@@ -1,0 +1,7 @@
+ali-to-post ark:output/ZerothCorpus/tri_ali/ali.0 ark:- 
+weight-silence-post 1.0 1:2:3:4:5:6:7:8:9:10:11:12:13:14:15 output/ZerothCorpus/tri_ali/final.mdl ark:- ark:- 
+LOG (ali-to-post[5.4.251~1-094d2]:main():ali-to-post.cc:73) Converted 1 alignments.
+LOG (weight-silence-post[5.4.251~1-094d2]:main():weight-silence-post.cc:95) Done 1 posteriors.
+acc-lda --rand-prune=4.0 output/ZerothCorpus/tri_ali/final.mdl scp:output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn_lda.0.scp ark,s,cs:- output/ZerothCorpus/lda/lda.0.acc 
+LOG (acc-lda[5.4.251~1-094d2]:main():acc-lda.cc:117) Done 1 files, failed for 0
+LOG (acc-lda[5.4.251~1-094d2]:main():acc-lda.cc:122) Written statistics.

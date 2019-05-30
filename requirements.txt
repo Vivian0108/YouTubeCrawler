@@ -1,12 +1,12 @@
 Django==2.0.3
-kombu==4.2.0
+kombu==4.5.0
 google_auth_oauthlib==0.2.0
 ffmpy==0.2.2
 h5py==2.7.1
 numpy==1.14.2
 opencv_python==3.4.1.15
 torch==0.3.1
-youtube_dl==2018.3.20
+youtube_dl==2019.04.24
 jsonpickle==0.9.6
 Pillow==5.2.0
 google_api_python_client==1.7.4
@@ -14,3 +14,9 @@ protobuf==3.6.0
 django_celery_results
 django_celery_beat
 oauth2client
+psycopg2
+textblob
+redis
+pydub
+tgt
+Celery

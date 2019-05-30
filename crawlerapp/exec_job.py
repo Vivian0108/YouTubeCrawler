@@ -141,7 +141,7 @@ def process_search_response(job_id, job_name, query, search_response, client, la
                 video.save()
 
                 # Download to see if we should keep it
-                download_data = (os.path.join(CRAWLED_VIDEOS_DIR, video.id), video.id)
+                download_data = (os.path.join(CRAWLED_VIDEOS_ABSOLUTE, video.id), video.id)
                 download_state = download_video(download_data, language, job_id)
 
             else:
@@ -169,7 +169,7 @@ def query(job_id):
 
     total_found = []
     query_list = str(job.query).split(";")
-    #query_list = [translate(w,job.language) for w in query_list]
+
     current_query = 0
     while (current_query < len(query_list)):
         initial = True

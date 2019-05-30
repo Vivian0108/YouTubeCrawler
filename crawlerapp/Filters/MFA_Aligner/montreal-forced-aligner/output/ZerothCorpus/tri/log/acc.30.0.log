@@ -1,0 +1,4 @@
+gmm-acc-stats-ali output/ZerothCorpus/tri/30.mdl scp:output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn_deltas.0.scp ark,t:output/ZerothCorpus/tri/ali.0 output/ZerothCorpus/tri/30.0.acc 
+LOG (gmm-acc-stats-ali[5.4.251~1-094d2]:main():gmm-acc-stats-ali.cc:112) Done 1 files, 0 with errors.
+LOG (gmm-acc-stats-ali[5.4.251~1-094d2]:main():gmm-acc-stats-ali.cc:115) Overall avg like per frame (Gaussian only) = -103.312 over 634 frames.
+LOG (gmm-acc-stats-ali[5.4.251~1-094d2]:main():gmm-acc-stats-ali.cc:123) Written accs.

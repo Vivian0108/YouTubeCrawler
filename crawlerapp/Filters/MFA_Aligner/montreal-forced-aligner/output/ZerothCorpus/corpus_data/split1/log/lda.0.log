@@ -1,0 +1,4 @@
+splice-feats --left-context=3 --right-context=3 scp:output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn.0.scp ark,scp:output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn_lda.0.ark,output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn_lda.0.scp 
+could not find "output/ZerothCorpus/corpus_data/split1/lda.mat"
+splice-feats --left-context=3 --right-context=3 scp:output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn.0.scp ark,scp:output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn_lda.0.ark,output/ZerothCorpus/corpus_data/split1/features_mfcc_cmvn_lda.0.scp 
+could not find "output/ZerothCorpus/corpus_data/split1/lda.mat"
