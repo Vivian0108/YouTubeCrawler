@@ -9,7 +9,7 @@ import os
 count = 1
 
 def faceDetect(videoID, downloaded_path):
-    video_path = os.path.join(downloaded_path, videoID)
+    video_path = downloaded_path
     frames_path = os.path.join(video_path, "Frames")
     fcascade = cv2.CascadeClassifier(cv2.data.haarcascades+"haarcascade_frontalface_alt.xml")
     scascade = cv2.CascadeClassifier(cv2.data.haarcascades+"haarcascade_profileface.xml")
