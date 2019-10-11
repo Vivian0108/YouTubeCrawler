@@ -129,3 +129,9 @@ Now, you should be able to create a new job on the website.
 - QA testing
 - Get worker2 set up
 - Write script to nieave p2fa
+
+Login to postgres with
+psql -h localhost userdb -U username
+
+Password:
+postgres
