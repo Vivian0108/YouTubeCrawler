@@ -216,7 +216,7 @@ class FaceDetectFilter(AbstractFilter):
         for video in video_ids:
             vid_query = Video.objects.filter(id=video).get()
             try:
-                truth_vals = faceDetect(video, downloaded_path)
+                truth_vals = faceDetect(video, vid_query.download_path)
                 if truth_vals[0]:
                     print("Passed " + str(video))
                     passed.append(video)
